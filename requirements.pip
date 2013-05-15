@@ -4,3 +4,5 @@ argparse==1.2.1
 distribute==0.6.24
 wsgiref==0.1.2
 -e git+git://github.com/ildus/django-history.git#egg=django-history
+dbf==0.95.003
+django-mptt==0.5.5
