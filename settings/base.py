@@ -1,4 +1,4 @@
-#coding: utf8
+# coding: utf8
 import sys
 
 from utils import rel
@@ -18,7 +18,7 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.sqlite3',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'db.sql',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': '',
@@ -55,9 +55,9 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-MEDIA_ROOT, MEDIA_URL = '/media/', rel('media')
+MEDIA_ROOT, MEDIA_URL = rel('media'), '/media/'
 
-STATIC_ROOT, STATIC_URL = '/static/', 'static' 
+STATIC_ROOT, STATIC_URL = rel('static'), '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -71,7 +71,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -81,7 +81,7 @@ SECRET_KEY = 'b3j_yf%!37no8tyynhse9lb+n+5^#j#^&sf_a&o9jo9)*3dgl3'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    #     'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -117,7 +117,11 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+
+    'kladr',
 )
+
+KLADR_ROOT = rel('kladr')
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
