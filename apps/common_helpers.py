@@ -12,13 +12,12 @@ def nested_commit_on_success(func):
         Unlike the standard transaction.commit_on_success decorator, this
         version first checks whether a transaction is already active.  If so
         then it doesn't perform any commits or rollbacks, leaving that up to
-        whoever is managing the active transaction.
-        """
-        commit_on_success = transaction.commit_on_success(func)
-        def _nested_commit_on_success(*args, **kwds):
-            if transaction.is_managed():
-                return func(*args,**kwds)
-            else:
-                return commit_on_success(*args,**kwds)
-        return transaction.wraps(func)(_nested_commit_on_success)
+        whoever is managing the active transaction. """
+    commit_on_success = transaction.commit_on_success(func)
+    def _nested_commit_on_success(*args, **kwds):
+        if transaction.is_managed():
+            return func(*args,**kwds)
+        else:
+            return commit_on_success(*args,**kwds)
+    return transaction.wraps(func)(_nested_commit_on_success)
 
