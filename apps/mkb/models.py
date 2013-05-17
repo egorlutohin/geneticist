@@ -12,6 +12,9 @@ class Mkb(MPTTModel):
     code = models.CharField(u'Код МКБ', max_length=7, unique=True)
     name = models.TextField(verbose_name=u'Название')
 
+    def __unicode__(self):
+        return u"%s (%s)" % (self.name, self.code,)
+
     class Meta:
         verbose_name = u'элемент МКБ-10'
         verbose_name_plural = u'Справочник МКБ-10'
