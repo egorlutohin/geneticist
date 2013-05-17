@@ -1,0 +1,81 @@
+#coding: utf8
+
+from django.db import Models
+class DirectoryQuerySet(QuerySet):
+    def delete(self):
+        clear_directory_cache()
+        self.update(is_active=False)
+
+    def delete_real(self):
+        clear_directory_cache()
+        super(DirectoryQuerySet, self).delete()
+
+    def active(self):
+        return self.filter(is_active=True)
+
+
+class DirectoryManager(models.Manager):
+    def get_query_set(self):
+        return DirectoryQuerySet(self.model, using=self._db)
+
+    def active(self):
+        return self.filter(is_active=True)
+
+
+class DirectoryBase(models.Model):
+    class Meta:
+        abstract = True
+        ordering = ('name',)
+
+        name = models.CharField("имя", max_length=255)
+        is_active = models.BooleanField("активный", default=True)
+
+        objects = DirectoryManager()
+        all_objects = models.Manager()
+
+    @classmethod
+    def get_unique_fields(cls):
+        return ('name',)
+
+    def as_dict(self):
+        return {'id': self.pk,
+                'is_active': self.is_active,
+                'name': self.name}
+
+    def clean(self):
+        ''' проверяем уникальность названия '''
+
+        model = self.__class__
+        for field_name in model.get_unique_fields():
+            kwargs = {field_name: getattr(self, field_name)}
+        if model == WhereInfoFrom:  # типа грязный хак, но кому какое дело
+            qs = model.objects.active().filter(parent=self.parent, **kwargs)
+        else:
+            qs = model.objects.active().filter(**kwargs)
+
+        if self.pk:
+            qs = qs.exclude(pk=self.pk)
+
+            verbose = model._meta.get_field(field_name).verbose_name or field_name
+        if qs.exists():
+                                                    raise MustBeUnique(error_message='Поле "%s" должно быть уникальным' % verbose)
+
+                                                        def save(self, *args, **kwargs):
+                                                                self.clean()
+
+                                                                                clear_directory_cache()
+
+                                                                                        super(DirectoryBase, self).save(*args, **kwargs)
+                                                                                                return self
+
+                                                                                                    def delete(self, *args, **kwargs):
+                                                                                                            clear_directory_cache()
+
+                                                                                                                    self.is_active = False
+                                                                                                                            self.save()
+
+                                                                                                                                            def __unicode__(self):
+                                                                                                                                                    return self.name
+
+class Patient(models.Model):
+    pass
