@@ -66,12 +66,14 @@ class Patient(BaseModel):
                        (3, u'Житель Инобластной',),)
     TYPE_CHOICES = ((1, u'Пробант',)
                     (2, u'Плод'),)
-    SEX_CHOICES = ((1, u'М',),
-                   (2, u'Ж',),
-                   (3, u'Интерсекс',),)
-    first_name = models.CharField(u'Имя', max_length=100, db_index=True)
-    last_name = models.CharField(u'Фамилия', max_length=100, db_index=True)
-    patronymic = models.CharField(u'Отчество', max_length=100, db_index=True)
+    GENDER_CHOICES = ((1, u'М',),
+                      (2, u'Ж',),
+                      (3, u'Интерсекс',),)
+    first_name = models.CharField(u'Имя', max_length=100)
+    last_name = models.CharField(u'Фамилия', max_length=100)
+    patronymic = models.CharField(u'Отчество', max_length=100)
+    full_name = models.CharField(u'Полное имя', max_length=300,
+                                 db_index=True, editable=False)
     birthday = models.DateField(verbose_name=u'Дата рождения',
                                 blank=True, null=True, db_index=True)
     death = models.DateField(verbose_name=u'Дата смерти',
@@ -87,6 +89,14 @@ class Patient(BaseModel):
                                     blank=True, null=True)
     residence = models.TextField(verbose_name=u'Адрес проживания',
                                  blank=True, null=True)
+    code_allocate_lpu = models.CharField(u'Код МО прикрепления',
+                                         max_length=20)
+    allocate_lpu = models.CharField(u'Название МО прикрепления',
+                                    max_length=100)
+    _diagnosis_help = u'Сюда будут попадать данные после сохранения модели'
+    diagnosis_text = models.TextField(verbose_name=u'Диагноз по МКБ-10',
+                                      editable=False, blank=True, null=True,
+                                      help_text=_diagnosis_help)
     comment = models.TextField(verbose_name=u'Комментарий к диагнозу',
                                blank=True, null=True)
     social_status = models.IntegerField(verbose_name=u'Социальный статус',
@@ -97,15 +107,25 @@ class Patient(BaseModel):
                                        choices=SPECIAL_CURES)
     type = models.IntegerField(verbose_name=u'Тип пациента',
                                choices=TYPE_CHOICES)
-    sex = models.IntegerField(verbose_name=u'Пол', choices=SEX_CHOICES)
+    gender = models.IntegerField(verbose_name=u'Пол', choices=GENDER_CHOICES)
     date_registration = models.DateField(default=date.today,
                                          verbose_name=u'Дата постановки на учет')
     date_created = models.DateTimeField(default=datetime.now,
                                         verbose_name=u'Дата заполнения анкеты')
 
+    def get_full_name(self):
+        return ' '.join((self.first_name, self.last_name, self.patronymic,))
+
     def __unicode__(self):
-        params = (self.first_name, self.last_name, self.patronymic,)
-        return u'%s %s %s' % params
+        
+        params = [self.full_name]
+        if self.birthday:
+            params.append(self.birthday.strftme('%d.%m.%Y')])
+        return ' '.join(params)
+
+    def save(self, *args, **kwargs):
+        self.full_name = self.get_full_name()
+        super(self, Patient).save(*args, **kwargs)
 
     class Meta:
         verbose_name = u'Пациент'
