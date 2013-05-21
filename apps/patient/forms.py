@@ -5,6 +5,14 @@ from django.forms.models import inlineformset_factory
 from models import Patient, Visit, Diagnosis
 
 
+class SearchForm(forms.Form):
+    """ Форма поиска пациентов """
+    full_name = forms.CharField(max_length=300, required=False)
+    special_cure = forms.ChoiceField(choices=Patient.SPECIAL_CURES,
+                                     required=False)
+    birthday = forms.DateField(required=False)
+
+
 class PatienForm(forms.ModelForm):
     class Meta:
         model = Patient

@@ -2,7 +2,7 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 
-from forms import PatientForm, VisitForm, DiagnosisForm
+from forms import PatientForm, VisitForm, DiagnosisForm, SearchForm
 from models import Patient, DiagnosisFormset, VisitFormset
 
 
@@ -43,3 +43,30 @@ def data(request):
     return render_to_response('templates/patient.html',
                               response,
                               context=RequestContext(request))
+
+
+def search(request):
+    """ Поиск пациентов """
+    patients_qs = Patient.objects.all()
+    form = SearchForm(request.GET)
+    special_cure_text = ''
+    if form.is_valid():
+        full_name = form.cleaned_data.get('full_name')
+        if full_name:
+            patients_qs = patients_qs.filter(full_name__contains=full_name)
+        birthday = form.cleaned_data.get('birthday')
+        if birthday:
+            patients_qs = patients_qs.filter(birthday=birthday)
+        special_cure = form.cleaned_data.get('special_cure')
+        if special_cure:
+            patients_qs = patients_qs.filter(special_cure=special_cure)
+            for choice in patient.SPECIAL_CURES:
+                if choice[0] == special_cure:
+                    special_cure_text = choice[1]
+                    break
+    response = {'patients': patients_qs,
+                'count': patients.count(),
+                'special_cure_text': special_cure_text}
+    return render_to_response('templates/search.html',
+                              response,
+                              context=RequestContext(request) 
