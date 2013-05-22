@@ -66,7 +66,8 @@ def search(request):
                     break
     response = {'patients': patients_qs,
                 'count': patients.count(),
-                'special_cure_text': special_cure_text}
+                'special_cure_text': special_cure_text,
+                'form': form}
     return render_to_response('templates/search.html',
                               response,
                               context=RequestContext(request) 
