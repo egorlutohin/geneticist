@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form action='.'>
+<form action='.' method="post">
+{% csrf_token %}
 <table>
 {{ patient_forn.as_table }}
 {{ diagnosis_formset.as_table }}

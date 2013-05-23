@@ -78,7 +78,8 @@ class Patient(BaseModel):
     last_name = models.CharField(u'Фамилия', max_length=100)
     patronymic = models.CharField(u'Отчество', max_length=100)
     full_name = models.CharField(u'Полное имя', max_length=300,
-                                 db_index=True, editable=False)
+                                 db_index=True, editable=False,
+                                 blank=True, null=True)
     birthday = models.DateField(verbose_name=u'Дата рождения',
                                 blank=True, null=True, db_index=True)
     death = models.DateField(verbose_name=u'Дата смерти',
@@ -95,10 +96,10 @@ class Patient(BaseModel):
     residence = models.TextField(verbose_name=u'Адрес проживания',
                                  blank=True, null=True)
     code_allocate_lpu = models.CharField(u'Код МО прикрепления',
-                                         max_length=20)
+                                         max_length=20, blank=True, null=True)
     allocate_lpu = models.CharField(u'Название МО прикрепления',
-                                    max_length=100)
-    _diagnosis_help = u'Сюда будут попадать данные после сохранения модели'
+                                    max_length=100, blank=True, null=True)
+    _diagnosis_help = u'Вспомогательное поле, нужно для вывода диагноза в поиске'
     diagnosis_text = models.TextField(verbose_name=u'Диагноз по МКБ-10',
                                       editable=False, blank=True, null=True,
                                       help_text=_diagnosis_help)
@@ -116,7 +117,8 @@ class Patient(BaseModel):
     date_registration = models.DateField(default=date.today,
                                          verbose_name=u'Дата постановки на учет')
     date_created = models.DateTimeField(default=datetime.now,
-                                        verbose_name=u'Дата заполнения анкеты')
+                                        verbose_name=u'Дата заполнения анкеты',
+                                        editable=False)
 
     def get_full_name(self):
         return ' '.join((self.first_name, self.last_name, self.patronymic,))
@@ -130,7 +132,7 @@ class Patient(BaseModel):
 
     def save(self, *args, **kwargs):
         self.full_name = self.get_full_name()
-        super(self, Patient).save(*args, **kwargs)
+        super(Patient, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = u'Пациент'
@@ -143,7 +145,7 @@ class Visit(BaseModel):
     patient = models.ForeignKey(Patient)
     is_add = models.BooleanField(
         verbose_name=u'Первое посещение (внесение в регистр)',
-        default=False, db_index=True
+        default=False, db_index=True, editable=False
     )
     code = models.CharField(u'Код МО', max_length=80)
     name = models.CharField(u'Наименование МО', max_length=100)
