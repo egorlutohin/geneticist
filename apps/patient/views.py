@@ -72,7 +72,7 @@ def edit(request, patient_id):
 
 @nested_commit_on_success
 def add(request):
-    """ Просмотр и изменение информации о пациенте """
+    """ Создание информации о пациенте """
     avalible_error = False
     error_texts = []
     if request.method == "POST":
