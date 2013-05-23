@@ -1,5 +1,7 @@
 #coding: utf8
-from django.db import Models
+from datetime import date, datetime
+
+from django.db import models
 from django.db.models.query import QuerySet
 
 
@@ -39,22 +41,25 @@ class BaseModel(models.Model):
 
 class Patient(BaseModel):
     SOCIAL_STATUSES = (
-        u'Дошкольник', (
-            (1, u'Дошкольник, оставшийся без попечения родителей',),
-            (2, u'Дошкольник-сирота',),
+        (u'Дошкольник', (
+                (1, u'Дошкольник, оставшийся без попечения родителей',),
+                (2, u'Дошкольник-сирота',),
+            ),
         ),
-        u'Школьник', (
-            (3, u'Школьник, оставшийся без попечения родителей',),
-            (4, u'Школьник-сирота',),
+        (u'Школьник', (
+                (3, u'Школьник, оставшийся без попечения родителей',),
+                (4, u'Школьник-сирота',),
+            ),
         ),
-        u'Студент (аспирант)', (
-            (5, u'Студент (аспирант), оставшийся без попечения родителей',),
-            (6, u'Студент (аспирант)-сирота',),
+        (u'Студент (аспирант)', (
+                (5, u'Студент (аспирант), оставшийся без попечения родителей',),
+                (6, u'Студент (аспирант)-сирота',),
+            ),
         ),
         (7, u'Работающий',),
         (8, u'Неработающий',),
         (9, u'Пенсионер',),
-        (10, u'Военнослужащий',),
+        (10, u'Военнослужащий',)
     )
     SPECIAL_CURES = ((1, u'Нуждается',),
                      (2, u'Не нуждается'),
@@ -64,7 +69,7 @@ class Patient(BaseModel):
     TYPES_RESIDENCE = ((1, u'Житель г. Новосибирска',),
                        (2, u'Житель НСО',),
                        (3, u'Житель Инобластной',),)
-    TYPE_CHOICES = ((1, u'Пробант',)
+    TYPE_CHOICES = ((1, u'Пробант',),
                     (2, u'Плод'),)
     GENDER_CHOICES = ((1, u'М',),
                       (2, u'Ж',),
@@ -120,7 +125,7 @@ class Patient(BaseModel):
         
         params = [self.full_name]
         if self.birthday:
-            params.append(self.birthday.strftme('%d.%m.%Y')])
+            params.append(self.birthday.strftme('%d.%m.%Y'))
         return ' '.join(params)
 
     def save(self, *args, **kwargs):

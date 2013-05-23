@@ -123,6 +123,7 @@ INSTALLED_APPS = (
 
     'kladr',
     'mkb',
+    'patient',
 )
 
 KLADR_ROOT = rel('kladr')
