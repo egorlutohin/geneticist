@@ -32,19 +32,19 @@ class PatientForm(forms.ModelForm):
 
     class Meta:
         model = Patient
-        exclude = ('is_active',)
+        exclude = ('is_active', 'user_changed')
 
 
 class VisitForm(forms.ModelForm):
     class Meta:
         model = Visit
-        exclude = ('is_active', 'patient',)
+        exclude = ('is_active', 'patient', 'user_created',)
 
 
 class DiagnosisForm(forms.ModelForm):
     class Meta:
         model = Diagnosis
-        exclude = ('is_active', 'patient',)
+        exclude = ('is_active', 'patient', 'user_changed',)
 
 
 

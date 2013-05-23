@@ -29,6 +29,7 @@ def get_diagnosis_text(patient):
     return "\n".join(d_txt)
 
 
+@nested_commit_on_success
 def edit(request, patient_id):
     """ Просмотр и изменение информации о пациенте """
     patient = get_object_or_404(Patient, pk=patient_id)
@@ -51,6 +52,11 @@ def edit(request, patient_id):
             patient.save()
             diagnosis_formset.save()
             visit_form.save()
+    else:
+        patient_form = PatientForm()
+        diagnosis_formset = DiagnosisFormset(prefix=DIAGNOSIS_PREFIX,
+                                             instance=diagnosis_qs)
+        visit_form = VisitForm(prefix=VISIT_PREFIX, instance=visit_form)
 
     response = {'patient_forn': patient_form,
                 'diagnosis_formset': diagnosis_formset,

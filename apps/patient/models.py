@@ -3,6 +3,8 @@ from datetime import date, datetime
 
 from django.db import models
 from django.db.models.query import QuerySet
+from django_history.models import FullHistoricalRecords
+from django_history.current_context import CurrentUserField
 
 
 class BaseQuerySet(QuerySet):
@@ -119,6 +121,9 @@ class Patient(BaseModel):
     date_created = models.DateTimeField(default=datetime.now,
                                         verbose_name=u'Дата заполнения анкеты',
                                         editable=False)
+    user_changed = CurrentUserField()
+
+    history = FullHistoricalRecords()
 
     def get_full_name(self):
         return ' '.join((self.first_name, self.last_name, self.patronymic,))
@@ -153,6 +158,9 @@ class Visit(BaseModel):
         default=datetime.now,
         verbose_name=u'Дата внесения в регистр/Дата посещения'
     )
+    user_created = CurrentUserField(one_time=True)
+
+    history = FullHistoricalRecords()
 
     class Meta:
         verbose_name = u'Посещение пациентом',
@@ -167,6 +175,9 @@ class Diagnosis(BaseModel):
     code = models.CharField(u'Код диагноза по МКБ-10',
                                       max_length=10)
     name = models.TextField(verbose_name=u'Название диагноза')
+    user_changed = CurrentUserField()
+
+    history = FullHistoricalRecords()
 
     def __unicode__(self):
         return u"%s (%s)" % (self.name, self.code,)
