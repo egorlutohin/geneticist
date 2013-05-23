@@ -30,7 +30,7 @@ def get_diagnosis_text(patient):
 
 
 @nested_commit_on_success
-def edit(request, patient_id):
+def edit(request, patient_id): # TODO: нужно доделать + обсудить когда посещение обязательно
     """ Просмотр и изменение информации о пациенте """
     patient = get_object_or_404(Patient, pk=patient_id)
     diagnosis_qs = instance_patient.diagnosis_set.all()
@@ -53,7 +53,7 @@ def edit(request, patient_id):
             diagnosis_formset.save()
             visit_form.save()
     else:
-        patient_form = PatientForm()
+        patient_form = PatientForm(instance=patient)
         diagnosis_formset = DiagnosisFormset(prefix=DIAGNOSIS_PREFIX,
                                              instance=diagnosis_qs)
         visit_form = VisitForm(prefix=VISIT_PREFIX, instance=visit_form)
