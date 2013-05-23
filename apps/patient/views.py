@@ -5,7 +5,7 @@ from django.template import RequestContext
 from common_helpers import nested_commit_on_success
 
 from forms import PatientForm, VisitForm, DiagnosisForm, SearchForm
-from forms import DiagnosisFormset, VisitFormset
+from forms import DiagnosisFormset, VisitForm
 from models import Patient, Diagnosis, Visit
 
 
@@ -31,40 +31,30 @@ def get_diagnosis_text(patient):
 
 def edit(request, patient_id):
     """ Просмотр и изменение информации о пациенте """
+    patient = get_object_or_404(Patient, pk=patient_id)
+    diagnosis_qs = instance_patient.diagnosis_set.all()
+    visits_qs = instance_patient.visits_set.all()
     avalible_error = False
     if request.method == "POST":
-        instance_patient_id = request.POST.get('id')
-        if instance_patient_id:
-            instance_patient = get_object_or_404(Patient,
-                                                 pk=request.POST['id'])
-            diagnosis_qs = instance_patient.diagnosis_set.all()
-            visits_qs = instance_patient.visits_set.all()
-        else:
-            instance_patient = None
-            diagnosis_qs = Diagnosis.objects.none()
-            visits_qs = Visit.objects.none()
-        patient_form = PatientForm(request.POST or None,
+        patient_form = PatientForm(request.POST,
                                    instance=instance_patient)
         if patient_form.is_valid():
             patient = patient_form.save(commit=False)
-        else:
-            patient = None
+        visit_form = VisitForm(request.POST, instance=visits_qs)
+        if not visit_form.is_valid():
             avalible_error = True
-        visit_formset = VisitFormset(request.POST or None, instance=patient)
-        if not visit_formset.is_valid():
-            avalible_error = True
-        diagnosis_formset = DiagnosisFormset(request.POST or None,
-                                             instance=patient)
+        diagnosis_formset = DiagnosisFormset(request.POST,
+                                             instance=diagnosis_qs)
         if not diagnosis_formset.is_valid():
             avalible_error = True
         if not avalible_error:
             patient.save()
             diagnosis_formset.save()
-            visit_formset.save()
+            visit_form.save()
 
     response = {'patient_forn': patient_form,
                 'diagnosis_formset': diagnosis_formset,
-                'visit_formset': visit_formset}
+                'visit_form': visit_form}
     return render_to_response('patient.html',
                               response,
                               context_instance=RequestContext(request))
@@ -82,13 +72,9 @@ def add(request):
         else:
             patient = None
             avalible_error = True
-        visit_formset = VisitFormset(request.POST,
-                                     prefix=VISIT_PREFIX)
-        if not visit_formset.is_valid():
+        visit_form = VisitForm(request.POST, prefix=VISIT_PREFIX)
+        if not visit_form.is_valid():
             avalible_error = True
-        elif len(visit_formset.forms) < 1:
-            avalible_error = True
-            error_texts.append(u'Нужно написать куда пришел пациент')
         diagnosis_formset = DiagnosisFormset(request.POST,
                                              prefix=DIAGNOSIS_PREFIX)
         if not diagnosis_formset.is_valid():
@@ -99,17 +85,20 @@ def add(request):
         if not avalible_error:
             patient.save()
             save_formset(diagnosis_formset, patient)
-            save_formset(visit_formset, patient)
+            visit = visit_form.save(commit=False)
+            visit.patient = patient
+            visit.is_add = True
+            visit.save()
             patient.diagnosis_text = get_diagnosis_text(patient)
             patient.save()
     else:
         patient_form = PatientForm()
         diagnosis_formset = DiagnosisFormset(prefix=DIAGNOSIS_PREFIX)
-        visit_formset = VisitFormset(prefix=VISIT_PREFIX)
+        visit_form = VisitForm(prefix=VISIT_PREFIX)
 
     response = {'patient_forn': patient_form,
                 'diagnosis_formset': diagnosis_formset,
-                'visit_formset': visit_formset,
+                'visit_form': visit_form,
                 'error_texts': error_texts}
     return render_to_response('patient.html',
                               response,

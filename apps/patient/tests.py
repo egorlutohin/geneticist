@@ -31,11 +31,8 @@ class PatientCases(WebTest):
                 'diagnosis-MAX_NUM_FORMS': 1,
                 'diagnosis-0-code': u'A35.0.1',
                 'diagnosis-0-name': u'Болячка',
-                'visit-TOTAL_FORMS': 1,
-                'visit-INITIAL_FORMS': 1,
-                'visit-MAX_NUM_FORMS': 1,
-                'visit-0-code': u'A35.0.1',
-                'visit-0-name': u'Болячка',
+                'visit-code': u'ГРУ МО',
+                'visit-name': u'Обл. больница',
                 }
 
     def update_csrf(self, form):

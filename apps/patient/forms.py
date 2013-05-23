@@ -47,8 +47,6 @@ class DiagnosisForm(forms.ModelForm):
         exclude = ('is_active', 'patient',)
 
 
-VisitFormset = formset_factory(VisitForm, extra=1)
-
 
 DiagnosisFormset = formset_factory(DiagnosisForm,
                                          extra=1)
