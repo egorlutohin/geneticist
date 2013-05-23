@@ -20,6 +20,15 @@ def save_formset(formset, patient):
         item.save()
 
 
+def get_diagnosis_text(patient):
+    d_txt = []
+    template = "%s (%s)"
+    for diagnosis in patient.diagnosis_set.all():
+        text = template % (diagnosis.name, diagnosis.code)
+        d_txt.append(text)
+    return "\n".join(d_txt)
+
+
 def edit(request, patient_id):
     """ Просмотр и изменение информации о пациенте """
     avalible_error = False
@@ -91,6 +100,8 @@ def add(request):
             patient.save()
             save_formset(diagnosis_formset, patient)
             save_formset(visit_formset, patient)
+            patient.diagnosis_text = get_diagnosis_text(patient)
+            patient.save()
     else:
         patient_form = PatientForm()
         diagnosis_formset = DiagnosisFormset(prefix=DIAGNOSIS_PREFIX)

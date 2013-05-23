@@ -154,6 +154,11 @@ class Visit(BaseModel):
         verbose_name=u'Дата внесения в регистр/Дата посещения'
     )
 
+    def save(self, *args, **kwargs):
+        if not Visit.objects.filter(patient=self.patient).exists():
+            self.is_add = True
+        super(Visit, self).save(*args, **kwargs)
+
     class Meta:
         verbose_name = u'Посещение пациентом',
         verbose_name_plural = u'Посещения пациентом'

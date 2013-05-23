@@ -49,3 +49,8 @@ class PatientCases(WebTest):
         self.update_csrf(form)
         response = form.submit()
         self.assertEqual(Patient.objects.count(), 1)
+        patient = Patient.objects.all()[0]
+        self.assertIsNotNone(patient.diagnosis_text)
+        self.assertGreater(len(patient.diagnosis_text), 0)
+        visit = patient.visit_set.all()[0]
+        self.assertEqual(visit.is_add, True)
