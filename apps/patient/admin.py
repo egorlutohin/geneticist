@@ -12,7 +12,7 @@ class DiagnosisInline(admin.StackedInline):
     model = Diagnosis
 
 
-class Patient(admin.ModelAdmin):
+class PatientAdmin(admin.ModelAdmin):
     list_display = list_display_links = ('full_name', 'birthday',
                                          'diagnosis_text', 'allocate_lpu',
                                          'get_gender_display',)

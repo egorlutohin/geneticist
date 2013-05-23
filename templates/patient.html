@@ -1,9 +1,11 @@
-{% extend base.html %}
+{% extends 'base.html' %}
 
 {% block content %}
+<form action='.'>
 <table>
 {{ patient_forn.as_table }}
 {{ diagnosis_formset.as_table }}
 {{ visit_formset.as_table }}
 </table>
+</form>
 {% endblock %}

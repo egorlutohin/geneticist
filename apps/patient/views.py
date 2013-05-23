@@ -3,7 +3,8 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 
 from forms import PatientForm, VisitForm, DiagnosisForm, SearchForm
-from models import Patient, DiagnosisFormset, VisitFormset
+from forms import DiagnosisFormset, VisitFormset
+from models import Patient, Diagnosis, Visit
 
 
 def data(request):
@@ -16,7 +17,7 @@ def data(request):
         diagnosis_qs = instance_patient.diagnosis_set.all()
         visits_qs = instance_patient.visits_set.all()
     else:
-        instance = None
+        instance_patient = None
         diagnosis_qs = Diagnosis.objects.none()
         visits_qs = Visit.objects.none()
     patient_form = PatientForm(request.POST or None,
@@ -40,9 +41,9 @@ def data(request):
     response = {'patient_forn': patient_form,
                 'diagnosis_formset': diagnosis_formset,
                 'visit_formset': visit_formset}
-    return render_to_response('templates/patient.html',
+    return render_to_response('patient.html',
                               response,
-                              context=RequestContext(request))
+                              context_instance=RequestContext(request))
 
 
 def search(request):
@@ -70,4 +71,4 @@ def search(request):
                 'form': form}
     return render_to_response('templates/search.html',
                               response,
-                              context=RequestContext(request) 
+                              context=RequestContext(request))

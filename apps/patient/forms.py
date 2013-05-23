@@ -13,7 +13,7 @@ class SearchForm(forms.Form):
     birthday = forms.DateField(required=False)
 
 
-class PatienForm(forms.ModelForm):
+class PatientForm(forms.ModelForm):
     class Meta:
         model = Patient
 
@@ -31,5 +31,5 @@ class DiagnosisForm(forms.ModelForm):
 VisitFormset = inlineformset_factory(Patient, Visit, extra=1, form=VisitForm)
 
 
-DiagnosisFormset = inlineformset_factory(Patient, Diagnosisi,
+DiagnosisFormset = inlineformset_factory(Patient, Diagnosis,
                                          extra=1, form=DiagnosisForm)
