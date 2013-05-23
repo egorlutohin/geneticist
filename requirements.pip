@@ -6,3 +6,5 @@ wsgiref==0.1.2
 -e git+git://github.com/dicos/django-history.git#egg=django-history
 dbf==0.95.003
 django-mptt==0.5.5
+django-webtest==1.6.1
+WebTest==2.0.5
