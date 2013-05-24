@@ -55,3 +55,10 @@ class PatientCases(WebTest):
 
     def test_create_patient(self):
         self.create_patient()
+
+    def test_edit_patient(self):
+        patient = self.create_patient()
+        url_edit = reverse('patient_edit', kwargs={'patient_id': patient.pk})
+        form = self.app.get(url_edit).form
+        form['diagnosis-1-name'] = ''
+        form.submit()

@@ -132,7 +132,7 @@ class Patient(BaseModel):
         
         params = [self.full_name]
         if self.birthday:
-            params.append(self.birthday.strftme('%d.%m.%Y'))
+            params.append(self.birthday.strftime('%d.%m.%Y'))
         return ' '.join(params)
 
     def save(self, *args, **kwargs):
@@ -165,7 +165,8 @@ class Visit(BaseModel):
     class Meta:
         verbose_name = u'Посещение пациентом',
         verbose_name_plural = u'Посещения пациентом'
-        ordering = ['is_add', 'date_created']
+        ordering = ['pk']
+        get_latest_by = 'pk'
 
 
 

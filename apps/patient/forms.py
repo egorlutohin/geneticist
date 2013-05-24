@@ -1,6 +1,6 @@
 #coding: utf8
 from django import forms
-from django.forms.models import inlineformset_factory, formset_factory
+from django.forms.models import formset_factory, modelformset_factory
 
 from models import Patient, Visit, Diagnosis
 
@@ -32,21 +32,25 @@ class PatientForm(forms.ModelForm):
 
     class Meta:
         model = Patient
-        exclude = ('is_active', 'user_changed')
+        exclude = ('is_active', 'user_changed', 'date_changed',)
 
 
 class VisitForm(forms.ModelForm):
     class Meta:
         model = Visit
-        exclude = ('is_active', 'patient', 'user_created',)
+        exclude = ('is_active', 'patient', 'user_created', 'date_created',)
 
 
 class DiagnosisForm(forms.ModelForm):
     class Meta:
         model = Diagnosis
-        exclude = ('is_active', 'patient', 'user_changed',)
+        exclude = ('is_active', 'patient', 'user_changed', 'date_changed',)
 
 
+DiagnosisFormset = formset_factory(DiagnosisForm)
 
-DiagnosisFormset = formset_factory(DiagnosisForm,
-                                         extra=1)
+
+DiagnosisModelFormset = modelformset_factory(Diagnosis,
+                                             form=DiagnosisForm,
+                                             extra=1,
+                                             can_delete=True)
