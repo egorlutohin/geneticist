@@ -39,7 +39,7 @@ class PatientCases(WebTest):
         param_name = 'csrfmiddlewaretoken'
         form[param_name] = form.fields[param_name][0].value
 
-    def test_create_patient(self):
+    def create_patient(self):
         form = self.app.get(reverse('patient_add')).form
         for name, value in self.get_base_info().iteritems():
             form[name] = value
@@ -51,3 +51,7 @@ class PatientCases(WebTest):
         self.assertGreater(len(patient.diagnosis_text), 0)
         visit = patient.visit_set.all()[0]
         self.assertEqual(visit.is_add, True)
+        return patient
+
+    def test_create_patient(self):
+        self.create_patient()
