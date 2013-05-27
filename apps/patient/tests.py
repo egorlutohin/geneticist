@@ -54,7 +54,7 @@ class PatientCases(WebTest):
         return patient
 
     def test_create_patient(self):
-        self.create_patient()
+        patient = self.create_patient()
 
     def test_edit_patient(self):
         patient = self.create_patient()
@@ -62,3 +62,14 @@ class PatientCases(WebTest):
         form = self.app.get(url_edit).form
         form['diagnosis-1-name'] = ''
         form.submit()
+        self.assertEqual(patient.diagnosis_set.count(), 1)
+
+        form['diagnosis-1-name'] = u'Блихи'
+        form['diagnosis-1-code'] = u'B34.12'
+        form.submit()
+        self.assertEqual(patient.diagnosis_set.count(), 2)
+
+        form = self.app.get(url_edit).form
+        form['diagnosis-1-DELETE'] = u'on'
+        form.submit()
+        self.assertEqual(patient.diagnosis_set.active().count(), 1)

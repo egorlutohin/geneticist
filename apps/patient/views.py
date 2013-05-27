@@ -18,9 +18,15 @@ NIGHT_TIME = timedelta(hours=12)
 
 def save_formset(formset, patient):
     for form in formset.forms:
-        item = form.save(commit=False)
-        item.patient = patient
-        item.save()
+        if len(form.cleaned_data) == 0:
+            continue
+        elif form.cleaned_data.get('DELETE', False) and \
+             isinstance(form.cleaned_data.get('id'), Diagnosis):
+                item.delete()
+        else:
+            item = form.save(commit=False)
+            item.patient = patient
+            item.save()
 
 
 def get_diagnosis_text(patient):
@@ -33,7 +39,8 @@ def get_diagnosis_text(patient):
 
 
 def clear_ids(request):
-    return dict([(k, v) for k, v in request.POST.iteritems() if len(v) > 0])
+    return dict([(k, v) for k, v in request.POST.iteritems() \
+                        if (len(v) > 0 and v != u"\r\n")])
 
 
 def is_need_validation(params):
@@ -73,7 +80,7 @@ def edit(request, patient_id): # TODO: нужно доделать + обсуд�
             avalible_error = True
         if not avalible_error:
             patient.save()
-            diagnosis_formset.save()
+            save_formset(diagnosis_formset, patient)
             if is_need_save_visit:
                 visit_form.save()
     else:
