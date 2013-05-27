@@ -124,10 +124,12 @@ INSTALLED_APPS = (
     'kladr',
     'mkb',
     'patient',
+    'organization',
 )
 
 KLADR_ROOT = rel('kladr')
 MKB_FILE = rel('mkb/mkb.csv')
+ORGANIZATION_FILE = rel('organizations/organizations.csv')
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
