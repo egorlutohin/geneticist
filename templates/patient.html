@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block other_static %}
+<script type="text/javascript" src="{{ STATIC_URL }}dinbror-bpopup/jquery.bpopup.js"></script>
+{% endblock %}
+
 {% block content %}
 <form action='.' method="post">
 {% csrf_token %}
