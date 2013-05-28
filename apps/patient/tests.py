@@ -1,5 +1,6 @@
 #coding: utf8
 from datetime import date
+from itertools import chain
 
 from django.core.urlresolvers import reverse
 from django_webtest import WebTest
@@ -43,9 +44,9 @@ class PatientCases(WebTest):
         param_name = 'csrfmiddlewaretoken'
         form[param_name] = form.fields[param_name][0].value
 
-    def create_patient(self):
+    def create_patient(self, **params):
         form = self.app.get(reverse('patient_add')).form
-        for name, value in self.get_base_info().iteritems():
+        for name, value in chain(self.get_base_info().iteritems(), params):
             form[name] = value
         self.update_csrf(form)
         response = form.submit()
@@ -82,3 +83,21 @@ class PatientCases(WebTest):
         form['diagnosis-1-DELETE'] = u'on'
         form.submit()
         self.assertEqual(patient.diagnosis_set.active().count(), 1)
+
+    def test_search(self):
+        url_search = reverse('patient_search')
+        patient = self.create_patient()
+        form = self.app.get(url_search).form
+        form['full_name'] = patient.first_name
+        form['birthday'] = patient.birthday
+        form['death'] = patient.death
+
+        diagnosis = patient.diagnosis_set.all()[0]
+        form['diagnosis'] = diagnosis.code
+        
+        visit = patient.visit_set.all()[0]
+        form['lpu_added'] = visit.lpu.pk
+
+        form['special_cure'] = Patient.SPECIAL_CURES[0][0]
+
+        form.submit()

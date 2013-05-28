@@ -2,15 +2,25 @@
 from django import forms
 from django.forms.models import formset_factory, modelformset_factory
 
+from organization.models import Organization
+
 from models import Patient, Visit, Diagnosis
 
 
 class SearchForm(forms.Form):
     """ Форма поиска пациентов """
-    full_name = forms.CharField(max_length=300, required=False)
-    special_cure = forms.ChoiceField(choices=Patient.SPECIAL_CURES,
-                                     required=False)
-    birthday = forms.DateField(required=False)
+    _LPU_QS = Visit.objects.filter(is_add=True).values_list('lpu')
+    _LPU_ADDED_QS = Organization.objects.filter(pk__in=_LPU_QS)
+    full_name = forms.CharField(required=False, label=u'ФИО')
+    birthday = forms.DateField(required=False, label=u'Дата рождения')
+    death = forms.DateField(required=False, label=u'Дата смерти')
+    diagnosis = forms.CharField(required=False, label=u'Диагноз по МКБ')
+    lpu_added = forms.ModelChoiceField(required=False,
+                                       label=u'МО внесения в регистр',
+                                       queryset=_LPU_ADDED_QS)
+    special_cure = forms.ChoiceField(required=False,
+                                     label=u'Спец. лечение',
+                                     choices=Patient.SPECIAL_CURES)
 
 
 class PatientForm(forms.ModelForm):

@@ -1,6 +1,7 @@
 #coding: utf8
 from datetime import datetime, timedelta
 
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 
@@ -158,17 +159,25 @@ def search(request):
         birthday = form.cleaned_data.get('birthday')
         if birthday:
             patients_qs = patients_qs.filter(birthday=birthday)
+        death = form.cleaned_data.get('death')
+        if death:
+            patients_qs = patients_qs.filter(death=death)
+        diagnosis = form.cleaned_data.get('diagnosis')
+        if diagnosis:
+            q_st = Q(diagnosis__code__contains=diagnosis) | \
+                   Q(diagnosis__name__contains=diagnosis)
+            patient_qs = patients_qs.filter(diagnosis__code__contains=diagnosis)
+        lpu_added = form.cleaned_data.get('lpu_added')
+        if lpu_added:
+            patients_qs = patients_qs.filter(visit__is_add=True,
+                                             visit__lpu=lpu_added)
         special_cure = form.cleaned_data.get('special_cure')
         if special_cure:
             patients_qs = patients_qs.filter(special_cure=special_cure)
-            for choice in patient.SPECIAL_CURES:
-                if choice[0] == special_cure:
-                    special_cure_text = choice[1]
-                    break
     response = {'patients': patients_qs,
-                'count': patients.count(),
+                'count': patients_qs.count(),
                 'special_cure_text': special_cure_text,
                 'form': form}
-    return render_to_response('templates/search.html',
+    return render_to_response('search.html',
                               response,
-                              context=RequestContext(request))
+                              context_instance=RequestContext(request))

@@ -87,7 +87,7 @@ class Patient(BaseModel):
     birthday = models.DateField(verbose_name=u'Дата рождения',
                                 blank=True, null=True, db_index=True)
     death = models.DateField(verbose_name=u'Дата смерти',
-                             blank=True, null=True)
+                             blank=True, null=True, db_index=True)
     seria_policy = models.CharField(u'Серия страхового полиса',
                                     max_length=20, blank=True, null=True)
     number_policy = models.CharField(u'Номер страхового полиса',
@@ -116,7 +116,8 @@ class Patient(BaseModel):
                                         choices=SOCIAL_STATUSES)
     special_cure = models.IntegerField(verbose_name=u'Специальное лечение',
                                        default=SPECIAL_CURES[4][0],
-                                       choices=SPECIAL_CURES)
+                                       choices=SPECIAL_CURES,
+                                       db_index=True)
     type = models.IntegerField(verbose_name=u'Тип пациента',
                                choices=TYPE_CHOICES)
     gender = models.IntegerField(verbose_name=u'Пол', choices=GENDER_CHOICES)
@@ -190,8 +191,9 @@ class Diagnosis(BaseModel):
     """ Диагноз пациента """
     patient = models.ForeignKey(Patient)
     code = models.CharField(u'Код диагноза по МКБ-10',
-                                      max_length=10)
-    name = models.TextField(verbose_name=u'Название диагноза')
+                            max_length=10, db_index=True)
+    name = models.TextField(verbose_name=u'Название диагноза',
+                            db_index=True)
     user_changed = CurrentUserField()
 
     history = FullHistoricalRecords()
