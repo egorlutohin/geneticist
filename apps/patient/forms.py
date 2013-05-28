@@ -38,7 +38,8 @@ class PatientForm(forms.ModelForm):
 class VisitForm(forms.ModelForm):
     class Meta:
         model = Visit
-        exclude = ('is_active', 'patient', 'user_created', 'date_created',)
+        exclude = ('is_active', 'patient', 'user_created', 'date_created',
+                   'name', 'code',)
 
 
 class DiagnosisForm(forms.ModelForm):

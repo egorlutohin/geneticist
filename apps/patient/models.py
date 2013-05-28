@@ -103,7 +103,8 @@ class Patient(BaseModel):
                                          max_length=20, blank=True, null=True)
     name_allocate_lpu = models.TextField(u'Название МО прикрепления',
                                          max_length=100, blank=True, null=True)
-    allocate_lpu = models.ForeignKey(Organization, blank=True, null=True)
+    allocate_lpu = models.ForeignKey(Organization, blank=True, null=True,
+                                     verbose_name=u'ЛПУ прикрепления')
     _diagnosis_help = u'Вспомогательное поле, нужно для вывода диагноза в поиске'
     diagnosis_text = models.TextField(verbose_name=u'Диагноз по МКБ-10',
                                       editable=False, blank=True, null=True,
@@ -158,8 +159,9 @@ class Visit(BaseModel):
         verbose_name=u'Первое посещение (внесение в регистр)',
         default=False, db_index=True, editable=False
     )
-    code = models.CharField(u'Код МО', max_length=80)
-    name = models.CharField(u'Наименование МО', max_length=100)
+    code = models.CharField(u'Код МО', max_length=7)
+    name = models.TextField(u'Наименование МО')
+    lpu = models.ForeignKey(Organization, verbose_name=u'МО')
     date_created = models.DateTimeField(
         default=datetime.now,
         verbose_name=u'Дата внесения в регистр/Дата посещения'
@@ -170,6 +172,11 @@ class Visit(BaseModel):
 
     def __unicode__(self):
         return "%s %s" % (self.name, self.date_created.strftime('%d.%m.%Y'))
+
+    def save(self, *args, **kwargs):
+        self.code = self.lpu.code
+        self.name = self.lpu.full_name
+        super(Visit, self).save(self, *args, **kwargs)
 
     class Meta:
         verbose_name = u'Посещение пациентом',

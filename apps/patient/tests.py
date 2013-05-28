@@ -36,8 +36,7 @@ class PatientCases(WebTest):
                 'diagnosis-MAX_NUM_FORMS': 1,
                 'diagnosis-0-code': u'A35.0.1',
                 'diagnosis-0-name': u'Болячка',
-                'visit-code': u'ГРУ МО',
-                'visit-name': u'Обл. больница',
+                'visit-lpu': self.organization.pk,
                 }
 
     def update_csrf(self, form):
@@ -62,6 +61,9 @@ class PatientCases(WebTest):
         patient = self.create_patient()
         self.assertEqual(patient.code_allocate_lpu, self.organization.code)
         self.assertEqual(patient.name_allocate_lpu, self.organization.full_name)
+        visit = patient.visit_set.all()[0]
+        self.assertEqual(visit.code, self.organization.code)
+        self.assertEqual(visit.name, self.organization.full_name)
 
     def test_edit_patient(self):
         patient = self.create_patient()
