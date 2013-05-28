@@ -29,8 +29,6 @@
       {{ patient_form.registration.label_tag }} {{ patient_form.registration }}</li>
   <li id="li_residence">{% if patient_form.residence.errors %} {{ patient_form.residence.errors}} {% endif %}
       {{ patient_form.residence.label_tag }} {{ patient_form.residence }}</li>
-  <li id="li_code_allocate_lpu">{% if patient_form.code_allocate_lpu.errors %} {{ patient_form.code_allocate_lpu.errors}} {% endif %}
-      {{ patient_form.code_allocate_lpu.label_tag }} {{ patient_form.code_allocate_lpu }}</li>
   <li id="li_allocate_lpu">{% if patient_form.allocate_lpu.errors %} {{ patient_form.allocate_lpu.errors}} {% endif %}
       {{ patient_form.allocate_lpu.label_tag }} {{ patient_form.allocate_lpu }}</li>
   <ul id="ul_diagnosis_formset">

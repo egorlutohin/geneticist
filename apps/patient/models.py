@@ -6,6 +6,8 @@ from django.db.models.query import QuerySet
 from django_history.models import FullHistoricalRecords
 from django_history.current_context import CurrentUserField
 
+from organization.models import Organization
+
 
 class BaseQuerySet(QuerySet):
     def delete(self):
@@ -99,8 +101,9 @@ class Patient(BaseModel):
                                  blank=True, null=True)
     code_allocate_lpu = models.CharField(u'Код МО прикрепления',
                                          max_length=20, blank=True, null=True)
-    allocate_lpu = models.CharField(u'Название МО прикрепления',
-                                    max_length=100, blank=True, null=True)
+    name_allocate_lpu = models.TextField(u'Название МО прикрепления',
+                                         max_length=100, blank=True, null=True)
+    allocate_lpu = models.ForeignKey(Organization, blank=True, null=True)
     _diagnosis_help = u'Вспомогательное поле, нужно для вывода диагноза в поиске'
     diagnosis_text = models.TextField(verbose_name=u'Диагноз по МКБ-10',
                                       editable=False, blank=True, null=True,
@@ -137,6 +140,9 @@ class Patient(BaseModel):
 
     def save(self, *args, **kwargs):
         self.full_name = self.get_full_name()
+        if self.allocate_lpu:
+            self.code_allocate_lpu = self.allocate_lpu.code
+            self.name_allocate_lpu = self.allocate_lpu.full_name
         super(Patient, self).save(*args, **kwargs)
 
     class Meta:

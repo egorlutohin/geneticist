@@ -4,10 +4,16 @@ from datetime import date
 from django.core.urlresolvers import reverse
 from django_webtest import WebTest
 
-from models import Patient
+from organization.models import Organization
+from patient.models import Patient
 
 
 class PatientCases(WebTest):
+    def setUp(self):
+        self.organization = Organization.objects.create(code=u'123',
+                                                        name=u'ГКБ ЧП',
+                                                        full_name=u'Картошка')
+
     def get_base_info(self):
         return {'first_name': u'Иван',
                 'last_name': u'Иванов',
@@ -19,8 +25,7 @@ class PatientCases(WebTest):
                 'code_insurance_company': '454',
                 'registration': u'650321 г. Томск, ул. Кротова 7 кв 41',
                 'residence': u'658965 г. Барнаул, ул Мира 12',
-                'code_allocate_lpu': u'4587',
-                'allocate_lpu': u'ГБУЗ ГНО КДЦ',
+                'allocate_lpu': self.organization.pk,
                 'comment': u'Некий комментарий к базе данных',
                 'social_status': Patient.SOCIAL_STATUSES[0][1][0][0],
                 'special_cure': Patient.SPECIAL_CURES[0][0],
@@ -55,6 +60,8 @@ class PatientCases(WebTest):
 
     def test_create_patient(self):
         patient = self.create_patient()
+        self.assertEqual(patient.code_allocate_lpu, self.organization.code)
+        self.assertEqual(patient.name_allocate_lpu, self.organization.full_name)
 
     def test_edit_patient(self):
         patient = self.create_patient()
