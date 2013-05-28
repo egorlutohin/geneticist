@@ -162,6 +162,9 @@ class Visit(BaseModel):
 
     history = FullHistoricalRecords()
 
+    def __unicode__(self):
+        return "%s %s" % (self.name, self.date_created.strftime('%d.%m.%Y'))
+
     class Meta:
         verbose_name = u'Посещение пациентом',
         verbose_name_plural = u'Посещения пациентом'

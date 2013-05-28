@@ -83,15 +83,18 @@ def edit(request, patient_id): # TODO: нужно доделать + обсуд�
             save_formset(diagnosis_formset, patient)
             if is_need_save_visit:
                 visit_form.save()
+                visit_form = VisitForm(prefix=VISIT_PREFIX)
+
     else:
         patient_form = PatientForm(instance=patient)
         diagnosis_formset = DiagnosisModelFormset(prefix=DIAGNOSIS_PREFIX,
                                                   queryset=diagnosis_qs)
         visit_form = VisitForm(prefix=VISIT_PREFIX)
 
-    response = {'patient_forn': patient_form,
+    response = {'patient_form': patient_form,
                 'diagnosis_formset': diagnosis_formset,
-                'visit_form': visit_form}
+                'visit_form': visit_form,
+                'visits_qs': patient.visit_set.all()}
     return render_to_response('patient.html',
                               response,
                               context_instance=RequestContext(request))
@@ -133,7 +136,7 @@ def add(request):
         diagnosis_formset = DiagnosisFormset(prefix=DIAGNOSIS_PREFIX)
         visit_form = VisitForm(prefix=VISIT_PREFIX)
 
-    response = {'patient_forn': patient_form,
+    response = {'patient_form': patient_form,
                 'diagnosis_formset': diagnosis_formset,
                 'visit_form': visit_form,
                 'error_texts': error_texts}
