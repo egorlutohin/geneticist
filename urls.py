@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     url(r'^patient/$', 'patient.views.search', name='patient_search'),
     url(r'^patient/add/$', 'patient.views.add', name='patient_add'),
     url(r'^patient/(?P<patient_id>\d+)/$', 'patient.views.edit', name='patient_edit'),
+    url(r'^mkb\.json$', 'mkb.views.mkb', name='mkb'),
     url(r'^admin/', include(admin.site.urls)),
 )
 
