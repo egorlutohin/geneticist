@@ -3,6 +3,7 @@
 *.pyc
 local_settings.py
 db.sql
+db.sql-journal
 *.swp
 migrations/
 kladr/
