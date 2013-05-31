@@ -28,7 +28,7 @@
 //              },
 			// .. but here we use a local file instead:
 			initAjax: {
-				url: "{{ STATIC_URL }}dynatree/doc/sample-data3.json"
+				url: "{% url 'mkb' %}"
 				},
 
 			onActivate: function(node) {
@@ -37,18 +37,18 @@
 
 			onLazyRead: function(node){
 				// In real life we would call something like this:
-//            	node.appendAjax({
-//            	    url: "/getChildrenAsJson",
-//		            data: {key: node.data.key,
-//            		       mode: "funnyMode"
-//                         }
-//              });
-				// .. but here we use a local file instead:
-				node.appendAjax({
-					url: "{{ STATIC_URL }}dynatree/doc/sample-data2.json",
-					// We don't want the next line in production code:
-					debugLazyDelay: 750
-				});
+            	node.appendAjax({
+            	    url: "{% url 'mkb' %}",
+		            data: {key: node.data.key,
+            		       mode: "funnyMode"
+                         }
+                });
+//				// .. but here we use a local file instead:
+//				node.appendAjax({
+//					url: "{{ STATIC_URL }}dynatree/doc/sample-data2.json",
+//					// We don't want the next line in production code:
+//					debugLazyDelay: 750
+//				});
 			}
 		});
 		$("#btnReloadActive").click(function(){
