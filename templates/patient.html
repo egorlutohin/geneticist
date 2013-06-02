@@ -17,7 +17,7 @@
 <link href="{{ STATIC_URL }}dynatree/doc/sample.css" rel="stylesheet" type="text/css">
 <script src="{{ STATIC_URL }}dynatree/doc/sample.js" type="text/javascript"></script>
 <script type="text/javascript">
-	$(function(){
+/*	$(function(){
 
 		// --- Initialize sample trees
 		$("#tree").dynatree({
@@ -58,7 +58,83 @@
                                 width: 1024,
                                 position: [50, 400],
                                 positionStyle: 'absolute'});
-	});
+	});*/
+$(document).ready(function () {
+    // Code adapted from http://djangosnippets.org/snippets/1389/  
+    function updateElementIndex(el, prefix, ndx) {
+        var id_regex = new RegExp('(' + prefix + '-\\d+-)');
+        var replacement = prefix + '-' + ndx + '-';
+        if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex,
+        replacement));
+        if (el.id) el.id = el.id.replace(id_regex, replacement);
+        if (el.name) el.name = el.name.replace(id_regex, replacement);
+    }
+
+    function deleteForm(btn, prefix) {
+        var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+        if (formCount > 1) {
+            // Delete the item/form
+            $(btn).parents('.item').remove();
+            var forms = $('.item'); // Get all the forms  
+            // Update the total number of forms (1 less than before)
+            $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+            var i = 0;
+            // Go through the forms and set their indices, names and IDs
+            for (formCount = forms.length; i < formCount; i++) {
+                $(forms.get(i)).children().children().each(function () {
+                    if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
+                });
+            }
+        } // End if
+        else {
+            alert("You have to enter at least one todo item!");
+        }
+        return false;
+    }
+
+    function addForm(btn, prefix) {
+        var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+        alert(formCount)
+        // You can only submit a maximum of 10 todo items 
+        if (formCount < 10) {
+            // Clone a form (without event handlers) from the first form
+            var first_element = $("#diagnosis_form_0")
+            var row = first_element.clone(false).get(0);
+            // Insert it after the last form
+            $(row).removeAttr('id').hide().insertBefore(first_element.parent().children().last()).slideDown(300);
+
+            // Remove the bits we don't want in the new row/form
+            // e.g. error messages
+            $(".errorlist", row).remove();
+            $(row).children().removeClass("error");
+
+            // Relabel or rename all the relevant bits
+            $(row).children().children().each(function () {
+                updateElementIndex(this, prefix, formCount);
+                $(this).val("");
+            });
+
+            // Add an event handler for the delete item/form link 
+            $(row).find(".delete").click(function () {
+                return deleteForm(this, prefix);
+            });
+            // Update the total form count
+            $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
+        } // End if
+        else {
+            alert("Sorry, you can only enter a maximum of ten items.");
+        }
+        return false;
+    }
+    // Register the click event handlers
+    $("#add").click(function () {
+        return addForm(this, "diagnosis");
+    });
+
+    $(".delete").click(function () {
+        return deleteForm(this, "diagnosis");
+    });
+});
 </script>
 {% endblock %}
 
@@ -70,6 +146,7 @@
 
 <form action='.' method="post">
 {% csrf_token %}
+{{ diagnosis_formset.management_form }}
 <ul>
   <li id="li_first_name">{% if patient_form.first_name.errors %} {{ patient_form.first_name.errors}} {% endif %}
       {{ patient_form.first_name.label_tag }} {{ patient_form.first_name }}</li>
@@ -96,7 +173,10 @@
       {{ patient_form.allocate_lpu.label_tag }} {{ patient_form.allocate_lpu }}</li>
   <ul id="ul_diagnosis_formset">
     <li><b>Диагноз</b></li>
-    {{ diagnosis_formset.as_ul }}
+    {% for d_form in diagnosis_formset.forms %}
+        <ul id="diagnosis_form_{{ forloop.counter0 }}">{{ d_form.as_ul }}</ul>
+    {% endfor %}
+    <li><input type="button" value="Добавить" id="add"></li>
   </ul>
   <li id="li_comment">{% if patient_form.comment.errors %} {{ patient_form.comment.errors}} {% endif %}
       {{ patient_form.comment.label_tag }} {{ patient_form.comment }}</li>
