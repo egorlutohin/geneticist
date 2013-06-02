@@ -94,14 +94,15 @@ $(document).ready(function () {
 
     function addForm(btn, prefix) {
         var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-        alert(formCount)
+        var maxCount = parseInt($('#id_' + prefix + '-MAX_FORMS').val());
         // You can only submit a maximum of 10 todo items 
         if (formCount < 10) {
             // Clone a form (without event handlers) from the first form
             var first_element = $("#diagnosis_form_0")
             var row = first_element.clone(false).get(0);
             // Insert it after the last form
-            $(row).removeAttr('id').hide().insertBefore(first_element.parent().children().last()).slideDown(300);
+            var before_inserted = first_element.parent().children().last()
+            $(row).removeAttr('id').hide().insertBefore(before_inserted).slideDown(300);
 
             // Remove the bits we don't want in the new row/form
             // e.g. error messages
