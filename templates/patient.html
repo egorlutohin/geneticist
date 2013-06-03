@@ -72,10 +72,12 @@ $(document).ready(function () {
 
     function deleteForm(btn, prefix) {
         var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+        var maxCount = parseInt($('#id_' + prefix + '-MAX_NUM_FORMS').val());
         if (formCount > 1) {
             // Delete the item/form
-            $(btn).parents('.item').remove();
-            var forms = $('.item'); // Get all the forms  
+            var first_element = $("#diagnosis_form_0")
+            $(btn).parent().remove();
+            var forms = $('.diagnosis_form'); // Get all the forms  
             // Update the total number of forms (1 less than before)
             $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
             var i = 0;
@@ -94,9 +96,9 @@ $(document).ready(function () {
 
     function addForm(btn, prefix) {
         var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
-        var maxCount = parseInt($('#id_' + prefix + '-MAX_FORMS').val());
+        var maxCount = parseInt($('#id_' + prefix + '-MAX_NUM_FORMS').val());
         // You can only submit a maximum of 10 todo items 
-        if (formCount < 10) {
+        if (formCount < maxCount) {
             // Clone a form (without event handlers) from the first form
             var first_element = $("#diagnosis_form_0")
             var row = first_element.clone(false).get(0);
@@ -175,7 +177,10 @@ $(document).ready(function () {
   <ul id="ul_diagnosis_formset">
     <li><b>Диагноз</b></li>
     {% for d_form in diagnosis_formset.forms %}
-        <ul id="diagnosis_form_{{ forloop.counter0 }}">{{ d_form.as_ul }}</ul>
+        <ul id="diagnosis_form_{{ forloop.counter0 }}" class="diagnosis_form">
+          {{ d_form.as_ul }}
+          <li class="delete"><a href='#'>Удалить</a></li>
+        </ul>
     {% endfor %}
     <li><input type="button" value="Добавить" id="add"></li>
   </ul>
