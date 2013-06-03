@@ -18,9 +18,7 @@
 <script src="{{ STATIC_URL }}dynatree/doc/sample.js" type="text/javascript"></script>
 {{ patient_form.media }}
 <script type="text/javascript">
-/*	$(function(){
-
-		// --- Initialize sample trees
+$(document).ready(function () {
 		$("#tree").dynatree({
 			title: "Lazy loading sample",
 			fx: { height: "toggle", duration: 200 },
@@ -55,12 +53,6 @@
 //				});
 			}
 		});
-        $('#popup_mkb').bPopup({follow: [false, false],
-                                width: 1024,
-                                position: [50, 400],
-                                positionStyle: 'absolute'});
-	});*/
-$(document).ready(function () {
     // Code adapted from http://djangosnippets.org/snippets/1389/  
     function updateElementIndex(el, prefix, ndx) {
         var id_regex = new RegExp('(' + prefix + '-\\d+-)');
@@ -142,6 +134,12 @@ $(document).ready(function () {
 
     $(".delete").click(function () {
         return deleteForm(this, "diagnosis");
+    });
+    $('ul.diagnosis_form').click(function() {
+        $('#popup_mkb').bPopup({follow: [false, false],
+                                width: 1024,
+                                position: [50, $(this).offset().top + 50],
+                                positionStyle: 'absolute'});
     });
     $("#diagnosis_form_0").siblings().each(function(index) {
         var element_id = $("#id_diagnosis-" + index +"-id");
