@@ -5,6 +5,7 @@ from django.forms.models import formset_factory, modelformset_factory
 from organization.models import Organization
 
 from models import Patient, Visit, Diagnosis
+from widgets import CalendarWidget
 
 
 class SearchForm(forms.Form):
@@ -24,6 +25,13 @@ class SearchForm(forms.Form):
 
 
 class PatientForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(PatientForm, self).__init__(*args, **kwargs)
+        for name, field in self.fields.iteritems():
+            if isinstance(field, forms.DateField):
+                self.fields[name].widget = CalendarWidget()
+                print name
+
     # если одно поле заполенно, то нужно проверять заполнены ли другие поля
     double_required = (('allocate_lpu', 'code_allocate_lpu',),)
     def clear(self):
