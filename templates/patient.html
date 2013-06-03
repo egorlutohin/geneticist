@@ -83,7 +83,7 @@ $(document).ready(function () {
         var maxCount = parseInt($('#id_' + prefix + '-MAX_NUM_FORMS').val());
         var initialCount = parseInt($('#id_' + prefix + '-INITIAL_FORMS').val()) + 1
         if (formCount > 1) {
-            var first_element = $("#diagnosis_form_0")
+            var first_element = $("#ul_diagnosis_formset>ul:first")
             if (initialCount == formCount) {
                 $(btn).parent().hide().filter("input,textarea").val("");
             } else {
@@ -102,7 +102,7 @@ $(document).ready(function () {
             }
         } 
         else {
-            alert("Нельзя удалять этот элемент");
+            alert("Нужно поставить пациенту диагноз!");
         }
         return false;
     }
@@ -112,7 +112,7 @@ $(document).ready(function () {
         var maxCount = parseInt($('#id_' + prefix + '-MAX_NUM_FORMS').val());
         var initialCount = parseInt($('#id_' + prefix + '-INITIAL_FORMS').val()) + 1
         if (formCount < maxCount) {
-            var element = $("#diagnosis_form_0").siblings().last().prev()
+            var element = $("#ul_diagnosis_formset>ul:first").siblings().last().prev()
             var row = element.clone(false).get(0);
             var new_element = $(row).removeAttr('id').hide().insertAfter(element).slideDown(300);
 
