@@ -71,26 +71,38 @@ $(document).ready(function () {
         if (el.name) el.name = el.name.replace(id_regex, replacement);
     }
 
+    function updateNumberDiagnosis() {
+        $("#ul_diagnosis_formset ul:visible>li.number_diagnosis").each(function(index) {
+            var text = "Диагноз #" + (index + 1);
+            $(this).html(text);
+        })
+    }
+
     function deleteForm(btn, prefix) {
         var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
         var maxCount = parseInt($('#id_' + prefix + '-MAX_NUM_FORMS').val());
+        var initialCount = parseInt($('#id_' + prefix + '-INITIAL_FORMS').val()) + 1
         if (formCount > 1) {
-            // Delete the item/form
             var first_element = $("#diagnosis_form_0")
-            $(btn).parent().remove();
+            if (initialCount == formCount) {
+                $(btn).parent().hide().filter("input,textarea").val("");
+            } else {
+                $(btn).parent().remove();
+            }
             var forms = $('.diagnosis_form'); // Get all the forms  
-            // Update the total number of forms (1 less than before)
             $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
             var i = 0;
-            // Go through the forms and set their indices, names and IDs
             for (formCount = forms.length; i < formCount; i++) {
-                $(forms.get(i)).children().children().each(function () {
-                    if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
+                $(forms.get(i)).children(":visible").children().each(function () {
+                    if ($(this).attr('type') == 'text') {
+                        updateElementIndex(this, prefix, i);
+                        updateNumberDiagnosis();
+                    }
                 });
             }
-        } // End if
+        } 
         else {
-            alert("You have to enter at least one todo item!");
+            alert("Нельзя удалять этот элемент");
         }
         return false;
     }
@@ -98,35 +110,28 @@ $(document).ready(function () {
     function addForm(btn, prefix) {
         var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
         var maxCount = parseInt($('#id_' + prefix + '-MAX_NUM_FORMS').val());
-        // You can only submit a maximum of 10 todo items 
+        var initialCount = parseInt($('#id_' + prefix + '-INITIAL_FORMS').val()) + 1
         if (formCount < maxCount) {
-            // Clone a form (without event handlers) from the first form
-            var first_element = $("#diagnosis_form_0")
-            var row = first_element.clone(false).get(0);
-            // Insert it after the last form
-            var before_inserted = first_element.parent().children().last()
-            $(row).removeAttr('id').hide().insertBefore(before_inserted).slideDown(300);
+            var element = $("#diagnosis_form_0").siblings().last().prev()
+            var row = element.clone(false).get(0);
+            var new_element = $(row).removeAttr('id').hide().insertAfter(element).slideDown(300);
 
-            // Remove the bits we don't want in the new row/form
-            // e.g. error messages
             $(".errorlist", row).remove();
             $(row).children().removeClass("error");
 
-            // Relabel or rename all the relevant bits
             $(row).children().children().each(function () {
                 updateElementIndex(this, prefix, formCount);
                 $(this).val("");
+                updateNumberDiagnosis();
             });
 
-            // Add an event handler for the delete item/form link 
             $(row).find(".delete").click(function () {
                 return deleteForm(this, prefix);
             });
-            // Update the total form count
             $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
-        } // End if
+        } 
         else {
-            alert("Sorry, you can only enter a maximum of ten items.");
+            alert("Больше диагнозов нельзя добавлять пациенту");
         }
         return false;
     }
@@ -138,6 +143,16 @@ $(document).ready(function () {
     $(".delete").click(function () {
         return deleteForm(this, "diagnosis");
     });
+    $("#diagnosis_form_0").siblings().each(function(index) {
+        var element_id = $("#id_diagnosis-" + index +"-id");
+        var value = element_id.val()
+        if (value == "" || value == undefined) {
+            element_id.parent().remove();
+        } else {
+            $("#li_diagnosis-" + index + "-delete").remove();
+        }
+    })
+
 });
 </script>
 {% endblock %}
@@ -179,8 +194,9 @@ $(document).ready(function () {
     <li><b>Диагноз</b></li>
     {% for d_form in diagnosis_formset.forms %}
         <ul id="diagnosis_form_{{ forloop.counter0 }}" class="diagnosis_form">
+          <li class="number_diagnosis">Диагноз #{{ forloop.counter }}</li>
           {{ d_form.as_ul }}
-          <li class="delete"><a href='#'>Удалить</a></li>
+          <li class="delete" id="li_diagnosis-{{ forloop.counter0 }}-delete"><a href='#'>Удалить</a></li>
         </ul>
     {% endfor %}
     <li><input type="button" value="Добавить" id="add"></li>

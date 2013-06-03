@@ -2,8 +2,9 @@
 from datetime import datetime, timedelta
 
 from django.db.models import Q
-from django.shortcuts import get_object_or_404, render_to_response
+from django.core.urlresolvers import reverse
 from django.template import RequestContext
+from django.shortcuts import get_object_or_404, render_to_response, redirect
 
 from common_helpers import nested_commit_on_success
 
@@ -132,6 +133,8 @@ def add(request):
             visit.save()
             patient.diagnosis_text = get_diagnosis_text(patient)
             patient.save()
+            url = reverse('patient_edit', kwargs={'patient_id': patient.pk})
+            return redirect(url)
     else:
         patient_form = PatientForm()
         diagnosis_formset = DiagnosisFormset(prefix=DIAGNOSIS_PREFIX)

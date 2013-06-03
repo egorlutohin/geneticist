@@ -22,7 +22,7 @@ class BaseQuerySet(QuerySet):
 
 class BaseManager(models.Manager):
     def get_query_set(self):
-        return BaseQuerySet(self.model, using=self._db)
+        return BaseQuerySet(self.model, using=self._db).active()
 
     def active(self):
         return self.filter(is_active=True)
