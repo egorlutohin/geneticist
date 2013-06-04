@@ -1,6 +1,7 @@
 #coding: utf8
 from django import forms
 from django.forms.models import formset_factory, modelformset_factory
+from django.forms.widgets import HiddenInput
 
 from organization.models import Organization
 
@@ -61,6 +62,11 @@ class VisitForm(forms.ModelForm):
 
 
 class DiagnosisForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(DiagnosisForm, self).__init__(*args, **kwargs)
+        self.fields['code'].widget = HiddenInput()
+        self.fields['name'].widget = HiddenInput()
+
     class Meta:
         model = Diagnosis
         exclude = ('is_active', 'patient', 'user_changed', 'date_changed',)

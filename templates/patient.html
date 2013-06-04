@@ -47,6 +47,7 @@ $(document).ready(function () {
             } else {
                 $(btn).parent().remove();
             }
+            updateNumberDiagnosis();
             var forms = $('.diagnosis_form'); // Get all the forms  
             $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
             var i = 0;
@@ -77,7 +78,9 @@ $(document).ready(function () {
 			onActivate: function(node) {
                 if (!node.data.isFolder) {
                     $('input[name$="code"]', h_el).val(node.data.code);
-                    $('textarea', h_el).val(node.data.name);
+                    $('input[name$="name"]', h_el).val(node.data.name);
+                    var text = node.data.name + ' ' + node.data.code;
+                    $('li.diagnosis_content>span', h_el).text(text);
                     $('span.b-close').click();
                 }
 			},
@@ -135,8 +138,8 @@ $(document).ready(function () {
     $(".delete").click(function () {
         return deleteForm(this, "diagnosis");
     });
-    $('ul.diagnosis_form').click(function() {
-        show_tree_mkb(this)
+    $('ul.diagnosis_form :button').click(function() {
+        show_tree_mkb($(this).parents('ul.diagnosis_form'))
     });
     $("#diagnosis_form_0").siblings().each(function(index) {
         var element_id = $("#id_diagnosis-" + index +"-id");
@@ -190,8 +193,22 @@ $(document).ready(function () {
     {% for d_form in diagnosis_formset.forms %}
         <ul id="diagnosis_form_{{ forloop.counter0 }}" class="diagnosis_form">
           <li class="number_diagnosis">Диагноз #{{ forloop.counter }}</li>
-          {{ d_form.as_ul }}
-          <li class="delete" id="li_diagnosis-{{ forloop.counter0 }}-delete"><a href='#'>Удалить</a></li>
+          <li class="diagnosis_content">
+            {{ d_form.code }} {{ d_form.name }}
+            <span>
+              {% if d_form.name.value %}
+                {{ d_form.name.value }} {{ d_form.code.value }}
+              {% else%}
+              Нет
+              {% endif %}
+            </span>
+            <input type="button" value="Изменить" />
+          </li>
+          {% if d_form.id.value %}
+            <li>{{ d_form.DELETE.label_tag }} {{ d_form.DELETE }} {{d_form.id }}</li>
+          {% else %}
+            <li class="delete" id="li_diagnosis-{{ forloop.counter0 }}-delete"><a href='#'>Удалить</a></li>
+          {% endif %}
         </ul>
     {% endfor %}
     <li><input type="button" value="Добавить" id="add"></li>

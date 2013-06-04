@@ -86,6 +86,9 @@ def edit(request, patient_id): # TODO: нужно доделать + обсуд�
             if is_need_save_visit:
                 visit_form.save()
                 visit_form = VisitForm(prefix=VISIT_PREFIX)
+            # если все сохранилось, то правильно выводим где флажки "удалить", а где текст
+            diagnosis_formset = DiagnosisModelFormset(prefix=DIAGNOSIS_PREFIX,
+                                                      queryset=diagnosis_qs)
 
     else:
         patient_form = PatientForm(instance=patient)
