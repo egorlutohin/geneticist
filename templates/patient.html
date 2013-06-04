@@ -19,40 +19,6 @@
 {{ patient_form.media }}
 <script type="text/javascript">
 $(document).ready(function () {
-		$("#tree").dynatree({
-			title: "Lazy loading sample",
-			fx: { height: "toggle", duration: 200 },
-			autoFocus: false, // Set focus to first child, when expanding or lazy-loading.
-			// In real life we would call a URL on the server like this:
-//          initAjax: {
-//              url: "/getTopLevelNodesAsJson",
-//              data: { mode: "funnyMode" }
-//              },
-			// .. but here we use a local file instead:
-			initAjax: {
-				url: "{% url 'mkb' %}"
-				},
-
-			onActivate: function(node) {
-				$("#echoActive").text("" + node + " (" + node.getKeyPath()+ ")");
-			},
-
-			onLazyRead: function(node){
-				// In real life we would call something like this:
-            	node.appendAjax({
-            	    url: "{% url 'mkb' %}",
-		            data: {key: node.data.key,
-            		       mode: "funnyMode"
-                         }
-                });
-//				// .. but here we use a local file instead:
-//				node.appendAjax({
-//					url: "{{ STATIC_URL }}dynatree/doc/sample-data2.json",
-//					// We don't want the next line in production code:
-//					debugLazyDelay: 750
-//				});
-			}
-		});
     // Code adapted from http://djangosnippets.org/snippets/1389/  
     function updateElementIndex(el, prefix, ndx) {
         var id_regex = new RegExp('(' + prefix + '-\\d+-)');
@@ -99,6 +65,38 @@ $(document).ready(function () {
         return false;
     }
 
+    function show_tree_mkb(h_el) {
+		$("#tree").dynatree({
+			title: "Lazy loading sample",
+			fx: { height: "toggle", duration: 200 },
+			autoFocus: false, // Set focus to first child, when expanding or lazy-loading.
+			initAjax: {
+				url: "{% url 'mkb' %}"
+				},
+
+			onActivate: function(node) {
+                if (!node.data.isFolder) {
+                    $('input[name$="code"]', h_el).val(node.data.code);
+                    $('textarea', h_el).val(node.data.name);
+                    $('span.b-close').click();
+                }
+			},
+
+			onLazyRead: function(node){
+            	node.appendAjax({
+            	    url: "{% url 'mkb' %}",
+		            data: {key: node.data.key,
+            		       mode: "funnyMode"
+                         }
+                });
+			}
+		});
+        $('#popup_mkb').bPopup({follow: [false, false],
+                                width: 1024,
+                                position: [0, $(h_el).offset().top + 50],
+                                positionStyle: 'absolute'});
+    }
+
     function addForm(btn, prefix) {
         var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
         var maxCount = parseInt($('#id_' + prefix + '-MAX_NUM_FORMS').val());
@@ -106,7 +104,9 @@ $(document).ready(function () {
         if (formCount < maxCount) {
             var element = $("#ul_diagnosis_formset>ul:first").siblings().last().prev()
             var row = element.clone(false).get(0);
-            var new_element = $(row).removeAttr('id').hide().insertAfter(element).slideDown(300);
+            $(row).removeAttr('id').hide().insertAfter(element).slideDown(300).click(function() {
+                show_tree_mkb(this)
+            });
 
             $(".errorlist", row).remove();
             $(row).children().removeClass("error");
@@ -136,10 +136,7 @@ $(document).ready(function () {
         return deleteForm(this, "diagnosis");
     });
     $('ul.diagnosis_form').click(function() {
-        $('#popup_mkb').bPopup({follow: [false, false],
-                                width: 1024,
-                                position: [50, $(this).offset().top + 50],
-                                positionStyle: 'absolute'});
+        show_tree_mkb(this)
     });
     $("#diagnosis_form_0").siblings().each(function(index) {
         var element_id = $("#id_diagnosis-" + index +"-id");

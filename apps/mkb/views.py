@@ -21,5 +21,7 @@ def mkb(request):
         items.append({'isLazy': True,
                       'title': unicode(item),
                       'key': item.pk,
-                      'isFolder': is_folder(item)})
+                      'isFolder': is_folder(item),
+                      'code': item.code,
+                      'name': item.name})
     return HttpResponse(json.dumps(items))
