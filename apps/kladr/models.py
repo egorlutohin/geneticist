@@ -9,6 +9,8 @@ REGION_LEVEL = 1
 DISTRICT_LEVEL = 2
 CITY_LEVEL = 3
 VILAGE_LEVEL = 4
+STREET_LEVEL = 5
+HOUSE_LEVEL = 6
 
 _LEVEL_POS = [0, 2, 5, 8, 11, 15]
 
@@ -34,7 +36,7 @@ class Kladr(models.Model):
         max_length=13, primary_key=True)   # SS RRR GGG PPP AA
     level = models.IntegerField()                 # 1..4
     name = models.CharField(max_length=40)
-    socr = models.CharField(max_length=10)
+    socr = models.CharField(max_length=10, foreign_key=Socr)
     stat = models.CharField(max_length=1)
     indx = models.CharField(max_length=6)
 
