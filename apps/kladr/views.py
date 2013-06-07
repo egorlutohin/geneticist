@@ -1,10 +1,18 @@
 #coding: utf8
 import json
 
+from django.http import HttpResponse
+
 from models import Kladr, Doma, Street, Socr
-from models import REGION_LEVEL, DISTRICT_LEVEL, CITY_LEVEL, VILAGE_LEVEL
+from models import REGION_LEVEL, DISTRICT_LEVEL, CITY_LEVEL, HOUSE_LEVEL
+from models import STREET_LEVEL
 
 
+LEVEL_CHOICES = {REGION_LEVEL: 'get_region_code',
+                 DISTRICT_LEVEL: 'get_district_code',
+                 CITY_LEVEL: 'get_city_code',
+                 HOUSE_LEVEL: 'get_house_code',
+                 STREET_LEVEL: 'get_street_code'}
 
 
 def get_socr_dict(level):
@@ -18,45 +26,20 @@ def get_kladr(level, code_startwith=""):
     return qs
 
 
-def get_regions(request):
-    """ Список регионов """
+def kladr(request):
+    """ Выбирает регионы, районы, города, улицы """
     info = []
-    socr = get_socr_dict(REGION_LEVEL)
-    for region in get_kladr(REGION_LEVEL):
-        info.append({{'id': region.get_region_code(),
-                      'value': socr[region.socr]}})
-    return json.dumps(info)
-
-
-def get_districts(request):
-    """ Список регионов """
-    info = []
-    socr = get_socr_dict(DISTRICT_LEVEL)
-    region_code = request.GET['region_code']
-    for district in get_kladr(DISTRICT_LEVEL, region_code):
-        info.append({{'id': district.get_district_code(),
-                      'value': socr[district.socr]}})
-    return json.dumps(info)
-
-
-def get_cities(request):
-    """ Список регионов """
-    info = []
-    socr = get_socr_dict(CITY_LEVEL)
-    district_code = request.GET['district_code']
-    for city in get_kladr(CITY_LEVEL, district_code):
-        info.append({{'id': city.get_city_code(),
-                      'value': socr[city.socr]}})
-    return json.dumps(info)
-
-
-def get_street(request):
-    """ Список улиц """
-    info = []
-    socr = get_socr_dict()
-    city_code = request.GET['city_code']
-    streets_qs = Street.objects.filter(code__endswith='00', code__startswith=city_code)
-    for street in streets_qs:
-        info.append({'id': stret.get_street_code(),
-                     'value': socr[street.socr]})
-    return json.dumps(into)
+    level = int(request.GET.get('level', REGION_LEVEL))
+    socr = get_socr_dict(level)
+    code = request.GET.get('code', '')
+    if level == STREET_LEVEL:
+        items = Street.objects.filter(code__endswith='00', code__startswith=code)       
+    elif level == HOUSE_LEVEL:
+        items = Doma.objects.filter(code__endswith='00', code_startwith=code)
+    else:
+        items = get_kladr(level)
+    for item in items:
+        name = u'%s (%s)' % (item.name, socr[item.socr],)
+        info.append({'id': getattr(item, LEVEL_CHOICES[level])(),
+                      'value': name})
+    return HttpResponse(json.dumps(info))

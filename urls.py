@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     url(r'^patient/add/$', 'patient.views.add', name='patient_add'),
     url(r'^patient/(?P<patient_id>\d+)/$', 'patient.views.edit', name='patient_edit'),
     url(r'^mkb\.json$', 'mkb.views.mkb', name='mkb'),
+    url(r'^kladr.json$', 'kladr.views.kladr', name='kladr'),
     (r'^admin/jsi18n/', 'django.views.i18n.javascript_catalog', js_info_dict),
     url(r'^admin/', include(admin.site.urls)),
 )

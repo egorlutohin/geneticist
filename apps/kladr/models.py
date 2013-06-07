@@ -36,7 +36,7 @@ class Kladr(models.Model):
         max_length=13, primary_key=True)   # SS RRR GGG PPP AA
     level = models.IntegerField()                 # 1..4
     name = models.CharField(max_length=40)
-    socr = models.CharField(max_length=10, foreign_key=Socr)
+    socr = models.CharField(max_length=10)
     stat = models.CharField(max_length=1)
     indx = models.CharField(max_length=6)
 
