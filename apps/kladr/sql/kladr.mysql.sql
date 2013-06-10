@@ -1,4 +1,9 @@
 
+drop table kladr_socr;
+drop table kladr_kladr;
+drop table kladr_street;
+drop table kladr_doma;
+
 create table kladr_socr
 (
 	socr  varchar(10) not null,			-- SCNAME
@@ -48,8 +53,4 @@ create index kladr_code6_idx on kladr_street( code(15) );
 
 create index kladr_code7_idx on kladr_doma( code(15) );
 
---------------------------------------------
 
--- drop table kladr_socr;
--- drop table kladr_kladr;
--- drop table kladr_street;

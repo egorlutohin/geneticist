@@ -61,9 +61,24 @@ $(document).ready(function () {
     }
 
     function create_district(code) {
-        create_select(DISTRICT_LEVEL, create_city, code);
+        $('#id_s_' + DISTRICT_LEVEL).remove();
+        var url = "{% url 'kladr' %}?level=" + DISTRICT_LEVEL;
+        url = url + '&code=' + code;
+        $.getJSON(url, function(data) {
+            var select = $('<select id="id_s_' + DISTRICT_LEVEL + '" name="s_' + DISTRICT_LEVEL + '" />');
+            select.appendTo('#kladr')//.change(function(data) {callback(this.value)});
+            for (var name_option in data) {
+                var opt_group = $('<optgroup />').attr('label', name_option);
+                opt_group.appendTo(select);
+                for (var val in data[name_option]) {
+                    var option_params = {value: data[name_option][val].id,
+                                         text: data[name_option][val].value}
+                    $("<option />", option_params).appendTo(opt_group);
+                }
+            }
+        });
     }
-    create_select(REGION_LEVEL, create_city, undefined);
+    create_select(REGION_LEVEL, create_district, undefined);
 });
 </script>
 {% endblock %}

@@ -1,6 +1,7 @@
 #coding: utf8
 import json
 
+from django.db.models import Q
 from django.http import HttpResponse
 
 from models import Kladr, Doma, Street, Socr
@@ -45,6 +46,30 @@ def get_kladr(level, code_startswith=""):
     return qs
 
 
+def get_district_level(code):
+    socr = get_socr_dict(DISTRICT_LEVEL)
+    socr.update(get_socr_dict(CITY_LEVEL))
+    # Области
+    districts = get_kladr(DISTRICT_LEVEL, code)
+    # Города
+    city_startswith = code + '000'
+    cities = get_kladr(CITY_LEVEL, city_startswith)
+    info = {u'Районы': [], u'Города': []}
+    #  id_объекта___Уровень
+    id_template = '%s___%s'
+    for district in districts:
+        district_param = (district.get_district_code(), DISTRICT_LEVEL,)
+        district_id = id_template % district_param
+        info[u'Районы'].append({'id': district_id,
+                                'value': district.name})
+    for city in cities:
+        city_param = (city.get_city_code(), CITY_LEVEL,)
+        city_id = id_template % city_param
+        info[u'Города'].append({'id': city_id,
+                                'value': city.name})
+    return info
+
+
 def kladr(request):
     """ Выбирает регионы, районы, города, улицы """
     info = []
@@ -55,6 +80,8 @@ def kladr(request):
         items = Street.objects.filter(code__endswith='00', code__startswith=code)       
     elif level == HOUSE_LEVEL:
         return HttpResponse(json.dumps(get_house(code)))
+    elif level == DISTRICT_LEVEL:
+        return HttpResponse(json.dumps(get_district_level(code)))
     else:
         items = get_kladr(level, code)
     for item in items:
