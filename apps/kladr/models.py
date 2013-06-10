@@ -51,7 +51,7 @@ class Kladr(models.Model):
     def get_region_code(self):
         return self.code[:2]
 
-    def get_disctrict_code(self):
+    def get_district_code(self):
         return self.code[:5]
 
     def get_city_code(self):
@@ -83,7 +83,7 @@ class Street(models.Model):
     def get_region_code(self):
         return "%s%s" % (self.code[:2], '0' * 11)
 
-    def get_disctrict_code(self):
+    def get_district_code(self):
         return "%s%s" % (self.code[:5], '0' * 7)
 
     def get_city_code(self):
@@ -140,7 +140,7 @@ class Doma(models.Model):
     def get_region_code(self):
         return "%s%s" % (self.code[:2], '0' * 11)
 
-    def get_disctrict_code(self):
+    def get_district_code(self):
         return "%s%s" % (self.code[:5], '0' * 7)
 
     def get_city_code(self):

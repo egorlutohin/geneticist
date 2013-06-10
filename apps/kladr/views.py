@@ -19,10 +19,29 @@ def get_socr_dict(level):
     return dict([(v.socr, v.name) for v in Socr.objects.filter(level=level)])
 
 
-def get_kladr(level, code_startwith=""):
+def get_house(code):
+    qs = Doma.objects.filter(code__startswith=code)
+    numbers = {}
+    for item in qs:
+        for number in item.name.split(','):
+            if u'Ч(' == number[:2] or u'Н(' == number[:2]:
+                number = number.replace(u'Ч(', '')
+                number = number.replace(u'Н(', '')
+                number = number.replace(u')', '')
+                raw_start, raw_end = number.split('-')
+                start_number, end_number = int(raw_start), (int(raw_end) + 1)
+                for r_number in range(start_number, end_number):
+                    numbers[r_number] = item.indx
+            else:
+                numbers[number] = item.indx
+    return numbers
+
+
+def get_kladr(level, code_startswith=""):
     qs = Kladr.objects.filter(code__endswith="00", level=level)
-    if len(code_startwith):
-        qs = qs.filter(code__startwith=code_startwith)
+    len_code_startswith = len(code_startswith)
+    if len_code_startswith:
+        qs = qs.filter(code__startswith=code_startswith)
     return qs
 
 
@@ -35,9 +54,9 @@ def kladr(request):
     if level == STREET_LEVEL:
         items = Street.objects.filter(code__endswith='00', code__startswith=code)       
     elif level == HOUSE_LEVEL:
-        items = Doma.objects.filter(code__endswith='00', code_startwith=code)
+        return HttpResponse(json.dumps(get_house(code)))
     else:
-        items = get_kladr(level)
+        items = get_kladr(level, code)
     for item in items:
         name = u'%s (%s)' % (item.name, socr[item.socr],)
         info.append({'id': getattr(item, LEVEL_CHOICES[level])(),
