@@ -6,7 +6,7 @@ from django.http import HttpResponse
 
 from models import Kladr, Doma, Street, Socr
 from models import REGION_LEVEL, DISTRICT_LEVEL, CITY_LEVEL, HOUSE_LEVEL
-from models import STREET_LEVEL
+from models import STREET_LEVEL, VILAGE_LEVEL
 
 
 LEVEL_CHOICES = {REGION_LEVEL: 'get_region_code',
@@ -46,28 +46,83 @@ def get_kladr(level, code_startswith=""):
     return qs
 
 
+def get_streets(code):
+    return Street.objects.filter(code__endswith='00', code__startswith=code)
+
+
 def get_district_level(code):
-    socr = get_socr_dict(DISTRICT_LEVEL)
-    socr.update(get_socr_dict(CITY_LEVEL))
     # Области
     districts = get_kladr(DISTRICT_LEVEL, code)
     # Города
     city_startswith = code + '000'
     cities = get_kladr(CITY_LEVEL, city_startswith)
+    # Нас. пункты
+    vilage_startswith = city_startswith + '000'
+    vilages = get_kladr(VILAGE_LEVEL, vilage_startswith)
+    # Улицы
+    street_startswith = vilage_startswith + '000'
+    streets = get_streets(street_startswith)
+    info = {}
+    #  id_объекта___Уровень
+    id_template = '%s___%s'
+    if districts.exists():
+        info[u'Районы'] = []
+        for district in districts:
+            district_param = (district.get_district_code(), DISTRICT_LEVEL,)
+            district_id = id_template % district_param
+            info[u'Районы'].append({'id': district_id,
+                                    'value': district.name})
+    if cities.exists():
+        info[u"Города"] = []
+        for city in cities:
+            city_param = (city.get_city_code(), CITY_LEVEL,)
+            city_id = id_template % city_param
+            info[u'Города'].append({'id': city_id,
+                                    'value': city.name})
+    if vilages.exists():
+        info[u"Населенные пункты"] = []
+        for vilage in vilages:
+            vilage_param = (vilage.get_vilage_code(), VILAGE_LEVEL,)
+            vilage_id = id_template % vilage_param
+            socr_vilages = get_socr_dict(VILAGE_LEVEL)
+            name = u"%s %s" % (vilage.name, socr_vilages[vilage.socr])
+            info[u'Населенные пункты'].append({'id': vilage_id,
+                                                'value': name})
+    if streets.exists():
+        info[u"Улицы"] = []
+        for street in streets:
+            street_param = (street.get_street_code(), STREET_LEVEL,)
+            street_id = id_template % street_param
+            socr_streets = get_socr_dict(STREET_LEVEL)
+            name = u"%s %s" % (street.name, socr_vilages[street.socr])
+            info[u'Улицы'].append({'id': street_id,
+                                    'value': name})
+    return info
+
+
+def get_city_level(code):
+    socr = get_socr_dict(CITY_LEVEL)
+    socr.update(get_socr_dict(_LEVEL))
+    # Поселения
+    vilage_startswith = code + '000'
+    vialges = get_kladr(VILAGE_LEVEL, code)
+    # Города
+    cities = get_kladr(CITY_LEVEL, code)
     info = {u'Районы': [], u'Города': []}
     #  id_объекта___Уровень
     id_template = '%s___%s'
-    for district in districts:
-        district_param = (district.get_district_code(), DISTRICT_LEVEL,)
-        district_id = id_template % district_param
-        info[u'Районы'].append({'id': district_id,
-                                'value': district.name})
     for city in cities:
         city_param = (city.get_city_code(), CITY_LEVEL,)
         city_id = id_template % city_param
         info[u'Города'].append({'id': city_id,
                                 'value': city.name})
+    for vilage in vilages:
+        vilage_param = (vilage.get_vilage_code(), VILAGE_LEVEL,)
+        vilage_id = id_template % vilage_param
+        info[u'Районы'].append({'id': vilage_id,
+                                'value': vilage.name})
     return info
+    
 
 
 def kladr(request):
