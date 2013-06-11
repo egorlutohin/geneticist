@@ -33,9 +33,10 @@ var CODE_TO_LEVEL = {0: REGION_LEVEL,
 
 $(document).ready(function () {
     function create_house(code) {
+        $('#id_s_' + HOUSE_LEVEL).prev().nextAll().remove();
         var url = "{% url 'kladr' %}?level=6&code=" + code;
         $.getJSON(url, function(data) {
-            var select = $('<select id="id_house" name="house" />');
+            var select = $('<select id="id_s_' + HOUSE_LEVEL + '" name="s_' + HOUSE_LEVEL + '" />');
             for (var val in data) {
                 $("<option />", {value: data[val], text: val}).appendTo(select);
             }
@@ -43,9 +44,8 @@ $(document).ready(function () {
         }); 
     }
 
-    function create_district(code, callback) {
+    function create_district(code) {
         curr_level = CODE_TO_LEVEL[code.length]
-//        alert([curr_level, STREET_LEVEL, (curr_level == STREET_LEVEL)])
         $('#id_s_' + curr_level).prev().nextAll().remove();
         var url = "{% url 'kladr' %}?level=" + curr_level;
         url = url + '&code=' + code;
@@ -61,12 +61,18 @@ $(document).ready(function () {
                     $("<option />", option_params).appendTo(opt_group);
                 }
             }
-            if (curr_level != STREET_LEVEL) {
-                select.change(function(data) {callback(this.value, create_district)})
-            } else {
-                select.change(function(data) {create_house(this.value)})
-            }
+            select.change(function(data) {select_callback(this.value)})
         });
+    }
+
+    function select_callback(code) {
+        curr_level = CODE_TO_LEVEL[code.length];
+        if (curr_level != HOUSE_LEVEL) {
+            return create_district(code);
+        } else {
+            return create_house(code);
+        }
+        
     }
 
     create_district('', create_district);
