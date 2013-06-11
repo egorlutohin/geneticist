@@ -4,7 +4,7 @@ import json
 from django.db.models import Q
 from django.http import HttpResponse
 
-from models import Kladr, Doma, Street, Socr
+from models import Kladr, Doma, Street, Socr, code_level
 from models import REGION_LEVEL, DISTRICT_LEVEL, CITY_LEVEL, HOUSE_LEVEL
 from models import STREET_LEVEL, VILAGE_LEVEL
 
@@ -26,12 +26,12 @@ def get_house(code):
     for item in qs:
         for number in item.name.split(','):
             if u'Ч(' == number[:2] or u'Н(' == number[:2]:
-                number = number.replace(u'Ч(', '')
                 number = number.replace(u'Н(', '')
+                number = number.replace(u'Ч(', '')
                 number = number.replace(u')', '')
                 raw_start, raw_end = number.split('-')
                 start_number, end_number = int(raw_start), (int(raw_end) + 1)
-                for r_number in range(start_number, end_number):
+                for r_number in range(start_number, end_number, 2):
                     numbers[r_number] = item.indx
             else:
                 numbers[number] = item.indx
@@ -51,51 +51,85 @@ def get_streets(code):
 
 
 def get_district_level(code):
+    # Регионы
+    curr_level = code_level(code)
+    if curr_level < REGION_LEVEL:
+        regions = get_kladr(REGION_LEVEL)
+    else:
+        regions = Kladr.objects.none()
     # Области
-    districts = get_kladr(DISTRICT_LEVEL, code)
+    if curr_level == REGION_LEVEL:
+        districts = get_kladr(DISTRICT_LEVEL, code)
+        district_startswith = code
+    elif curr_level < REGION_LEVEL:
+        district_startswith = code + '000'
+        districts = get_kladr(DISTRICT_LEVEL, district_startswith)
+    else:
+        districts = Kladr.objects.none()
+        district_startswith = code
     # Города
-    city_startswith = code + '000'
-    cities = get_kladr(CITY_LEVEL, city_startswith)
+    if curr_level == DISTRICT_LEVEL:
+        cities = get_kladr(CITY_LEVEL, code)
+        cities_startswith = code
+    elif curr_level < DISTRICT_LEVEL:
+        cities_startswith = district_startswith + '000'
+        cities = get_kladr(CITY_LEVEL, cities_startswith)
+    else:
+        cities = Kladr.objects.none()
+        cities_startswith = code
     # Нас. пункты
-    vilage_startswith = city_startswith + '000'
-    vilages = get_kladr(VILAGE_LEVEL, vilage_startswith)
+    if curr_level == CITY_LEVEL:
+        vilages = get_kladr(VILAGE_LEVEL, code)
+        vilages_startswith = code
+    elif curr_level < CITY_LEVEL:
+        vilages_startswith = cities_startswith + '000'
+        vilages = get_kladr(VILAGE_LEVEL, vilages_startswith)
+    else:
+        vilages = Kladr.objects.none()
+        vilages_startswith = code
     # Улицы
-    street_startswith = vilage_startswith + '000'
-    streets = get_streets(street_startswith)
+    if curr_level == VILAGE_LEVEL:
+        streets = get_streets(code)
+    elif curr_level < VILAGE_LEVEL:
+        street_startswith = vilages_startswith + '000'
+        streets = get_streets(street_startswith)
+    else:
+        streets = Street.objects.none()
+    # Дома
+    if curr_level == STREET_LEVEL:
+        pass
+        
     info = {}
-    #  id_объекта___Уровень
-    id_template = '%s___%s'
+    if regions.exists():
+        info[u'Регионы'] = []
+        for region in regions:
+            socr_regions = get_socr_dict(REGION_LEVEL)
+            name = u'%s %s' % (region.name, socr_regions[region.socr])
+            info[u'Регионы'].append({'id': region.get_region_code(),
+                                     'value': name})
     if districts.exists():
         info[u'Районы'] = []
         for district in districts:
-            district_param = (district.get_district_code(), DISTRICT_LEVEL,)
-            district_id = id_template % district_param
-            info[u'Районы'].append({'id': district_id,
+            info[u'Районы'].append({'id': district.get_district_code(),
                                     'value': district.name})
     if cities.exists():
         info[u"Города"] = []
         for city in cities:
-            city_param = (city.get_city_code(), CITY_LEVEL,)
-            city_id = id_template % city_param
-            info[u'Города'].append({'id': city_id,
+            info[u'Города'].append({'id': city.get_city_code(),
                                     'value': city.name})
     if vilages.exists():
         info[u"Населенные пункты"] = []
         for vilage in vilages:
-            vilage_param = (vilage.get_vilage_code(), VILAGE_LEVEL,)
-            vilage_id = id_template % vilage_param
             socr_vilages = get_socr_dict(VILAGE_LEVEL)
             name = u"%s %s" % (vilage.name, socr_vilages[vilage.socr])
-            info[u'Населенные пункты'].append({'id': vilage_id,
+            info[u'Населенные пункты'].append({'id': vilage.get_vilage_code(),
                                                 'value': name})
     if streets.exists():
         info[u"Улицы"] = []
         for street in streets:
-            street_param = (street.get_street_code(), STREET_LEVEL,)
-            street_id = id_template % street_param
             socr_streets = get_socr_dict(STREET_LEVEL)
-            name = u"%s %s" % (street.name, socr_vilages[street.socr])
-            info[u'Улицы'].append({'id': street_id,
+            name = u"%s %s" % (street.name, socr_streets[street.socr])
+            info[u'Улицы'].append({'id': street.get_street_code(),
                                     'value': name})
     return info
 
@@ -131,16 +165,7 @@ def kladr(request):
     level = int(request.GET.get('level', REGION_LEVEL))
     socr = get_socr_dict(level)
     code = request.GET.get('code', '')
-    if level == STREET_LEVEL:
-        items = Street.objects.filter(code__endswith='00', code__startswith=code)       
-    elif level == HOUSE_LEVEL:
+    if level == HOUSE_LEVEL:
         return HttpResponse(json.dumps(get_house(code)))
-    elif level == DISTRICT_LEVEL:
-        return HttpResponse(json.dumps(get_district_level(code)))
     else:
-        items = get_kladr(level, code)
-    for item in items:
-        name = u'%s (%s)' % (item.name, socr[item.socr],)
-        info.append({'id': getattr(item, LEVEL_CHOICES[level])(),
-                      'value': name})
-    return HttpResponse(json.dumps(info))
+        return HttpResponse(json.dumps(get_district_level(code)))

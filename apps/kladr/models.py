@@ -75,6 +75,7 @@ class Street(models.Model):
 
     class Meta:
         managed = False
+        ordering = ['name']
 
     def save(self):
         '''disabled'''

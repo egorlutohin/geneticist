@@ -24,23 +24,14 @@ var CITY_LEVEL = 3;
 var VILAGE_LEVEL = 4;
 var STREET_LEVEL = 5;
 var HOUSE_LEVEL = 6;
+var CODE_TO_LEVEL = {0: REGION_LEVEL,
+                     2: DISTRICT_LEVEL,
+                     5: CITY_LEVEL,
+                     8: VILAGE_LEVEL,
+                     11: STREET_LEVEL,
+                     17: HOUSE_LEVEL}
 
 $(document).ready(function () {
-
-    function create_select(level, callback, code) {
-        var url = "{% url 'kladr' %}?level=" + level;
-        if (code != undefined) {
-            url = url + '&code=' + code;
-        }
-        $.getJSON(url, function(data) {
-            var select = $('<select id="id_s_' + level + '" name="s+' + level + '" />');
-            for (var val in data) {
-                $("<option />", {value: data[val].id, text: data[val].value}).appendTo(select);
-            }
-            select.appendTo('#kladr').change(function(data) {callback(this.value)});
-        });
-    }
-
     function create_house(code) {
         var url = "{% url 'kladr' %}?level=6&code=" + code;
         $.getJSON(url, function(data) {
@@ -48,24 +39,18 @@ $(document).ready(function () {
             for (var val in data) {
                 $("<option />", {value: data[val], text: val}).appendTo(select);
             }
-            select.appendTo('#kladr').change(function(data) {callback(this.value)});
-        });
+            select.appendTo('#kladr')//.change(function(data) {callback(this.value)});
+        }); 
     }
 
-    function create_street(code) {
-        create_select(STREET_LEVEL, create_house, code);
-    }
-
-    function create_city(code) {
-        create_select(CITY_LEVEL, create_street, code);
-    }
-
-    function create_district(code) {
-        $('#id_s_' + DISTRICT_LEVEL).remove();
-        var url = "{% url 'kladr' %}?level=" + DISTRICT_LEVEL;
+    function create_district(code, callback) {
+        curr_level = CODE_TO_LEVEL[code.length]
+//        alert([curr_level, STREET_LEVEL, (curr_level == STREET_LEVEL)])
+        $('#id_s_' + curr_level).prev().nextAll().remove();
+        var url = "{% url 'kladr' %}?level=" + curr_level;
         url = url + '&code=' + code;
         $.getJSON(url, function(data) {
-            var select = $('<select id="id_s_' + DISTRICT_LEVEL + '" name="s_' + DISTRICT_LEVEL + '" />');
+            var select = $('<select id="id_s_' + curr_level + '" name="s_' + curr_level + '" />');
             select.appendTo('#kladr')//.change(function(data) {callback(this.value)});
             for (var name_option in data) {
                 var opt_group = $('<optgroup />').attr('label', name_option);
@@ -76,9 +61,16 @@ $(document).ready(function () {
                     $("<option />", option_params).appendTo(opt_group);
                 }
             }
+            if (curr_level != STREET_LEVEL) {
+                select.change(function(data) {callback(this.value, create_district)})
+            } else {
+                select.change(function(data) {create_house(this.value)})
+            }
         });
     }
-    create_select(REGION_LEVEL, create_district, undefined);
+
+    create_district('', create_district);
+    //create_select(REGION_LEVEL, create_district, undefined);
 });
 </script>
 {% endblock %}
