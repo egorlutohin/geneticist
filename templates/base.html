@@ -4,18 +4,13 @@
   <head>
     <title>Шаблон Bootstrap 101</title>
     <!-- Bootstrap -->
-    <link href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ STATIC_URL }}dinbror-bpopup/style.css" rel="stylesheet" >
-    <link href="{{ STATIC_URL }}dynatree/src/skin-vista/ui.dynatree.css" rel="stylesheet">
-    <link href="{{ STATIC_URL }}dynatree/doc/prettify.css" rel="stylesheet">
-    <link href="{{ STATIC_URL }}dynatree/doc/sample.css" rel="stylesheet">
     <script type="text/javascript" src="/static/admin/js/jquery.js"></script>
     <script type="text/javascript">
       window.__admin_media_prefix__ = "{{ STATIC_URL }}admin/";
     </script>
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
-    <script src="{{ STATIC_URL }}admin/js/jquery.init.js">
+    <script src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
     {% block extrajs %} {% endblock %} {% block other_static %}{% endblock %}
   </head>
   <body>

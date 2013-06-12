@@ -30,6 +30,7 @@ $(document).ready(function () {
                 }
                 $(h_el).val(full_text.join(', '));
                 $('span.b-close').click();
+                kladr.html('&nbsp;');
             });
         }
 
