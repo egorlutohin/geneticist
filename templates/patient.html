@@ -32,6 +32,26 @@ var CODE_TO_LEVEL = {0: REGION_LEVEL,
                      17: HOUSE_LEVEL}
 
 $(document).ready(function () {
+    function create_apartment() {
+        $('#id_s_7').prev().nextAll().remove();
+        var kladr = $('#kladr');
+        var apartment = $('<input type="text" id="id_s_7" />').appendTo(kladr);
+        $('<input type="button" value="Выбрать" />').appendTo(kladr).click(function () {
+            $('#id_s_text').remove();
+            var text_container = $('<p id="id_s_text"></p>').appendTo(kladr);
+            var house_id = "#id_s_" + HOUSE_LEVEL;
+            var full_text = new Array($(house_id).val());
+            kladr.find('select option:selected').each(function() {
+                full_text[full_text.length] = $(this).text();
+            });
+            var number_apartment = apartment.val()
+            if (number_apartment) {
+                full_text[full_text.length] = apartment.val();
+            }
+            text_container.text(full_text.join(', '))
+        });
+    }
+
     function create_house(code) {
         $('#id_s_' + HOUSE_LEVEL).prev().nextAll().remove();
         var url = "{% url 'kladr' %}?level=6&code=" + code;
@@ -40,7 +60,7 @@ $(document).ready(function () {
             for (var val in data) {
                 $("<option />", {value: data[val], text: val}).appendTo(select);
             }
-            select.appendTo('#kladr')//.change(function(data) {callback(this.value)});
+            select.appendTo('#kladr').change(create_apartment).change();
         }); 
     }
 
@@ -51,7 +71,7 @@ $(document).ready(function () {
         url = url + '&code=' + code;
         $.getJSON(url, function(data) {
             var select = $('<select id="id_s_' + curr_level + '" name="s_' + curr_level + '" />');
-            select.appendTo('#kladr')//.change(function(data) {callback(this.value)});
+            select.appendTo('#kladr')
             for (var name_option in data) {
                 var opt_group = $('<optgroup />').attr('label', name_option);
                 opt_group.appendTo(select);
@@ -61,7 +81,7 @@ $(document).ready(function () {
                     $("<option />", option_params).appendTo(opt_group);
                 }
             }
-            select.change(function(data) {select_callback(this.value)})
+            select.change(function(data) {select_callback(this.value)}).change();
         });
     }
 
