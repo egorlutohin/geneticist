@@ -52,7 +52,7 @@ $(document).ready(function () {
 			fx: { height: "toggle", duration: 200 },
 			autoFocus: false, // Set focus to first child, when expanding or lazy-loading.
 			initAjax: {
-				url: "{% url 'mkb' %}"
+				url: "/mkb.json"
 				},
 
 			onActivate: function(node) {
@@ -67,7 +67,7 @@ $(document).ready(function () {
 
 			onLazyRead: function(node){
             	node.appendAjax({
-            	    url: "{% url 'mkb' %}",
+            	    url: "/mkb.json",
 		            data: {key: node.data.key,
             		       mode: "funnyMode"
                          }
