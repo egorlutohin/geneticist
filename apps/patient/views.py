@@ -40,6 +40,10 @@ def get_diagnosis_text(patient):
     return "\n".join(d_txt)
 
 
+def get_diagnosis_code(patient):
+    return "\n".join(patient.diagnosis_set.values_list('code', flat=True))
+
+
 def clear_ids(request):
     return dict([(k, v) for k, v in request.POST.iteritems() \
                         if (len(v) > 0 and v != u"\r\n")])
@@ -83,6 +87,9 @@ def edit(request, patient_id): # TODO: нужно доделать + обсуд�
         if not avalible_error:
             patient.save()
             save_formset(diagnosis_formset, patient)
+            patient.diagnosis_text = get_diagnosis_text(patient)
+            patient.diagnosis_text_code = get_diagnosis_code(patient)
+            patient.save()
             if is_need_save_visit:
                 visit_form.save()
                 visit_form = VisitForm(prefix=VISIT_PREFIX)
@@ -135,6 +142,7 @@ def add(request):
             visit.is_add = True
             visit.save()
             patient.diagnosis_text = get_diagnosis_text(patient)
+            patient.diagnosis_text_code = get_diagnosis_code(patient)
             patient.save()
             url = reverse('patient_edit', kwargs={'patient_id': patient.pk})
             return redirect(url)
@@ -168,11 +176,6 @@ def search(request):
         death = form.cleaned_data.get('death')
         if death:
             patients_qs = patients_qs.filter(death=death)
-        diagnosis = form.cleaned_data.get('diagnosis')
-        if diagnosis:
-            q_st = Q(diagnosis__code__contains=diagnosis) | \
-                   Q(diagnosis__name__contains=diagnosis)
-            patient_qs = patients_qs.filter(diagnosis__code__contains=diagnosis)
         lpu_added = form.cleaned_data.get('lpu_added')
         if lpu_added:
             patients_qs = patients_qs.filter(visit__is_add=True,
@@ -180,6 +183,12 @@ def search(request):
         special_cure = form.cleaned_data.get('special_cure')
         if special_cure:
             patients_qs = patients_qs.filter(special_cure=special_cure)
+        diagnosis = form.cleaned_data.get('diagnosis')
+        if diagnosis:
+            q_st = Q(diagnosis__code__contains=diagnosis) | \
+                   Q(diagnosis__name__contains=diagnosis)
+            with_diagnosis = patients_qs.filter(diagnosis__code__contains=diagnosis)
+            patients_qs = patients_qs.filter(pk__in=with_diagnosis)
     response = {'patients': patients_qs,
                 'count': patients_qs.count(),
                 'special_cure_text': special_cure_text,

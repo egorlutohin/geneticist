@@ -14,15 +14,18 @@ class SearchForm(forms.Form):
     _LPU_QS = Visit.objects.filter(is_add=True).values_list('lpu')
     _LPU_ADDED_QS = Organization.objects.filter(pk__in=_LPU_QS)
     full_name = forms.CharField(required=False, label=u'ФИО')
-    birthday = forms.DateField(required=False, label=u'Дата рождения')
-    death = forms.DateField(required=False, label=u'Дата смерти')
+    birthday = forms.DateField(required=False,label=u'Дата рождения',
+                               widget=CalendarWidget())
+    death = forms.DateField(required=False, label=u'Дата смерти',
+                            widget=CalendarWidget())
     diagnosis = forms.CharField(required=False, label=u'Диагноз по МКБ')
     lpu_added = forms.ModelChoiceField(required=False,
                                        label=u'МО внесения в регистр',
                                        queryset=_LPU_ADDED_QS)
+    SPECIAL_CURES = (('', '-----',),) + Patient.SPECIAL_CURES
     special_cure = forms.ChoiceField(required=False,
                                      label=u'Спец. лечение',
-                                     choices=Patient.SPECIAL_CURES)
+                                     choices=SPECIAL_CURES)
 
 
 class PatientForm(forms.ModelForm):
@@ -51,14 +54,16 @@ class PatientForm(forms.ModelForm):
 
     class Meta:
         model = Patient
-        exclude = ('is_active', 'user_changed', 'date_changed',)
+        exclude = ('is_active', 'user_changed', 'date_changed',
+                   'diagnosis_text', 'diagnosis_text_code',
+                   'code_allocate_lpu', 'name_allocate_lpu',)
 
 
 class VisitForm(forms.ModelForm):
     class Meta:
         model = Visit
         exclude = ('is_active', 'patient', 'user_created', 'date_created',
-                   'name', 'code',)
+                   'name', 'code', 'is_add',)
 
 
 class DiagnosisForm(forms.ModelForm):

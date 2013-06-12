@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block other_static %}
+    {{ form.media }}
+{% endblock %}
+
 {% block content %}
 <form action=".">
 <ul>
@@ -7,5 +11,24 @@
 </ul>
 <input type="submit" value="Найти">
 </form>
+<a href="{% url 'patient_add' %}">+ Добавить</a>
+<table>
+    <tr>
+        <th>ФИО</th>
+        <th>Дата рождения</th>
+        <th>Диагноз по МКБ</th>
+        <th>ЛПУ прикрепления</th>
+        <th>Пол</th>
+    </tr>
+    {% for patient in patients %}
+    <tr>
+        <td><a href="{% url 'patient_edit' patient.pk %}">{{ patient.full_name }}</a></td>
+        <td><a href="{% url 'patient_edit' patient.pk %}">{{ patient.birthday|date }}</a></td>
+        <td><a href="{% url 'patient_edit' patient.pk %}">{{ patient.diagnosis_text_code|linebreaksbr}}</a></td>
+        <td><a href="{% url 'patient_edit' patient.pk %}">{{ patient.name_allocate_lpu|default:"&nbsp;" }}</a></td>
+        <td><a href="{% url 'patient_edit' patient.pk %}">{{ patient.get_gender_display }}</a></td>
+    </tr>
+    {% endfor %}
+</table>
 <p>Количество пациентов: {{ count }}</p>
 {% endblock %}

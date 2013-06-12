@@ -109,6 +109,9 @@ class Patient(BaseModel):
     diagnosis_text = models.TextField(verbose_name=u'Диагноз по МКБ-10',
                                       editable=False, blank=True, null=True,
                                       help_text=_diagnosis_help)
+    diagnosis_text_code = models.TextField(verbose_name=u'Диагноз по МКБ-10',
+                                           editable=False, blank=True, null=True,
+                                           help_text=_diagnosis_help)
     comment = models.TextField(verbose_name=u'Комментарий к диагнозу',
                                blank=True, null=True)
     social_status = models.IntegerField(verbose_name=u'Социальный статус',
