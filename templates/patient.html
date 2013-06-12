@@ -81,16 +81,17 @@ $(document).ready(function () {
                     $("<option />", option_params).appendTo(opt_group);
                 }
             }
-            select.change(function(data) {select_callback(this.value)}).change();
+            select.change(function(data) {select_callback(this)}).change();
         });
     }
 
-    function select_callback(code) {
-        curr_level = CODE_TO_LEVEL[code.length];
+    function select_callback(element) {
+        $(element).nextAll().remove();
+        curr_level = CODE_TO_LEVEL[element.value.length];
         if (curr_level != HOUSE_LEVEL) {
-            return create_district(code);
+            return create_district(element.value);
         } else {
-            return create_house(code);
+            return create_house(element.value);
         }
         
     }
