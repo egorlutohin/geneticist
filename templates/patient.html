@@ -33,11 +33,11 @@
 {{ diagnosis_formset.management_form }}
 <ul>
   <li id="li_first_name">{% if patient_form.first_name.errors %} {{ patient_form.first_name.errors}} {% endif %}
-      {{ patient_form.first_name.label_tag }} {{ patient_form.first_name }}</li>
+      {{ patient_form.first_name.label_tag }}* {{ patient_form.first_name }}</li>
   <li id="li_last_name">{% if patient_form.last_name.errors %} {{ patient_form.first_name.errors}} {% endif %}
-      {{ patient_form.last_name.label_tag }} {{ patient_form.last_name }}</li>
+      {{ patient_form.last_name.label_tag }}* {{ patient_form.last_name }}</li>
   <li id="li_patronymic">{% if patient_form.patronymic.errors %} {{ patient_form.patronymic.errors}} {% endif %}
-      {{ patient_form.patronymic.label_tag }} {{ patient_form.patronymic }}</li>
+      {{ patient_form.patronymic.label_tag }}* {{ patient_form.patronymic }}</li>
   <li id="li_birthday">{% if patient_form.birthday.errors %} {{ patient_form.birthday.errors}} {% endif %}
       {{ patient_form.birthday.label_tag }} {{ patient_form.birthday }}</li>
   <li id="li_death">{% if patient_form.death.errors %} {{ patient_form.death.errors}} {% endif %}
@@ -83,18 +83,18 @@
   <li id="li_comment">{% if patient_form.comment.errors %} {{ patient_form.comment.errors}} {% endif %}
       {{ patient_form.comment.label_tag }} {{ patient_form.comment }}</li>
   <li id="li_social_status">{% if patient_form.social_status.errors %} {{ patient_form.social_status.errors}} {% endif %}
-      {{ patient_form.social_status.label_tag }} {{ patient_form.social_status }}</li>
+      {{ patient_form.social_status.label_tag }}* {{ patient_form.social_status }}</li>
   <li id="li_special_cure">{% if patient_form.special_cure.errors %} {{ patient_form.special_cure.errors}} {% endif %}
       {{ patient_form.special_cure.label_tag }} {{ patient_form.special_cure }}</li>
   <li id="li_type">{% if patient_form.type.errors %} {{ patient_form.type.errors}} {% endif %}
-      {{ patient_form.type.label_tag }} {{ patient_form.type }}</li>
+      {{ patient_form.type.label_tag }}* {{ patient_form.type }}</li>
   <li id="li_gender">{% if patient_form.gender.errors %} {{ patient_form.gender.errors}} {% endif %}
-      {{ patient_form.gender.label_tag }} {{ patient_form.gender }}</li>
+      {{ patient_form.gender.label_tag }}* {{ patient_form.gender }}</li>
   <li id="li_date_registration">{% if patient_form.date_registration.errors %} {{ patient_form.date_registration.errors}} {% endif %}
       {{ patient_form.date_registration.label_tag }} {{ patient_form.date_registration }}</li>
   {% for visit in visits_qs %}
     {% if visit.is_add %}
-     Первичное посещение 
+     Первичное посещение:
     {% endif %}
     {{ visit }}
   {% endfor %}
