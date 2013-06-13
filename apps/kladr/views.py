@@ -2,6 +2,7 @@
 import json
 
 from django.db.models import Q
+from django.core.cache import get_cache
 from django.http import HttpResponse
 
 from models import Kladr, Doma, Street, Socr, code_level
@@ -133,11 +134,16 @@ def get_district_level(code):
 
 def kladr(request):
     """ Выбирает регионы, районы, города, улицы """
-    info = []
     level = int(request.GET.get('level', REGION_LEVEL))
     socr = get_socr_dict(level)
     code = request.GET.get('code', '')
-    if level == HOUSE_LEVEL:
-        return HttpResponse(json.dumps(get_house(code)))
-    else:
-        return HttpResponse(json.dumps(get_district_level(code)))
+    cache = get_cache('default')
+    cache_key = 'kladr_' + code
+    info = cache.get(cache_key)
+    if info is None:
+        if level == HOUSE_LEVEL:
+            info = json.dumps(get_house(code))
+        else:
+            info = json.dumps(get_district_level(code))
+        cache.set(cache_key, info, (60 * 60 * 60 * 24 * 30)) # храним месяц
+    return HttpResponse(info, mimetype="application/json")

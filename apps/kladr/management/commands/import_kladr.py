@@ -3,6 +3,7 @@ import os
 
 from django.core.management.base import BaseCommand
 from django.conf import settings
+from django.core.cache import get_cache
 from django.db import connection as conn
 from django.db import transaction as trs
 
@@ -128,3 +129,4 @@ class Command(BaseCommand):
         imp_kladr(os.path.join(DBF_DIR, 'KLADR.DBF'))
         imp_street(os.path.join(DBF_DIR, 'STREET.DBF'))
         imp_doma(os.path.join(DBF_DIR, 'DOMA.DBF'))
+        get_cache('default').clear()
