@@ -22,7 +22,7 @@ def get_socr_dict(level):
 
 def get_house(code):
     qs = Doma.objects.filter(code__startswith=code)
-    numbers = {}
+    numbers = {'-------': -1}
     for item in qs:
         for number in item.name.split(','):
             if u'Ч(' == number[:2] or u'Н(' == number[:2]:

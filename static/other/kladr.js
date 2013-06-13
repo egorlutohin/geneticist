@@ -20,9 +20,16 @@ $(document).ready(function () {
             $('<input type="button" value="Выбрать" />').appendTo(kladr).click(function () {
                 $('#id_s_text').remove();
                 var house_id = "#id_s_" + HOUSE_LEVEL;
-                var full_text = new Array($(house_id).val());
+                var full_text = new Array();
+                var house_number = $(house_id).val();
+                if (house_number != '-1') {
+                    full_text[full_text.length] = house_number;
+                }
                 kladr.find('select option:selected').each(function() {
-                    full_text[full_text.length] = $(this).text();
+                    var el = $(this);
+                    if (el.val() != '-1') {
+                        full_text[full_text.length] = el.text();
+                    }
                 });
                 var number_apartment = apartment.val()
                 if (number_apartment) {
