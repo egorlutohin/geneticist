@@ -30,6 +30,10 @@ class SearchForm(forms.Form):
     special_cure = forms.ChoiceField(required=False,
                                      label=u'Спец. лечение',
                                      choices=SPECIAL_CURES)
+    SOCIAL_STATUSES = (('', '------',),) + Patient.SOCIAL_STATUSES
+    social_status = forms.ChoiceField(label=u'Социальный статус',
+                                      required=False,
+                                      choices=SOCIAL_STATUSES)
 
 
 class PatientForm(forms.ModelForm):

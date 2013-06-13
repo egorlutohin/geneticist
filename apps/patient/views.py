@@ -176,6 +176,9 @@ def search(request):
         type_residence = form.cleaned_data.get('type_residence')
         if type_residence:
             patients_qs = patients_qs.filter(type_residence=type_residence)
+        social_status = form.cleaned_data.get('social_status')
+        if social_status:
+            patients_qs = patients_qs.filter(social_status=social_status)
         birthday = form.cleaned_data.get('birthday')
         if birthday:
             patients_qs = patients_qs.filter(birthday=birthday)
