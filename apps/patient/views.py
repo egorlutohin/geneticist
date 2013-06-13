@@ -24,6 +24,7 @@ def save_formset(formset, patient):
             continue
         elif form.cleaned_data.get('DELETE', False) and \
              isinstance(form.cleaned_data.get('id'), Diagnosis):
+                item = form.cleaned_data.get('id')
                 item.delete()
         else:
             item = form.save(commit=False)
@@ -94,8 +95,10 @@ def edit(request, patient_id): # TODO: нужно доделать + обсуд�
                 visit_form.save()
                 visit_form = VisitForm(prefix=VISIT_PREFIX)
             # если все сохранилось, то правильно выводим где флажки "удалить", а где текст
-            diagnosis_formset = DiagnosisModelFormset(prefix=DIAGNOSIS_PREFIX,
-                                                      queryset=diagnosis_qs)
+            diagnosis_formset = DiagnosisModelFormset(
+                prefix=DIAGNOSIS_PREFIX,
+                queryset=patient.diagnosis_set.all()
+            )
 
     else:
         patient_form = PatientForm(instance=patient)
