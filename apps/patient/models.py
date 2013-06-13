@@ -77,7 +77,8 @@ class Patient(BaseModel):
                     (2, u'Плод'),)
     GENDER_CHOICES = ((1, u'М',),
                       (2, u'Ж',),
-                      (3, u'Интерсекс',),)
+                      (3, u'Интерсекс',),
+                      (4, u'Неизвестно',),)
     first_name = models.CharField(u'Имя', max_length=100)
     last_name = models.CharField(u'Фамилия', max_length=100)
     patronymic = models.CharField(u'Отчество', max_length=100)
@@ -115,7 +116,7 @@ class Patient(BaseModel):
     diagnosis_comment = models.TextField(verbose_name=u'Комментарий к диагнозу',
                                          blank=True, null=True)
     social_status = models.IntegerField(verbose_name=u'Социальный статус',
-                                        blank=True, null=True,
+                                        blank=True, null=True, db_index=True,
                                         choices=SOCIAL_STATUSES)
     special_cure = models.IntegerField(verbose_name=u'Специальное лечение',
                                        default=SPECIAL_CURES[4][0],
