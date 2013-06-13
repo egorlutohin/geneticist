@@ -95,9 +95,6 @@ def get_district_level(code):
         streets = get_streets(street_startswith)
     else:
         streets = Street.objects.none()
-    # Дома
-    if curr_level == STREET_LEVEL:
-        pass
         
     info = {}
     if regions.exists():
@@ -132,31 +129,6 @@ def get_district_level(code):
             info[u'Улицы'].append({'id': street.get_street_code(),
                                     'value': name})
     return info
-
-
-def get_city_level(code):
-    socr = get_socr_dict(CITY_LEVEL)
-    socr.update(get_socr_dict(_LEVEL))
-    # Поселения
-    vilage_startswith = code + '000'
-    vialges = get_kladr(VILAGE_LEVEL, code)
-    # Города
-    cities = get_kladr(CITY_LEVEL, code)
-    info = {u'Районы': [], u'Города': []}
-    #  id_объекта___Уровень
-    id_template = '%s___%s'
-    for city in cities:
-        city_param = (city.get_city_code(), CITY_LEVEL,)
-        city_id = id_template % city_param
-        info[u'Города'].append({'id': city_id,
-                                'value': city.name})
-    for vilage in vilages:
-        vilage_param = (vilage.get_vilage_code(), VILAGE_LEVEL,)
-        vilage_id = id_template % vilage_param
-        info[u'Районы'].append({'id': vilage_id,
-                                'value': vilage.name})
-    return info
-    
 
 
 def kladr(request):
