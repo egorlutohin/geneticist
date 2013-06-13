@@ -112,8 +112,8 @@ class Patient(BaseModel):
     diagnosis_text_code = models.TextField(verbose_name=u'Диагноз по МКБ-10',
                                            editable=False, blank=True, null=True,
                                            help_text=_diagnosis_help)
-    comment = models.TextField(verbose_name=u'Комментарий к диагнозу',
-                               blank=True, null=True)
+    diagnosis_comment = models.TextField(verbose_name=u'Комментарий к диагнозу',
+                                         blank=True, null=True)
     social_status = models.IntegerField(verbose_name=u'Социальный статус',
                                         blank=True, null=True,
                                         choices=SOCIAL_STATUSES)
@@ -128,6 +128,8 @@ class Patient(BaseModel):
     type = models.IntegerField(verbose_name=u'Тип пациента',
                                choices=TYPE_CHOICES)
     gender = models.IntegerField(verbose_name=u'Пол', choices=GENDER_CHOICES)
+    comment = models.TextField(verbose_name=u'Комментарий',
+                               blank=True, null=True)
     date_registration = models.DateField(default=date.today,
                                          verbose_name=u'Дата постановки на учет')
     date_created = models.DateTimeField(default=datetime.now,

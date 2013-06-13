@@ -28,6 +28,7 @@ class PatientCases(WebTest):
                 'residence': u'658965 г. Барнаул, ул Мира 12',
                 'allocate_lpu': self.organization.pk,
                 'comment': u'Некий комментарий к базе данных',
+                'diagnosis_comment': u'Некий комментарий к базе данных',
                 'social_status': Patient.SOCIAL_STATUSES[0][1][0][0],
                 'special_cure': Patient.SPECIAL_CURES[0][0],
                 'type_residence': Patient.TYPE_RESIDENCES[0][0],

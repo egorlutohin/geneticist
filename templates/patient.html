@@ -80,8 +80,8 @@
     {% endfor %}
     <li><input type="button" value="Добавить" id="add"></li>
   </ul>
-  <li id="li_comment">{% if patient_form.comment.errors %} {{ patient_form.comment.errors}} {% endif %}
-      {{ patient_form.comment.label_tag }} {{ patient_form.comment }}</li>
+  <li id="li_diagnosis_comment">{% if patient_form.diagnosis_comment.errors %} {{ patient_form.diagnosis_comment.errors}} {% endif %}
+      {{ patient_form.diagnosis_comment.label_tag }} {{ patient_form.diagnosis_comment }}</li>
   <li id="li_social_status">{% if patient_form.social_status.errors %} {{ patient_form.social_status.errors}} {% endif %}
       {{ patient_form.social_status.label_tag }}* {{ patient_form.social_status }}</li>
   <li id="li_special_cure">{% if patient_form.special_cure.errors %} {{ patient_form.special_cure.errors}} {% endif %}
@@ -94,6 +94,8 @@
       {{ patient_form.gender.label_tag }}* {{ patient_form.gender }}</li>
   <li id="li_date_registration">{% if patient_form.date_registration.errors %} {{ patient_form.date_registration.errors}} {% endif %}
       {{ patient_form.date_registration.label_tag }} {{ patient_form.date_registration }}</li>
+  <li id="li_comment">{% if patient_form.comment.errors %} {{ patient_form.comment.errors}} {% endif %}
+      {{ patient_form.comment.label_tag }} {{ patient_form.comment }}</li>
   {% for visit in visits_qs %}
     {% if visit.is_add %}
      Первичное посещение:
