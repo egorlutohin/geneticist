@@ -22,6 +22,10 @@ class SearchForm(forms.Form):
     lpu_added = forms.ModelChoiceField(required=False,
                                        label=u'МО внесения в регистр',
                                        queryset=_LPU_ADDED_QS)
+    TYPE_RESIDENCES = (('', '-----',),) + Patient.TYPE_RESIDENCES
+    type_residence = forms.ChoiceField(required=False,
+                                       label=u'Пациент',
+                                       choices=TYPE_RESIDENCES)
     SPECIAL_CURES = (('', '-----',),) + Patient.SPECIAL_CURES
     special_cure = forms.ChoiceField(required=False,
                                      label=u'Спец. лечение',
@@ -34,7 +38,6 @@ class PatientForm(forms.ModelForm):
         for name, field in self.fields.iteritems():
             if isinstance(field, forms.DateField):
                 self.fields[name].widget = CalendarWidget()
-                print name
 
     # если одно поле заполенно, то нужно проверять заполнены ли другие поля
     double_required = (('allocate_lpu', 'code_allocate_lpu',),)

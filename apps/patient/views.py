@@ -173,6 +173,9 @@ def search(request):
         full_name = form.cleaned_data.get('full_name')
         if full_name:
             patients_qs = patients_qs.filter(full_name__contains=full_name)
+        type_residence = form.cleaned_data.get('type_residence')
+        if type_residence:
+            patients_qs = patients_qs.filter(type_residence=type_residence)
         birthday = form.cleaned_data.get('birthday')
         if birthday:
             patients_qs = patients_qs.filter(birthday=birthday)

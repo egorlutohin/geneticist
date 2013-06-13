@@ -70,7 +70,7 @@ class Patient(BaseModel):
                      (3, u'Получает',),
                      (4, u'Снят',),
                      (5, u'Не нуждается',),)
-    TYPES_RESIDENCE = ((1, u'Житель г. Новосибирска',),
+    TYPE_RESIDENCES = ((1, u'Житель г. Новосибирска',),
                        (2, u'Житель НСО',),
                        (3, u'Житель Инобластной',),)
     TYPE_CHOICES = ((1, u'Пробант',),
@@ -121,6 +121,10 @@ class Patient(BaseModel):
                                        default=SPECIAL_CURES[4][0],
                                        choices=SPECIAL_CURES,
                                        db_index=True)
+    type_residence = models.IntegerField(verbose_name=u"Пациент",
+                                         choices=TYPE_RESIDENCES,
+                                         default=TYPE_RESIDENCES[0][0],
+                                         db_index=True)
     type = models.IntegerField(verbose_name=u'Тип пациента',
                                choices=TYPE_CHOICES)
     gender = models.IntegerField(verbose_name=u'Пол', choices=GENDER_CHOICES)
