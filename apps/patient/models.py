@@ -84,7 +84,12 @@ class Patient(BaseModel):
     patronymic = models.CharField(u'Отчество', max_length=100)
     full_name = models.CharField(u'Полное имя', max_length=300,
                                  db_index=True, editable=False,
-                                 blank=True, null=True)
+                                 blank=True, default='')
+    prev_full_name = models.CharField(u'Предыдущее олное имя',
+                                      max_length=300, editable=False,
+                                      blank=True, default='')
+    all_full_names = models.TextField(verbose_name=u'Все ФИО',
+                                      blank=True, db_index=True)
     birthday = models.DateField(verbose_name=u'Дата рождения',
                                 blank=True, null=True, db_index=True)
     death = models.DateField(verbose_name=u'Дата смерти',
@@ -144,14 +149,19 @@ class Patient(BaseModel):
         return ' '.join((self.first_name, self.last_name, self.patronymic,))
 
     def __unicode__(self):
-        
         params = [self.full_name]
         if self.birthday:
             params.append(self.birthday.strftime('%d.%m.%Y'))
         return ' '.join(params)
 
     def save(self, *args, **kwargs):
-        self.full_name = self.get_full_name()
+        full_name = self.get_full_name()
+        if full_name != self.full_name:
+            self.prev_full_name = self.full_name
+            self.full_name = full_name
+            self.all_full_names += ("\n" + full_name)
+        if not self.pk:
+            self.all_full_names = full_name
         if self.allocate_lpu:
             self.code_allocate_lpu = self.allocate_lpu.code
             self.name_allocate_lpu = self.allocate_lpu.full_name

@@ -63,7 +63,8 @@ class PatientForm(forms.ModelForm):
         model = Patient
         exclude = ('is_active', 'user_changed', 'date_changed',
                    'diagnosis_text', 'diagnosis_text_code',
-                   'code_allocate_lpu', 'name_allocate_lpu',)
+                   'code_allocate_lpu', 'name_allocate_lpu',
+                   'full_name', 'prev_full_name', 'all_full_names',)
 
 
 class VisitForm(forms.ModelForm):
