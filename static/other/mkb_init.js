@@ -96,9 +96,11 @@ $(document).ready(function () {
 
             $(row).children().children().each(function () {
                 updateElementIndex(this, prefix, formCount);
-                $(this).val("");
+                if (this.type != "button") {
+                    $(this).val("");
+                }
                 updateNumberDiagnosis();
-            });
+            }).parent().find('span').text("Нет");
 
             $(row).find(".delete").click(function () {
                 return deleteForm(this, prefix);
