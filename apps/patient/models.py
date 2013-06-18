@@ -159,7 +159,7 @@ class Patient(BaseModel):
         if full_name != self.full_name:
             self.prev_full_name = self.full_name
             self.full_name = full_name
-            self.all_full_names += ("\n" + full_name)
+            self.all_full_names = full_name + "\n" + self.all_full_names
         if not self.pk:
             self.all_full_names = full_name
         if self.allocate_lpu:
