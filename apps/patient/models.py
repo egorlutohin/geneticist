@@ -196,7 +196,7 @@ class Visit(BaseModel):
 
     def save(self, *args, **kwargs):
         self.code = self.lpu.code
-        self.name = self.lpu.full_name
+        self.name = self.lpu.name
         super(Visit, self).save(self, *args, **kwargs)
 
     class Meta:

@@ -16,8 +16,10 @@ class Command(BaseCommand):
         row_number = 0
         for row in reader:
             code = row[0]
-            name = row[2]
             full_name = row[1]
+            short_name = row[2]
+            name = row[3]
             Organization.objects.create(code=code,
                                         name=name,
-                                        full_name=full_name)
+                                        full_name=full_name,
+                                        short_name=short_name)
