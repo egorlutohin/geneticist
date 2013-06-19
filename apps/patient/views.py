@@ -110,7 +110,7 @@ def edit(request, patient_id): # TODO: нужно доделать + обсуд�
                 'diagnosis_formset': diagnosis_formset,
                 'visit_form': visit_form,
                 'visits_qs': patient.visit_set.all()}
-    return render_to_response('patient.html',
+    return render_to_response('patient_edit.html',
                               response,
                               context_instance=RequestContext(request))
 
@@ -158,7 +158,7 @@ def add(request):
                 'diagnosis_formset': diagnosis_formset,
                 'visit_form': visit_form,
                 'error_texts': error_texts}
-    return render_to_response('patient.html',
+    return render_to_response('patient_add.html',
                               response,
                               context_instance=RequestContext(request))
 

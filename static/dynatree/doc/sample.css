@@ -16,7 +16,7 @@ body.example h2
 a,
 a:visited
 {
-	color: navy;
+/*	color: navy;*/
 	text-decoration: none;
 	font-size: small;
 }
