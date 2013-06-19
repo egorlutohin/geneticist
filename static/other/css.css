@@ -1,0 +1,26 @@
+.list_patient {
+    border-collapse: collapse;
+    width: 100%;
+}
+.list_patient td, .list_patient th {
+    border: 1px solid #000;
+    padding: 10px;
+}
+@media print {
+  a[href]:after {
+    content: "";
+  }
+  abbr[title]:after {
+    content: "";
+  }
+} 
+ul.menu {
+    display: block;
+    margin: 0 auto;
+    list-style-type: none;
+    width: 1100px;
+}
+ul.menu>li {
+    display: inline-block;
+    padding: 0 30px;
+}
