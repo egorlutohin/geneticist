@@ -165,6 +165,8 @@ class Patient(BaseModel):
         if self.allocate_lpu:
             self.code_allocate_lpu = self.allocate_lpu.code
             self.name_allocate_lpu = self.allocate_lpu.full_name
+        else:
+            self.code_allocate_lpu = self.name_allocate_lpu = ''
         super(Patient, self).save(*args, **kwargs)
 
     class Meta:
