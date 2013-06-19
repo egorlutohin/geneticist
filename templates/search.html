@@ -29,7 +29,6 @@
 </ul>
 <input type="submit" value="Найти">
 </form>
-<a href="{% url 'patient_add' %}">+ Добавить</a>
 <table class="list_patient">
     <tr>
         <th width="20%">ФИО</th>
@@ -40,11 +39,11 @@
     </tr>
     {% for patient in patients %}
     <tr>
-        <td><a href="{% url 'patient_edit' patient.pk %}">{{ patient.all_full_names|linebreaksbr }}</a></td>
-        <td><a href="{% url 'patient_edit' patient.pk %}">{{ patient.birthday|date }}</a></td>
-        <td><a href="{% url 'patient_edit' patient.pk %}">{{ patient.diagnosis_text_code|linebreaksbr}}</a></td>
-        <td><a href="{% url 'patient_edit' patient.pk %}">{{ patient.name_allocate_lpu|default:"&nbsp;" }}</a></td>
-        <td><a href="{% url 'patient_edit' patient.pk %}">{{ patient.get_gender_display }}</a></td>
+        <td><a href="{% url 'patient_edit' patient.pk %}" target="_blank">{{ patient.all_full_names|linebreaksbr }}</a></td>
+        <td><a href="{% url 'patient_edit' patient.pk %}" target="_blank">{{ patient.birthday|date }}</a></td>
+        <td><a href="{% url 'patient_edit' patient.pk %}" target="_blank">{{ patient.diagnosis_text_code|linebreaksbr}}</a></td>
+        <td><a href="{% url 'patient_edit' patient.pk %}" target="_blank">{{ patient.name_allocate_lpu|default:"&nbsp;" }}</a></td>
+        <td><a href="{% url 'patient_edit' patient.pk %}" target="_blank">{{ patient.get_gender_display }}</a></td>
     </tr>
     {% endfor %}
 </table>
