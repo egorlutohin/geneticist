@@ -102,6 +102,7 @@
      Первичное посещение:
     {% endif %}
     {{ visit }}
+    {% if not forloop.last %}<br />{% endif %}
   {% endfor %}
   {{ visit_form.as_ul }}
 </ul>

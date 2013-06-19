@@ -50,18 +50,6 @@ def clear_ids(request):
                         if (len(v) > 0 and v != u"\r\n")])
 
 
-def is_need_validation(params):
-    validated = ('visit-code', 'visit-name',)
-    prev_has = None
-    for name in validated:
-        is_has = len(params.get(name, '')) > 0
-        if prev_has is None:
-            prev_has = is_has
-        if prev_has != is_has:
-            return True
-    return True if prev_has else False
-
-
 @nested_commit_on_success
 def edit(request, patient_id): # TODO: нужно доделать + обсудить когда посещение обязательно
     """ Просмотр и изменение информации о пациенте """
@@ -75,11 +63,16 @@ def edit(request, patient_id): # TODO: нужно доделать + обсуд�
                                    instance=patient)
         if patient_form.is_valid():
             patient = patient_form.save(commit=False)
-        is_need_save_visit = period_visit < NIGHT_TIME and \
-                             is_need_validation(request.POST)
-        visit_form = VisitForm(request.POST)
-        if is_need_save_visit and not visit_form.is_valid():
-            avalible_error = True
+        visit_form = VisitForm(request.POST, prefix=VISIT_PREFIX)
+        if not visit_form.is_valid():
+            if period_visit > NIGHT_TIME:
+                avalible_error = True
+            else:
+                is_need_save_visit = False
+                visit_form = VisitForm(prefix=VISIT_PREFIX)
+        else:
+            is_need_save_visit = True
+
         diagnosis_formset = DiagnosisModelFormset(clear_ids(request),
                                                   prefix=DIAGNOSIS_PREFIX,
                                                   queryset=diagnosis_qs)
@@ -92,7 +85,9 @@ def edit(request, patient_id): # TODO: нужно доделать + обсуд�
             patient.diagnosis_text_code = get_diagnosis_code(patient)
             patient.save()
             if is_need_save_visit:
-                visit_form.save()
+                visit = visit_form.save(commit=False)
+                visit.patient = patient
+                visit.save()
                 visit_form = VisitForm(prefix=VISIT_PREFIX)
             # если все сохранилось, то правильно выводим где флажки "удалить", а где текст
             diagnosis_formset = DiagnosisModelFormset(
