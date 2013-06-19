@@ -43,20 +43,23 @@ class PatientForm(forms.ModelForm):
             if isinstance(field, forms.DateField):
                 self.fields[name].widget = CalendarWidget()
 
-    # если одно поле заполенно, то нужно проверять заполнены ли другие поля
-    double_required = (('allocate_lpu', 'code_allocate_lpu',),)
-    def clear(self):
+    def clean(self):
         cd = self.cleaned_data
-        for params in self.double_required:
-            avalible = None
-            for name in params:
-                curr_avalible = bool(cd.get(name))
-                if avalible is None:
-                    avalible = curr_avalible
-                if curr_avalible != avalible:
-                    label = self.fields[name].label
-                    text = u'%s обязательно для заполнения' % label
-                    raise forms.ValidationError(text)
+        if not (bool(cd.get('registration')) or bool(cd.get('residence'))):
+            text = u'Нужно указать или адрес регистрации или адрес поживания'
+            raise forms.ValidationError(text)
+        policy_params = ('seria_policy',
+                         'number_policy',
+                         'code_insurance_company',)
+
+        is_policy_required = None
+        for name in policy_params:
+            avalible = bool(cd.get(name))
+            if is_policy_required is None:
+                is_policy_required = avalible
+            if is_policy_required != avalible:
+                text = u'Нужно полностью заполнить информацию о полисе'
+                raise forms.ValidationError(text)
         return cd
 
     class Meta:

@@ -31,6 +31,7 @@
 <form action='.' method="post">
 {% csrf_token %}
 {{ diagnosis_formset.management_form }}
+{{ patient_form.non_field_errors }}
 <ul>
   <li id="li_first_name">{% if patient_form.first_name.errors %} {{ patient_form.first_name.errors}} {% endif %}
       {{ patient_form.first_name.label_tag }}* {{ patient_form.first_name }}</li>
