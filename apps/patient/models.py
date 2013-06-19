@@ -146,7 +146,7 @@ class Patient(BaseModel):
     history = FullHistoricalRecords()
 
     def get_full_name(self):
-        return ' '.join((self.first_name, self.last_name, self.patronymic,))
+        return ' '.join((self.last_name, self.first_name, self.patronymic,))
 
     def __unicode__(self):
         params = [self.full_name]
