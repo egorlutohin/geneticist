@@ -60,6 +60,9 @@ class PatientForm(forms.ModelForm):
             if is_policy_required != avalible:
                 text = u'Нужно полностью заполнить информацию о полисе'
                 raise forms.ValidationError(text)
+
+        if bool(cd.get('death')) and not bool(cd.get('birthday')):
+            raise forms.ValidationError(u'Нужно указать дату рождения')
         return cd
 
     class Meta:
