@@ -26,7 +26,12 @@ ul.menu>li {
     display: inline-block;
     padding: 0 30px;
 }
-
+ul.messages>li{
+    display: block;
+    padding: 10px;
+    margin: 10px;
+    background-color: #cfcfcf;
+}
 
 #id_full_name {
     width: 500px;

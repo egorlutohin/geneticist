@@ -17,11 +17,18 @@
   </head>
   <body>
     <ul class="menu">
-        <li>{% block search_patient %}<a href="{% url 'patient_search' %}">Режим поиска пациентов</a>{% endblock %}</li>
-        <li>{% block add_patient %}<a href="{% url 'patient_add' %}">Режим добавления пациента</a>{% endblock %}</li>
-        <li><a href="{% url 'admin:patient_patient_changelist' %}" target="_blank">Режим удаления пациентов</a></li>
-        <li><a href="{% url 'admin:index' %}"target="_blank">Режим редактирования справочников</a></li>
+      <li>{% block search_patient %}<a href="{% url 'patient_search' %}">Режим поиска пациентов</a>{% endblock %}</li>
+      <li>{% block add_patient %}<a href="{% url 'patient_add' %}">Режим добавления пациента</a>{% endblock %}</li>
+      <li><a href="{% url 'admin:patient_patient_changelist' %}" target="_blank">Режим удаления пациентов</a></li>
+      <li><a href="{% url 'admin:index' %}"target="_blank">Режим редактирования справочников</a></li>
     </ul>
+    {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
     {% block content %}{% endblock %}    
   </body>
 </html>

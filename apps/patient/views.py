@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 from django.db.models import Q
 from django.core.urlresolvers import reverse
+from django.contrib import messages
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response, redirect
 
@@ -84,6 +85,9 @@ def edit(request, patient_id): # TODO: нужно доделать + обсуд�
             patient.diagnosis_text = get_diagnosis_text(patient)
             patient.diagnosis_text_code = get_diagnosis_code(patient)
             patient.save()
+            messages.add_message(request,
+                                 messages.INFO,
+                                 u'Информация о пациенте изменена')
             if is_need_save_visit:
                 visit = visit_form.save(commit=False)
                 visit.patient = patient
@@ -142,6 +146,7 @@ def add(request):
             patient.diagnosis_text = get_diagnosis_text(patient)
             patient.diagnosis_text_code = get_diagnosis_code(patient)
             patient.save()
+            messages.add_message(request, messages.INFO, u'Пациент внесен в регистр')
             url = reverse('patient_edit', kwargs={'patient_id': patient.pk})
             return redirect(url)
     else:
