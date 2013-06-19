@@ -15,6 +15,12 @@
     {% block extrajs %} {% endblock %} {% block other_static %}{% endblock %}
   </head>
   <body>
+    <ul class="menu">
+        <li>{% block search_patient %}<a href="{% url 'patient_search' %}">Режим поиска пациентов</a>{% endblock %}</li>
+        <li>{% block add_patient %}<a href="{% url 'patient_add' %}">Режим добавления пациента</a>{% endblock %}</li>
+        <li><a href="{% url 'admin:patient_patient_changelist' %}" target="_blank">Режим удаления пациентов</a></li>
+        <li><a href="{% url 'admin:index' %}"target="_blank">Режим редактирования справочников</a></li>
+    </ul>
     {% block content %}{% endblock %}    
   </body>
 </html>
