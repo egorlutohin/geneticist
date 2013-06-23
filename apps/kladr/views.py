@@ -3,6 +3,7 @@ import json
 
 from django.db.models import Q
 from django.core.cache import get_cache
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
 from models import Kladr, Doma, Street, Socr, code_level
@@ -132,6 +133,7 @@ def get_district_level(code):
     return info
 
 
+@login_required
 def kladr(request):
     """ Выбирает регионы, районы, города, улицы """
     level = int(request.GET.get('level', REGION_LEVEL))

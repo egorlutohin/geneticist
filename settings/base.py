@@ -118,6 +118,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
 
     'django_history',
+    'django_auth_ldap',
     'mptt',
     'south',
 

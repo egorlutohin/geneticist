@@ -1,6 +1,7 @@
 #coding: utf8
 import json
 
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
 from models import Mkb
@@ -10,6 +11,7 @@ def is_folder(item):
     return (item.lft + 1) < item.rght
 
 
+@login_required
 def mkb(request):
     items = []
     mkb_qs = Mkb.objects.all()

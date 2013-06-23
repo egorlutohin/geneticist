@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response, redirect
 
@@ -51,6 +52,7 @@ def clear_ids(request):
                         if (len(v) > 0 and v != u"\r\n")])
 
 
+@login_required
 @nested_commit_on_success
 def edit(request, patient_id): # TODO: нужно доделать + обсудить когда посещение обязательно
     """ Просмотр и изменение информации о пациенте """
@@ -114,6 +116,7 @@ def edit(request, patient_id): # TODO: нужно доделать + обсуд�
                               context_instance=RequestContext(request))
 
 
+@login_required
 @nested_commit_on_success
 def add(request):
     """ Создание информации о пациенте """
@@ -164,6 +167,7 @@ def add(request):
 
 
 
+@login_required
 def search(request):
     """ Поиск пациентов """
     patients_qs = Patient.objects.all()
