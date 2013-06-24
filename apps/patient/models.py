@@ -65,11 +65,15 @@ class Patient(BaseModel):
         (9, u'Пенсионер',),
         (10, u'Военнослужащий',)
     )
-    SPECIAL_CURES = ((1, u'Нуждается',),
-                     (2, u'Не нуждается'),
-                     (3, u'Получает',),
-                     (4, u'Снят',),
-                     (5, u'Не нуждается',),)
+
+    NEED_CURE = 1
+    NOT_NEED_CURE = 2
+    GET_CURE = 3
+    RAISE_CURE = 4
+    SPECIAL_CURES = ((NEED_CURE, u'Нуждается',),
+                     (NOT_NEED_CURE, u'Не нуждается'),
+                     (GET_CURE, u'Получает',),
+                     (RAISE_CURE, u'Снят',),)
     TYPE_RESIDENCES = ((1, u'Житель г. Новосибирска',),
                        (2, u'Житель НСО',),
                        (3, u'Житель Инобластной',),)
@@ -124,7 +128,7 @@ class Patient(BaseModel):
                                         blank=True, null=True, db_index=True,
                                         choices=SOCIAL_STATUSES)
     special_cure = models.IntegerField(verbose_name=u'Специальное лечение',
-                                       default=SPECIAL_CURES[4][0],
+                                       default=NOT_NEED_CURE,
                                        choices=SPECIAL_CURES,
                                        db_index=True)
     type_residence = models.IntegerField(verbose_name=u"Пациент",

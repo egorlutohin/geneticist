@@ -36,3 +36,6 @@ ul.messages>li{
 #id_full_name {
     width: 500px;
 }
+.errorlist {
+    color: red;
+}

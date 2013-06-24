@@ -66,6 +66,8 @@ def edit(request, patient_id): # TODO: нужно доделать + обсуд�
                                    instance=patient)
         if patient_form.is_valid():
             patient = patient_form.save(commit=False)
+        else:
+            avalible_error = True
         visit_form = VisitForm(request.POST, prefix=VISIT_PREFIX)
         if not visit_form.is_valid():
             if period_visit > NIGHT_TIME:
@@ -166,6 +168,12 @@ def add(request):
                               context_instance=RequestContext(request))
 
 
+HEADER_SEARCH = {
+    unicode(Patient.NEED_CURE): u'Нуждающиеся в спец. лечении',
+    unicode(Patient.NOT_NEED_CURE): u'Не нуждающиеся в спец. лечении',
+    unicode(Patient.GET_CURE): u'Получающие спец. лечение',
+    unicode(Patient.RAISE_CURE): u'Снятые со спец. лечения'}
+
 
 @login_required
 def search(request):
@@ -173,6 +181,7 @@ def search(request):
     patients_qs = Patient.objects.all()
     form = SearchForm(request.GET)
     special_cure_text = ''
+    header = u'Все'
     if form.is_valid():
         full_name = form.cleaned_data.get('full_name')
         if full_name:
@@ -195,6 +204,8 @@ def search(request):
                                              visit__lpu=lpu_added)
         special_cure = form.cleaned_data.get('special_cure')
         if special_cure:
+            if special_cure in HEADER_SEARCH:
+                header = HEADER_SEARCH[special_cure]
             patients_qs = patients_qs.filter(special_cure=special_cure)
         diagnosis = form.cleaned_data.get('diagnosis')
         if diagnosis:
@@ -205,7 +216,8 @@ def search(request):
     response = {'patients': patients_qs,
                 'count': patients_qs.count(),
                 'special_cure_text': special_cure_text,
-                'form': form}
+                'form': form,
+                'header': header}
     return render_to_response('search.html',
                               response,
                               context_instance=RequestContext(request))
