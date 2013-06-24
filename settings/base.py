@@ -132,6 +132,12 @@ KLADR_ROOT = rel('kladr')
 MKB_FILE = rel('mkb/mkb.csv')
 ORGANIZATION_FILE = rel('organizations/organizations.csv')
 
+
+LOGIN_REDIRECT_URL='/'
+LOGIN_URL = '/login/'
+LOGOUT_URL = '/logout/'
+
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.

@@ -12,13 +12,15 @@ js_info_dict = {'domain': 'djangojs', 'packages': ('django.conf', 'django.contri
 
 
 urlpatterns = patterns('',
-    url(r'^patient/$', 'patient.views.search', name='patient_search'),
-    url(r'^patient/add/$', 'patient.views.add', name='patient_add'),
-    url(r'^patient/(?P<patient_id>\d+)/$', 'patient.views.edit', name='patient_edit'),
+    url(r'^$', 'patient.views.search', name='patient_search'),
+    url(r'^add/$', 'patient.views.add', name='patient_add'),
+    url(r'^(?P<patient_id>\d+)/$', 'patient.views.edit', name='patient_edit'),
     url(r'^mkb\.json$', 'mkb.views.mkb', name='mkb'),
     url(r'^kladr.json$', 'kladr.views.kladr', name='kladr'),
     (r'^admin/jsi18n/', 'django.views.i18n.javascript_catalog', js_info_dict),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^%s$' % settings.LOGIN_URL[1:], 'django.contrib.auth.views.login', name='login'),
+    url(r'^%s$' % settings.LOGOUT_URL[1:], 'django.contrib.auth.views.logout', {'template_name': 'registration/logout.html'}, name='logout',),
 )
 
 
