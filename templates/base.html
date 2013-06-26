@@ -33,7 +33,7 @@
       <li>{% block search_patient %}<a href="{% url 'patient_search' %}">Режим поиска пациентов</a>{% endblock %}</li>
       <li>{% block add_patient %}<a href="{% url 'patient_add' %}">Режим добавления пациента</a>{% endblock %}</li>
       {% if user|in_group:"lead_geneticist" %}<li><a href="{% url 'admin:patient_patient_changelist' %}" target="_blank">Режим удаления пациентов</a></li>{% endif %}
-      {% if user|in_group:"mkb" %}<li><a href="{% url 'admin:index' %}"target="_blank">Режим редактирования справочников</a></li>{% endif %}
+      {% if user|in_group:"mkb,lead_geneticist" %}<li><a href="{% url 'admin:index' %}"target="_blank">Режим редактирования справочников</a></li>{% endif %}
     </ul>
     {% if messages %}
     <ul class="messages">
