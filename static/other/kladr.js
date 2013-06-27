@@ -77,6 +77,9 @@ $(document).ready(function () {
         function select_callback(element) {
             $(element).nextAll().remove();
             curr_level = CODE_TO_LEVEL[element.value.length];
+            if (!element.value) {
+                return
+            }
             if (curr_level != HOUSE_LEVEL) {
                 return create_district(element.value);
             } else {
