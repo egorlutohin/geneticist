@@ -27,16 +27,20 @@
   <div id="tree">&nbsp;</div>
   <span class="button b-close"><span>X</span></span>
 </div>
+{% block content_header %} {% endblock %}
 <input type="hidden" id="e5" style="width:300px"/>
 <form action='.' method="post">
+{% if diagnosis_formset.errors or patient_form.errors or visit_form.errors %}
+  <h3 class="red">Пожалуйста, исправьте ошибки</h3>
+{% endif %}
 {% csrf_token %}
 {{ diagnosis_formset.management_form }}
 {{ patient_form.non_field_errors }}
 <ul>
+  <li id="li_last_name">{% if patient_form.last_name.errors %} {{ patient_form.last_name.errors}} {% endif %}
+      {{ patient_form.last_name.label_tag }}* {{ patient_form.last_name }}</li>
   <li id="li_first_name">{% if patient_form.first_name.errors %} {{ patient_form.first_name.errors}} {% endif %}
       {{ patient_form.first_name.label_tag }}* {{ patient_form.first_name }}</li>
-  <li id="li_last_name">{% if patient_form.last_name.errors %} {{ patient_form.first_name.errors}} {% endif %}
-      {{ patient_form.last_name.label_tag }}* {{ patient_form.last_name }}</li>
   <li id="li_patronymic">{% if patient_form.patronymic.errors %} {{ patient_form.patronymic.errors}} {% endif %}
       {{ patient_form.patronymic.label_tag }}* {{ patient_form.patronymic }}</li>
   <li id="li_birthday">{% if patient_form.birthday.errors %} {{ patient_form.birthday.errors}} {% endif %}
@@ -73,7 +77,7 @@
             <input type="button" value="Изменить" />
           </li>
           {% if d_form.id.value %}
-            <li>{{ d_form.DELETE.label_tag }} {{ d_form.DELETE }} {{d_form.id }}</li>
+            <li class="diagnosis_delete_checkbox">{{ d_form.DELETE.label_tag }} {{ d_form.DELETE }} {{d_form.id }}</li>
           {% else %}
             <li class="delete" id="li_diagnosis-{{ forloop.counter0 }}-delete"><a href='#'>Удалить</a></li>
           {% endif %}
@@ -97,6 +101,7 @@
       {{ patient_form.date_registration.label_tag }} {{ patient_form.date_registration }}</li>
   <li id="li_comment">{% if patient_form.comment.errors %} {{ patient_form.comment.errors}} {% endif %}
       {{ patient_form.comment.label_tag }} {{ patient_form.comment }}</li>
+  <li id="visits_list">
   {% for visit in visits_qs %}
     {% if visit.is_add %}
      Первичное посещение:
@@ -104,6 +109,7 @@
     {{ visit }}
     {% if not forloop.last %}<br />{% endif %}
   {% endfor %}
+  </li>
   {{ visit_form.as_ul }}
 </ul>
 <input type="submit", value="Сохранить">

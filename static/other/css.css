@@ -1,3 +1,13 @@
+.red {
+    color: red;
+}
+h3.red, i.content_header {
+    display: block;
+    margin-left: 25px;
+}
+i.content_header {
+    margin: 25px;
+}
 .list_patient {
     border-collapse: collapse;
     width: 100%;
@@ -38,4 +48,38 @@ ul.messages>li{
 }
 .errorlist {
     color: red;
+}
+
+#li_patronymic, #li_code_insurance_company,
+#li_residence, #li_gender {
+    clear: both;
+}
+
+#li_first_name, #li_last_name, #li_patronymic,
+#li_seria_policy, #li_number_policy, #li_code_insurance_company,
+#li_registration, #li_residence,
+#li_type, #li_gender {
+    display: inline-block;
+    width: 300px;
+} 
+
+.diagnosis_delete_checkbox * {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.diagnosis_form {
+    margin: 10px 20px;;
+}
+
+#ul_diagnosis_formset {
+    margin: 0 0 20px 20px;
+}
+
+#id_diagnosis_comment, #id_comment {
+    width: 500px;
+}
+
+#visits_list {
+    margin-top: 20px;
 }
