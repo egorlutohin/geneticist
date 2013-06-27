@@ -81,13 +81,13 @@ class Patient(BaseModel):
     last_name = models.CharField(u'Фамилия', max_length=100)
     patronymic = models.CharField(u'Отчество', max_length=100)
     full_name = models.CharField(u'Полное имя', max_length=300,
-                                 db_index=True, editable=False,
+                                 editable=False,
                                  blank=True, default='')
     prev_full_name = models.CharField(u'Предыдущее олное имя',
                                       max_length=300, editable=False,
                                       blank=True, default='')
     all_full_names = models.TextField(verbose_name=u'Все ФИО',
-                                      blank=True, db_index=True)
+                                      blank=True)
     birthday = models.DateField(verbose_name=u'Дата рождения',
                                 blank=True, null=True, db_index=True)
     death = models.DateField(verbose_name=u'Дата смерти',
@@ -200,7 +200,7 @@ class Visit(BaseModel):
         super(Visit, self).save(self, *args, **kwargs)
 
     class Meta:
-        verbose_name = u'Посещение пациентом',
+        verbose_name = u'Посещение пациентом'
         verbose_name_plural = u'Посещения пациентом'
         ordering = ['pk']
         get_latest_by = 'pk'
@@ -212,8 +212,7 @@ class Diagnosis(BaseModel):
     patient = models.ForeignKey(Patient)
     code = models.CharField(u'Код диагноза по МКБ-10',
                             max_length=10, db_index=True)
-    name = models.TextField(verbose_name=u'Название диагноза',
-                            db_index=True)
+    name = models.TextField(verbose_name=u'Название диагноза')
     user_changed = CurrentUserField()
 
     history = FullHistoricalRecords()

@@ -127,9 +127,9 @@ INSTALLED_APPS = (
     'south',
 
     'kladr',
-#    'mkb',
-#    'patient',
-#    'organization',
+    'mkb',
+    'patient',
+    'organization',
 )
 
 KLADR_ROOT = rel('kladr')
