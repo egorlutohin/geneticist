@@ -3,7 +3,7 @@ from django import forms
 from django.conf import settings
 
 
-class CalendarWidget(forms.TextInput):
+class CalendarWidget(forms.DateInput):
     '''
     Данный виджет является, практически, копией
     django.contrib.admin.widgets.AdminDateWidget
