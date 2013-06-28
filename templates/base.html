@@ -29,11 +29,9 @@
         </div>
       </div>
     </div>
-    <ul class="menu">
-      <li>{% block search_patient %}<a href="{% url 'patient_search' %}">Режим поиска пациентов</a>{% endblock %}</li>
-      <li>{% block add_patient %}<a href="{% url 'patient_add' %}">Режим добавления пациента</a>{% endblock %}</li>
-      {% if user|in_group:"lead_geneticist" %}<li><a href="{% url 'admin:patient_patient_changelist' %}" target="_blank">Режим удаления пациентов</a></li>{% endif %}
-      {% if user|in_group:"mkb,lead_geneticist" %}<li><a href="{% url 'admin:index' %}"target="_blank">Режим редактирования справочников</a></li>{% endif %}
+    <ul class="nav nav-tabs" style="padding: 0 30px">
+      <li{% block search_patient %}{% endblock %}><a href="{% url 'patient_search' %}">Поиск пациентов</a></li>
+      <li{% block add_patient %}{% endblock %}><a href="{% url 'patient_add' %}">Добавление пациента</a></li>
     </ul>
     {% if messages %}
     <ul class="messages">
@@ -42,6 +40,8 @@
       {% endfor %}
     </ul>
     {% endif %}
+    <div id="content" style="padding: 0 20px;">
     {% block content %}{% endblock %}    
+    </div>
   </body>
 </html>

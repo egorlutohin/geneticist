@@ -24,18 +24,19 @@ i.content_header {
     content: "";
   }
 } 
-ul.menu {
+/* ul.menu {
     display: block;
     margin: 0 auto;
     width: 1100px;
-}
+} */
 ul {
     list-style-type: none;
 }
-ul.menu>li {
+/* ul.menu>li {
     display: inline-block;
     padding: 0 30px;
-}
+} */
+
 ul.messages>li{
     display: block;
     padding: 10px;
