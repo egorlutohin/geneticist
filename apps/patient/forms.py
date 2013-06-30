@@ -24,7 +24,7 @@ class SearchForm(forms.Form):
                                        queryset=_LPU_ADDED_QS)
     TYPE_RESIDENCES = (('', '-----',),) + Patient.TYPE_RESIDENCES
     type_residence = forms.ChoiceField(required=False,
-                                       label=u'Пациент',
+                                       label=u'Место проживания',
                                        choices=TYPE_RESIDENCES)
     SPECIAL_CURES = (('', '-----',),) + Patient.SPECIAL_CURES
     special_cure = forms.ChoiceField(required=False,

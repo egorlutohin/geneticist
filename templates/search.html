@@ -9,12 +9,57 @@
 {% block search_patient %} class="active"{% endblock %}
 
 {% block content %}
-<form action=".">
-<ul class="search_form">
-{{ form.as_ul }}
-</ul>
-<input type="submit" value="Найти">
-</form>
+{% load widget_tweaks %}
+ <form action="." id="search_form">
+  <table style="background: #eee;">
+   <tr>
+    <td colspan="6">
+     <!--label>ФИО</label><br /><input type="text" style="width: 520px;" /> <br /-->
+     {{form.full_name.label_tag}} {% render_field form.full_name style="width: 520px" %}
+    </td>
+   </tr>
+   <tr>
+    <td colspan="2">
+       <!--label>Дата рождения</label><br /><input type="text" style="width: 100px;" /> <a href="#">Сегодня</a> | &lowast; <br /-->
+       {{form.birthday.label_tag}}{{form.birthday}}
+    </td>
+    <td colspan="2">
+       <!--label>Дата смерти</label><br /><input type="text" style="width: 100px;" /> <a href="#">Сегодня</a> | &lowast; <br /-->
+       {{form.death.label_tag}}{{form.death}}
+    </td>
+    <td colspan="2">
+    <!--label>Диагноз по МКБ</label><br /><input type="text" style="width: 150px;"/> <br /-->
+    {{form.diagnosis.label_tag}}{{form.diagnosis}}
+    </td>
+   </tr>
+   <tr>
+    <td colspan="2">
+     <!--label>Место проживания</label><br /><select style="width: 160px;"><option>---</option><option>---</option></select><br /-->
+     {{form.type_residence.label_tag}}{{form.type_residence}}
+    </td>
+    <td colspan="2">
+     <!--label>Спец. лечение</label><br /><select style="width: 160px;"><option>---</option><option>---</option></select><br /-->
+     {{form.special_cure.label_tag}}{{form.special_cure}}
+    </td>
+    <td colspan="2">
+     <!--label>Социальный статус</label><br /><select style="width: 160px;"><option>---</option><option>---</option></select><br /-->
+     {{form.social_status.label_tag}}{{form.social_status}}
+    </td>
+   </tr>
+   <tr>
+    <td colspan="6">
+     <!--label>МО внесения в регистр</label><br /><select style="width: 100%;"><option>---</option><option>---</option></select><br /-->
+     {{form.lpu_added.label_tag}}{{form.lpu_added}}
+    </td>
+   </tr>
+   <tr>
+    <td colspan="6" align="right">
+     <input type="submit" value="Найти" />
+    </td>
+   </tr>
+  </table>
+ </form>
+
 <h2>{{ header }}</h2>
 <table class="list_patient">
     <tr>

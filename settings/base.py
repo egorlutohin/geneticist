@@ -130,6 +130,7 @@ INSTALLED_APPS = (
     'mkb',
     'patient',
     'organization',
+    'widget_tweaks',
 )
 
 KLADR_ROOT = rel('kladr')
