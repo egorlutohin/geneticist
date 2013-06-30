@@ -4,64 +4,77 @@
 
 {% block other_static %}
     {{ form.media }}
+    <!--script src="{{ STATIC_URL }}/bootstrap/js/bootstrap.js"></script-->
+    <link href="{{ STATIC_URL }}bootstrap-datepicker/css/datepicker.css" rel="stylesheet" />
+    <script src="{{ STATIC_URL }}/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script>
+        $(function(){
+            $('#id_birthday, #id_death').datepicker().on('changeDate', function(e){$(this).focus();})
+            $('#id_full_name, #id_diagnosis, #id_type_residence, #id_special_cure, #id_solical_status, #id_lpu_added').on('focus', function(e){$('#id_birthday, #id_death').datepicker('hide')})
+        });
+    </script>
+    <style type="text/css">
+        #search_form td {padding: 5px 10px;}
+        #search_form {float: left; padding: 15px; width: 600px;}
+    </style>
+
+    
 {% endblock %}
 
 {% block search_patient %} class="active"{% endblock %}
 
 {% block content %}
 {% load widget_tweaks %}
- <form action="." id="search_form">
-  <table style="background: #eee;">
+ <form action="." id="search_form" class="well">
+  <table>
    <tr>
     <td colspan="6">
-     <!--label>ФИО</label><br /><input type="text" style="width: 520px;" /> <br /-->
-     {{form.full_name.label_tag}} {% render_field form.full_name style="width: 520px" %}
+     {{form.full_name.label_tag}} {% render_field form.full_name class+="input-block-level" %}
+    </td>
+   </tr>
+   <tr>
+    <td colspan="2" style="width: 33.3%">
+       {{form.birthday.label_tag}}{% render_field form.birthday autocomplete="off" class+="input-block-level" %}
+    </td>
+    <td colspan="2" style="width: 33.3%">
+       {{form.death.label_tag}}{% render_field form.death autocomplete="off" class+="input-block-level" %}
+    </td>
+    <td colspan="2">
+    {{form.diagnosis.label_tag}}{% render_field form.diagnosis class+="input-block-level" %}
     </td>
    </tr>
    <tr>
     <td colspan="2">
-       <!--label>Дата рождения</label><br /><input type="text" style="width: 100px;" /> <a href="#">Сегодня</a> | &lowast; <br /-->
-       {{form.birthday.label_tag}}{{form.birthday}}
+     {{form.type_residence.label_tag}}{% render_field form.type_residence class+="input-block-level" %}
     </td>
     <td colspan="2">
-       <!--label>Дата смерти</label><br /><input type="text" style="width: 100px;" /> <a href="#">Сегодня</a> | &lowast; <br /-->
-       {{form.death.label_tag}}{{form.death}}
+     {{form.special_cure.label_tag}}{% render_field form.special_cure class+="input-block-level" %}
     </td>
     <td colspan="2">
-    <!--label>Диагноз по МКБ</label><br /><input type="text" style="width: 150px;"/> <br /-->
-    {{form.diagnosis.label_tag}}{{form.diagnosis}}
-    </td>
-   </tr>
-   <tr>
-    <td colspan="2">
-     <!--label>Место проживания</label><br /><select style="width: 160px;"><option>---</option><option>---</option></select><br /-->
-     {{form.type_residence.label_tag}}{{form.type_residence}}
-    </td>
-    <td colspan="2">
-     <!--label>Спец. лечение</label><br /><select style="width: 160px;"><option>---</option><option>---</option></select><br /-->
-     {{form.special_cure.label_tag}}{{form.special_cure}}
-    </td>
-    <td colspan="2">
-     <!--label>Социальный статус</label><br /><select style="width: 160px;"><option>---</option><option>---</option></select><br /-->
-     {{form.social_status.label_tag}}{{form.social_status}}
+     {{form.social_status.label_tag}}{% render_field form.social_status class+="input-block-level" %}
     </td>
    </tr>
    <tr>
     <td colspan="6">
-     <!--label>МО внесения в регистр</label><br /><select style="width: 100%;"><option>---</option><option>---</option></select><br /-->
-     {{form.lpu_added.label_tag}}{{form.lpu_added}}
+     {{form.lpu_added.label_tag}}{% render_field form.lpu_added class+="input-block-level" %}
     </td>
    </tr>
    <tr>
     <td colspan="6" align="right">
-     <input type="submit" value="Найти" />
+     <button type="submit" class="btn btn-primary">Найти</button>
     </td>
    </tr>
   </table>
- </form>
+ </form><br style="clear: both" />
 
-<h2>{{ header }}</h2>
-<table class="list_patient">
+{% if have_search_result %}
+<hr />
+<h2>Результат поиска</h2>
+<h4>{{ header }} <small>(количество пациентов: {{ count }})</small></h4>
+
+<p></p>
+<table class="table table-striped table-bordered">
+    <thead>
     <tr>
         <th width="20%">ФИО</th>
         <th>Дата рождения</th>
@@ -69,6 +82,8 @@
         <th width="40%">ЛПУ прикрепления</th>
         <th>Пол</th>
     </tr>
+    </thead>
+    <tbody>
     {% for patient in patients %}
     <tr>
         <td><a href="{% url 'patient_edit' patient.pk %}" target="_blank">{{ patient.all_full_names|linebreaksbr }}</a></td>
@@ -78,6 +93,8 @@
         <td><a href="{% url 'patient_edit' patient.pk %}" target="_blank">{{ patient.get_gender_display }}</a></td>
     </tr>
     {% endfor %}
+    </tbody>
 </table>
-<p>Количество пациентов: {{ count }}</p>
+{% endif %}
+
 {% endblock %}

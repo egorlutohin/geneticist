@@ -5,14 +5,15 @@
     <title>Генетический реестр пациентов НСО - {% block title %}{% endblock %}</title>
     <!-- Bootstrap -->
     <link href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ STATIC_URL }}other/css.css" rel="stylesheet">
-    <script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+    <!--link href="{{ STATIC_URL }}other/css.css" rel="stylesheet"-->
+    <!--script type="text/javascript" src="/static/admin/js/jquery.js"></script-->
     <script type="text/javascript">
       window.__admin_media_prefix__ = "{{ STATIC_URL }}admin/";
     </script>
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
-    <script src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
+    <!--script src="http://code.jquery.com/jquery-latest.js"></script-->
+    <script src="{{ STATIC_URL }}jquery/jquery.js"></script>
+    <!--script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script-->
+    <!--script src="{{ STATIC_URL }}admin/js/jquery.init.js"></script-->
     {% block extrajs %} {% endblock %} {% block other_static %}{% endblock %}
   </head>
   <body>

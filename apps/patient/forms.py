@@ -14,10 +14,8 @@ class SearchForm(forms.Form):
     _LPU_QS = Visit.objects.filter(is_add=True).values_list('lpu')
     _LPU_ADDED_QS = Organization.objects.filter(pk__in=_LPU_QS)
     full_name = forms.CharField(required=False, label=u'ФИО')
-    birthday = forms.DateField(required=False,label=u'Дата рождения',
-                               widget=CalendarWidget())
-    death = forms.DateField(required=False, label=u'Дата смерти',
-                            widget=CalendarWidget())
+    birthday = forms.DateField(required=False,label=u'Дата рождения')
+    death = forms.DateField(required=False, label=u'Дата смерти')
     diagnosis = forms.CharField(required=False, label=u'Диагноз по МКБ')
     lpu_added = forms.ModelChoiceField(required=False,
                                        label=u'МО внесения в регистр',
