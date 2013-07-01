@@ -125,7 +125,7 @@ class Patient(BaseModel):
                                        default=NOT_NEED_CURE,
                                        choices=SPECIAL_CURES,
                                        db_index=True)
-    type_residence = models.IntegerField(verbose_name=u"Пациент",
+    type_residence = models.IntegerField(verbose_name=u"Житель",
                                          choices=TYPE_RESIDENCES,
                                          default=TYPE_RESIDENCES[0][0],
                                          db_index=True)

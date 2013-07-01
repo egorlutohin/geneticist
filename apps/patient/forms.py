@@ -35,11 +35,11 @@ class SearchForm(forms.Form):
 
 
 class PatientForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(PatientForm, self).__init__(*args, **kwargs)
-        for name, field in self.fields.iteritems():
-            if isinstance(field, forms.DateField):
-                self.fields[name].widget = CalendarWidget()
+    #~ def __init__(self, *args, **kwargs):
+        #~ super(PatientForm, self).__init__(*args, **kwargs)
+        #~ for name, field in self.fields.iteritems():
+            #~ if isinstance(field, forms.DateField):
+                #~ self.fields[name].widget = CalendarWidget()
 
     def clean(self):
         cd = self.cleaned_data

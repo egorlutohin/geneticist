@@ -15,17 +15,47 @@
 
 <script src="{{ STATIC_URL }}other/mkb_init.js" type="text/javascript"></script>
 <script src="{{ STATIC_URL }}other/kladr.js" type="text/javascript"></script>
+
+
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+
+<link href="{{ STATIC_URL }}bootstrap-datepicker/css/datepicker.css" rel="stylesheet" />
+<script src="{{ STATIC_URL }}/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+
+
+
+<style>
+   #content fieldset {padding: 15px;}
+   #content fieldset table {width: 100%}
+   #content fieldset td, div.inner {padding: 5px 10px}
+   #content legend {margin: 0 5px; padding: 0;}
+   #content div.well, div.outer {padding: 15px; width: 600px;}
+   #content div.submit {width: 630px;}
+   #content i {margin-left: 5px;}
+</style>
+
+<script>
+    $(function(){
+        //~ $('#id_birthday, #id_death').datepicker().on('changeDate', function(e){$(this).focus();})
+        //~ $('#id_full_name, #id_diagnosis, #id_type_residence, #id_special_cure, #id_solical_status, #id_lpu_added').on('focus', function(e){$('#id_birthday, #id_death').datepicker('hide')})
+        $('#{{ patient_form.birthday.auto_id }}, #{{ patient_form.death.auto_id }}, #{{ patient_form.date_registration.auto_id }}').datepicker().on('changeDate', function(e){$(this).focus();})
+    });
+
+</script>
+
+
+
 {{ patient_form.media }}
 {% endblock %}
 
 {% block content %}
 <div id="popup_kladr" class="hide">
     <div id="kladr" style="padding:10px; background-color:white">&nbsp;</div>
-  <span class="button b-close"><span>X</span></span>
+  <span class="button b-close"><span>&times;</span></span>
 </div>
 <div id="popup_mkb" class="hide">
   <div id="tree">&nbsp;</div>
-  <span class="button b-close"><span>X</span></span>
+  <span class="button b-close"><span>&times;</span></span>
 </div>
 {% block content_header %} {% endblock %}
 <input type="hidden" id="e5" style="width:300px"/>
@@ -36,82 +66,198 @@
 {% csrf_token %}
 {{ diagnosis_formset.management_form }}
 {{ patient_form.non_field_errors }}
-<ul>
-  <li id="li_last_name">{% if patient_form.last_name.errors %} {{ patient_form.last_name.errors}} {% endif %}
-      {{ patient_form.last_name.label_tag }}* {{ patient_form.last_name }}</li>
-  <li id="li_first_name">{% if patient_form.first_name.errors %} {{ patient_form.first_name.errors}} {% endif %}
-      {{ patient_form.first_name.label_tag }}* {{ patient_form.first_name }}</li>
-  <li id="li_patronymic">{% if patient_form.patronymic.errors %} {{ patient_form.patronymic.errors}} {% endif %}
-      {{ patient_form.patronymic.label_tag }}* {{ patient_form.patronymic }}</li>
-  <li id="li_birthday">{% if patient_form.birthday.errors %} {{ patient_form.birthday.errors}} {% endif %}
-      {{ patient_form.birthday.label_tag }} {{ patient_form.birthday }}</li>
-  <li id="li_death">{% if patient_form.death.errors %} {{ patient_form.death.errors}} {% endif %}
-      {{ patient_form.death.label_tag }} {{ patient_form.death }}</li>
-  <li id="li_seria_policy">{% if patient_form.seria_policy.errors %} {{ patient_form.seria_policy.errors}} {% endif %}
-      {{ patient_form.seria_policy.label_tag }} {{ patient_form.seria_policy }}</li>
-  <li id="li_number_policy">{% if patient_form.number_policy.errors %} {{ patient_form.number_policy.errors}} {% endif %}
-      {{ patient_form.number_policy.label_tag }} {{ patient_form.number_policy }}</li>
-  <li id="li_code_insurance_company">{% if patient_form.code_insurance_company.errors %} {{ patient_form.code_insurance_company.errors}} {% endif %}
-      {{ patient_form.code_insurance_company.label_tag }} {{ patient_form.code_insurance_company }}</li>
-  <!-- Нужно сюда прикрепить КЛАДР -->
-  <li id="li_registration">{% if patient_form.registration.errors %} {{ patient_form.registration.errors}} {% endif %}
-      {{ patient_form.registration.label_tag }} {{ patient_form.registration }}</li>
-  <li id="li_residence">{% if patient_form.residence.errors %} {{ patient_form.residence.errors}} {% endif %}
-      {{ patient_form.residence.label_tag }} {{ patient_form.residence }}</li>
-  <li id="li_allocate_lpu">{% if patient_form.allocate_lpu.errors %} {{ patient_form.allocate_lpu.errors}} {% endif %}
-      {{ patient_form.allocate_lpu.label_tag }} {{ patient_form.allocate_lpu }}</li>
-  <ul id="ul_diagnosis_formset">
-    <li><b>Диагноз</b></li>
-    {% for d_form in diagnosis_formset.forms %}
-        <ul id="diagnosis_form_{{ forloop.counter0 }}" class="diagnosis_form">
-          <li class="number_diagnosis">Диагноз #{{ forloop.counter }}</li>
-          <li class="diagnosis_content">
-            {{ d_form.code }} {{ d_form.name }}
-            <span>
+
+
+<!-- Egor -->
+{% load widget_tweaks %}
+   {% with f=patient_form %}
+   <div class="well">
+   <fieldset>
+    <legend>Данные пациента</legend>
+     <table>
+      <tr>
+       <td colspan="2" style="width: 33.3%">
+        <label for="{{f.last_name.auto_id}}">{{patient_form.last_name.label}}{% if f.last_name.field.required %} <span class="text-error">*</span>{% endif %}</label> 
+        {% render_field f.last_name class+="input-block-level" %}
+       </td>
+       <td colspan="2" style="width: 33.3%">
+        <label for="{{f.first_name.auto_id}}">{{f.first_name.label}}{% if f.first_name.field.required %} <span class="text-error">*</span>{% endif %}</label>
+        {% render_field f.first_name class+="input-block-level" %}
+       <td colspan="2">
+        <label for="{{f.patronymic.auto_id}}">{{f.patronymic.label}}{% if f.patronymic.field.required %} <span class="text-error">*</span>{% endif %}</label>
+        {% render_field f.patronymic class+="input-block-level" %}
+      </tr>
+      <tr>
+       <td colspan="2">
+        <label for="{{f.birthday.auto_id}}">{{f.birthday.label}}{% if f.birthday.field.required %} <span class="text-error">*</span>{% endif %}</label>
+        {% render_field f.birthday class+="input-block-level" %}
+        </td>
+       <td colspan="2">
+        <label for="{{f.death.auto_id}}">{{f.death.label}}{% if f.death.field.required %} <span class="text-error">*</span>{% endif %}</label>
+        {% render_field f.death class+="input-block-level" %}
+       </td>
+       <td colspan="2"></td>
+      </tr>
+      <tr>
+       <td colspan="4">
+        <label for="{{f.registration.auto_id}}" style="float: left;">{{f.registration.label}}{% if f.registration.field.required %} <span class="text-error">*</span>{% endif %}</label> 
+        <a href="#" onclick="$('#{{f.registration.auto_id}}').val($('#{{f.residence.auto_id}}').val()); return false;" style="position: relative; top: 2px;"><i class="icon-repeat" title="скопировать из адреса проживания"></i></a>
+        {% render_field f.registration class+="input-block-level" rows="" cols="" %}
+       </td>
+       <td colspan="2">&nbsp;</td>
+      </tr>
+       <td colspan="4">
+        <label for="{{f.residence.auto_id}}" style="float: left;">{{f.residence.label}}{% if f.residence.field.required %} <span class="text-error">*</span>{% endif %}</label>
+        <a href="#" onclick="$('#{{f.residence.auto_id}}').val($('#{{f.registration.auto_id}}').val()); return false;" style="position: relative; top: 2px;"><i class="icon-repeat" title="скопировать из адреса проживания"></i></a>
+        {% render_field f.residence class+="input-block-level" rows="" cols="" %}
+       </td>
+       <td colspan="2">&nbsp;</td>
+      </tr>
+      <tr>
+       <td colspan="2">
+        <label for="{{f.seria_policy.auto_id}}">{{f.seria_policy.label}}{% if f.seria_policy.field.required %} <span class="text-error">*</span>{% endif %}</label>
+        {% render_field f.seria_policy class+="input-block-level" %}
+       </td>
+       <td colspan="2">
+        <label for="{{f.number_policy.auto_id}}">{{f.number_policy.label}}{% if f.seria_policy.field.required %} <span class="text-error">*</span>{% endif %}</label>
+        {% render_field f.number_policy class+="input-block-level" %}
+       </td>
+       <td colspan="2">
+        <br /><label for="{{f.code_insurance_company.auto_id}}">{{f.code_insurance_company.label}}{% if f.code_insurance_company.field.required %} <span class="text-error">*</span>{% endif %}</label>
+        {% render_field f.code_insurance_company class+="input-block-level" %}
+       </td>
+      </tr>
+      
+      <tr>
+       <td colspan="2">
+        <label for="{{f.type.auto_id}}">{{f.type.label}}{% if f.type.field.required %} <span class="text-error">*</span>{% endif %}</label>
+        {% render_field f.type class+="input-block-level" %}
+       </td>
+       <td colspan="2">
+        <label for="{{f.social_status.auto_id}}">{{f.social_status.label}}{% if f.social_status.field.required %} <span class="text-error">*</span>{% endif %}</label>
+        {% render_field f.social_status class+="input-block-level" %}
+       </td>
+       <td colspan="2">
+        <label for="{{f.type_residence.auto_id}}">{{f.type_residence.label}}{% if f.type_residence.field.required %} <span class="text-error">*</span>{% endif %}</label>
+        {% render_field f.type_residence class+="input-block-level" %}
+       </td>
+      </tr>
+      <tr>
+       <td colspan="2">
+        <label for="{{f.gender.auto_id}}">{{f.gender.label}}{% if f.gender.field.required %} <span class="text-error">*</span>{% endif %}</label>
+        {% render_field f.gender class+="input-block-level" %}
+       </td>
+       <td colspan="2">
+        <label for="{{f.special_cure.auto_id}}">{{f.special_cure.label}}{% if f.special_cure.field.required %} <span class="text-error">*</span>{% endif %}</label>
+        {% render_field f.special_cure class+="input-block-level" %}
+       </td>
+       <td colspan="2"></td>
+      </tr>
+      <tr>
+       <td colspan="6">
+        <label for="{{f.allocate_lpu.auto_id}}">{{f.allocate_lpu.label}}{% if f.allocate_lpu.field.required %} <span class="text-error">*</span>{% endif %}</label>
+        {% render_field f.allocate_lpu class+="input-block-level" %}
+       </td>
+      </tr>
+     </table>
+   </fieldset>
+   </div>
+   
+   <div class="well">
+   <fieldset>
+   <legend>Диагноз</legend>
+    <div class="inner">
+     <table class="table table-bordered">
+      {% for d_form in diagnosis_formset.forms %}
+      <tr>
+       <td width="10%">{{ forloop.counter }}</td>
+       <td width="60%">{{ d_form.code }} {{ d_form.name }}             
+        <span>
               {% if d_form.name.value %}
                 {{ d_form.name.value }} {{ d_form.code.value }}
               {% else%}
               Нет
               {% endif %}
-            </span>
-            <input type="button" value="Изменить" />
-          </li>
-          {% if d_form.id.value %}
-            <li class="diagnosis_delete_checkbox">{{ d_form.DELETE.label_tag }} {{ d_form.DELETE }} {{d_form.id }}</li>
-          {% else %}
-            <li class="delete" id="li_diagnosis-{{ forloop.counter0 }}-delete"><a href='#'>Удалить</a></li>
-          {% endif %}
-        </ul>
-    {% endfor %}
-    <li><input type="button" value="Добавить" id="add"></li>
-  </ul>
-  <li id="li_diagnosis_comment">{% if patient_form.diagnosis_comment.errors %} {{ patient_form.diagnosis_comment.errors}} {% endif %}
-      {{ patient_form.diagnosis_comment.label_tag }} {{ patient_form.diagnosis_comment }}</li>
-  <li id="li_social_status">{% if patient_form.social_status.errors %} {{ patient_form.social_status.errors}} {% endif %}
-      {{ patient_form.social_status.label_tag }}* {{ patient_form.social_status }}</li>
-  <li id="li_special_cure">{% if patient_form.special_cure.errors %} {{ patient_form.special_cure.errors}} {% endif %}
-      {{ patient_form.special_cure.label_tag }} {{ patient_form.special_cure }}</li>
-  <li id="li_type_residence">{% if patient_form.type_residence.errors %} {{ patient_form.type_residence.errors}} {% endif %}
-      {{ patient_form.type_residence.label_tag }}* {{ patient_form.type_residence }}</li>
-  <li id="li_type">{% if patient_form.type.errors %} {{ patient_form.type.errors}} {% endif %}
-      {{ patient_form.type.label_tag }}* {{ patient_form.type }}</li>
-  <li id="li_gender">{% if patient_form.gender.errors %} {{ patient_form.gender.errors}} {% endif %}
-      {{ patient_form.gender.label_tag }}* {{ patient_form.gender }}</li>
-  <li id="li_date_registration">{% if patient_form.date_registration.errors %} {{ patient_form.date_registration.errors}} {% endif %}
-      {{ patient_form.date_registration.label_tag }} {{ patient_form.date_registration }}</li>
-  <li id="li_comment">{% if patient_form.comment.errors %} {{ patient_form.comment.errors}} {% endif %}
-      {{ patient_form.comment.label_tag }} {{ patient_form.comment }}</li>
-  <li id="visits_list">
-  {% for visit in visits_qs %}
-    {% if visit.is_add %}
-     Первичное посещение:
-    {% endif %}
-    {{ visit }}
-    {% if not forloop.last %}<br />{% endif %}
-  {% endfor %}
-  </li>
-  {{ visit_form.as_ul }}
-</ul>
-<input type="submit", value="Сохранить">
+        </span>
+       </td>
+       <td width="15%">
+        <a href="#">Изменить</a>
+       </td>
+       <td width="15%">
+        <a href='#' id="li_diagnosis-{{ forloop.counter0 }}-delete">Удалить</a>
+       </td>
+      </tr>
+      {% endfor %}
+     </table>
+    <div align="right">
+     <button class="btn">Добавить</button>
+    </div>
+    
+    <label for="{{f.diagnosis_comment.auto_id}}">{{f.diagnosis_comment.label}}{% if f.diagnosis_comment.field.required %} <span class="text-error">*</span>{% endif %}</label>
+    {% render_field f.diagnosis_comment class+="input-block-level" cols="" rows="" %}
+    
+    </div>
+   </fieldset>
+   </div>
+
+   <div class="well">
+   <fieldset>
+    <legend>Постановка на учет</legend>
+    <table>
+     <tr>
+      <td style="width: 35%">
+       <label for="{{f.date_registration.auto_id}}">{{f.date_registration.label}}{% if f.date_registration.field.required %} <span class="text-error">*</span>{% endif %}</label>
+       {% render_field f.date_registration class+="input-block-level" %}
+      </td>
+      <td>
+       <label>???МО постановки на учет???</label>
+       <select class="input-block-level"><option>-------------</option><option>--------------</option></select>
+      </td>
+     </tr>
+    </table>
+   </fieldset>
+   </div>
+
+   <div class="well">
+   <fieldset>
+    <div class="inner">
+    <label for="{{f.comment.auto_id}}">{{f.comment.label}}{% if f.comment.field.required %} <span class="text-error">*</span>{% endif %}</label>
+    {% render_field f.comment class+="input-block-level" rows="" cols="" %}
+    </div>
+   </fieldset>
+   </div>
+   {% endwith %}
+   
+   <div class="well">
+    <fieldset>
+    <legend>Посещения</legend>
+    <div class="inner">
+     {% if visits_qs %}
+     <ul>
+     {% for visit in visits_qs %}
+      <li>{{ visit }}</li>
+     {% endfor %}
+     </ul> 
+     <br /><br />
+     {% endif %} 
+     <label for="{{visit_form.lpu.auto_id}}">{{visit_form.lpu.label}}{% if visit_form.lpu.field.required %} <span class="text-error">*</span>{% endif %}</label>
+     {% render_field visit_form.lpu class+="input-block-level" %}
+    </div>
+    </fieldset>
+   </div>
+   
+   <div class="text-right submit">
+    <div class="btn-group">
+     <button class="btn btn-primary btn-large" type="submit">Сохранить</button>
+     <button class="btn btn-primary dropdown-toggle btn-large" data-toggle="dropdown"><span class="caret"></span></button>
+     <ul class="dropdown-menu text-left">
+      <li><a href="#">Сохранить</a></li>
+      <li><a href="#">Сохранить и добавить нового пацента</a></li>
+      <li><a href="#">Сохранить и продолжить редактировать</a></li>
+     </ul>
+    </div>
+   </div>
+<!-- /Egor -->
+<br /><br /><br /><br />
 </form>
 {% endblock %}
