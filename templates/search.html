@@ -8,9 +8,10 @@
     <link href="{{ STATIC_URL }}bootstrap-datepicker/css/datepicker.css" rel="stylesheet" />
     <script src="{{ STATIC_URL }}/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
     <script>
+        {% load in_group %}
         $(function(){
-            $('#id_birthday, #id_death').datepicker().on('changeDate', function(e){$(this).focus();})
-            $('#id_full_name, #id_diagnosis, #id_type_residence, #id_special_cure, #id_solical_status, #id_lpu_added').on('focus', function(e){$('#id_birthday, #id_death').datepicker('hide')})
+            $('{{form|date_fields_id}}').datepicker().on('changeDate', function(e){$(this).focus();})
+            $('{{form|no_date_fields_id}}').on('focus', function(e){$('{{form|date_fields_id}}').datepicker('hide')})
         });
     </script>
     <style type="text/css">

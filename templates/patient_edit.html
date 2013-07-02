@@ -2,4 +2,6 @@
 
 {% block title %}просмотр и изменение информации о пациенте{% endblock %}
 
-{% block content_header %}<i class="content_header">Режим просмотра и изменения информации о пациенте</i>{% endblock %}
+{% block edit_patient %} class="active"{% endblock %}
+
+{% block content_header %}<h1>Запись #{{patient.pk}}</h1>{% endblock %}

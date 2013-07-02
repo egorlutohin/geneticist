@@ -36,10 +36,13 @@
 
 <script>
     $(function(){
-        //~ $('#id_birthday, #id_death').datepicker().on('changeDate', function(e){$(this).focus();})
-        //~ $('#id_full_name, #id_diagnosis, #id_type_residence, #id_special_cure, #id_solical_status, #id_lpu_added').on('focus', function(e){$('#id_birthday, #id_death').datepicker('hide')})
-        $('#{{ patient_form.birthday.auto_id }}, #{{ patient_form.death.auto_id }}, #{{ patient_form.date_registration.auto_id }}').datepicker().on('changeDate', function(e){$(this).focus();})
+        {% load in_group %}
+        $('{{patient_form|date_fields_id}}').datepicker().on('changeDate', function(e){$(this).focus();})
+        $('{{patient_form|no_date_fields_id}}').on('focus', function(e){$('{{patient_form|date_fields_id}}').datepicker('hide')})
     });
+    
+    
+    
 
 </script>
 
@@ -67,6 +70,7 @@
 {{ diagnosis_formset.management_form }}
 {{ patient_form.non_field_errors }}
 
+{% load in_group %}
 
 <!-- Egor -->
 {% load widget_tweaks %}

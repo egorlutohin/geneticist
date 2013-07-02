@@ -14,6 +14,9 @@
     <script src="{{ STATIC_URL }}jquery/jquery.js"></script>
     <!--script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script-->
     <!--script src="{{ STATIC_URL }}admin/js/jquery.init.js"></script-->
+    <style>
+     .nav-tabs .disabled a, .nav-tabs .disabled a:hover, .nav-tabs .disabled a:focus {border: none;}
+    </style>
     {% block extrajs %} {% endblock %} {% block other_static %}{% endblock %}
   </head>
   <body>
@@ -33,6 +36,7 @@
     <ul class="nav nav-tabs" style="padding: 0 30px">
       <li{% block search_patient %}{% endblock %}><a href="{% url 'patient_search' %}">Поиск пациентов</a></li>
       <li{% block add_patient %}{% endblock %}><a href="{% url 'patient_add' %}">Добавление пациента</a></li>
+      <li{% block edit_patient %} class="disabled"{% endblock %}><a href="." onfocus="blur()" onclick="return false;">Просмотр записи</a></li>
     </ul>
     {% if messages %}
     <ul class="messages">

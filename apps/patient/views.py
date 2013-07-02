@@ -112,7 +112,8 @@ def edit(request, patient_id): # TODO: нужно доделать + обсуд�
     response = {'patient_form': patient_form,
                 'diagnosis_formset': diagnosis_formset,
                 'visit_form': visit_form,
-                'visits_qs': patient.visit_set.all()}
+                'visits_qs': patient.visit_set.all(),
+                'patient': patient}
     return render_to_response('patient_edit.html',
                               response,
                               context_instance=RequestContext(request))
