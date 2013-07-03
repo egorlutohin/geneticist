@@ -16,6 +16,8 @@
     <!--script src="{{ STATIC_URL }}admin/js/jquery.init.js"></script-->
     <style>
      .nav-tabs .disabled a, .nav-tabs .disabled a:hover, .nav-tabs .disabled a:focus {border: none;}
+     .alert {width: 580px;}
+     .alert p {margin-top: 10px; margin-bottom: 10px;}
     </style>
     {% block extrajs %} {% endblock %} {% block other_static %}{% endblock %}
   </head>
@@ -38,14 +40,16 @@
       <li{% block add_patient %}{% endblock %}><a href="{% url 'patient_add' %}">Добавление пациента</a></li>
       <li{% block edit_patient %} class="disabled"{% endblock %}><a href="." onfocus="blur()" onclick="return false;">Просмотр записи</a></li>
     </ul>
-    {% if messages %}
-    <ul class="messages">
-      {% for message in messages %}
-      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %}
     <div id="content" style="padding: 0 20px;">
+    {% if messages %}
+    <div class="alert alert-success">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {% for message in messages %}
+      <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+
     {% block content %}{% endblock %}    
     </div>
   </body>

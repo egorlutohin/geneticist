@@ -27,11 +27,20 @@
 <style>
    #content fieldset {padding: 15px;}
    #content fieldset table {width: 100%}
-   #content fieldset td, div.inner {padding: 5px 10px}
+   #content fieldset td, div.inner {padding: 15px 10px; padding-bottom: 0;}
+   #content fieldset td.errorcell {padding-top: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 0;}
+   #content fieldset td input, #content fieldset td textarea, #content fieldset td select  {margin-bottom: 0; padding-bottom: 0;}
    #content legend {margin: 0 5px; padding: 0;}
    #content div.well, div.outer {padding: 15px; width: 600px;}
    #content div.submit {width: 630px;}
    #content i {margin-left: 5px;}
+   .diagnosis_delete_checkbox label {display: inline;}
+   .diagnosis_delete_checkbox input {display: inline; margin-top: 0}
+   #ul_diagnosis_formset {padding: 0; margin: 0;}
+   #ul_diagnosis_formset>li {list-style: none; padding: 0; margin: 0;}
+   .diagnosis_form { margin-bottom: 20px;}
+   .text-error ul {padding: 0; padding-left: 2px; margin: 0; font-size: small;}
+   .text-error li {list-style: none; display: inline; padding: 0; margin: 0;}
 </style>
 
 <script>
@@ -40,10 +49,6 @@
         $('{{patient_form|date_fields_id}}').datepicker().on('changeDate', function(e){$(this).focus();})
         $('{{patient_form|no_date_fields_id}}').on('focus', function(e){$('{{patient_form|date_fields_id}}').datepicker('hide')})
     });
-    
-    
-    
-
 </script>
 
 
@@ -64,7 +69,7 @@
 <input type="hidden" id="e5" style="width:300px"/>
 <form action='.' method="post">
 {% if diagnosis_formset.errors or patient_form.errors or visit_form.errors %}
-  <h3 class="red">Пожалуйста, исправьте ошибки</h3>
+  <h3 class="text-error">Пожалуйста, исправьте ошибки</h3>
 {% endif %}
 {% csrf_token %}
 {{ diagnosis_formset.management_form }}
@@ -83,7 +88,7 @@
        <td colspan="2" style="width: 33.3%">
         <label for="{{f.last_name.auto_id}}">{{patient_form.last_name.label}}{% if f.last_name.field.required %} <span class="text-error">*</span>{% endif %}</label> 
         {% render_field f.last_name class+="input-block-level" %}
-       </td>
+      </td>
        <td colspan="2" style="width: 33.3%">
         <label for="{{f.first_name.auto_id}}">{{f.first_name.label}}{% if f.first_name.field.required %} <span class="text-error">*</span>{% endif %}</label>
         {% render_field f.first_name class+="input-block-level" %}
@@ -92,16 +97,38 @@
         {% render_field f.patronymic class+="input-block-level" %}
       </tr>
       <tr>
+       <td colspan="2" class="text-error errorcell">
+        {% if f.last_name.errors %} {{ f.last_name.errors}} {% endif %}
+       </td>
+       <td colspan="2" class="text-error errorcell">
+        {% if f.first_name.errors %} {{ f.first_name.errors}} {% endif %}
+       </td>
+       <td colspan="2" class="text-error errorcell">
+        {% if f.patronymic.errors %} {{ f.patronymic.errors}} {% endif %}
+       </td>
+      </tr>
+      <tr>
        <td colspan="2">
         <label for="{{f.birthday.auto_id}}">{{f.birthday.label}}{% if f.birthday.field.required %} <span class="text-error">*</span>{% endif %}</label>
-        {% render_field f.birthday class+="input-block-level" %}
+        {% render_field f.birthday class+="input-block-level" autocomplete="off" %}
         </td>
        <td colspan="2">
         <label for="{{f.death.auto_id}}">{{f.death.label}}{% if f.death.field.required %} <span class="text-error">*</span>{% endif %}</label>
-        {% render_field f.death class+="input-block-level" %}
+        {% render_field f.death class+="input-block-level" autocomplete="off" %}
        </td>
        <td colspan="2"></td>
       </tr>
+      
+      <tr>
+       <td colspan="2" class="text-error errorcell">
+        {% if f.birthday.errors %} {{ f.birthday.errors}} {% endif %}
+       </td>
+       <td colspan="2" class="text-error errorcell">
+        {% if f.death.errors %} {{ f.death.errors}} {% endif %}
+       </td>
+       <td colspan="2" class="text-error errorcell"></td>
+      </tr>
+      
       <tr>
        <td colspan="4">
         <label for="{{f.registration.auto_id}}" style="float: left;">{{f.registration.label}}{% if f.registration.field.required %} <span class="text-error">*</span>{% endif %}</label> 
@@ -110,6 +137,15 @@
        </td>
        <td colspan="2">&nbsp;</td>
       </tr>
+      <tr>
+       <td colspan="4" class="text-error errorcell">
+        {% if f.registration.errors %} {{ f.registration.errors}} {% endif %}
+       </td>
+       <td colspan="2" class="text-error errorcell">
+       </td>
+      </tr>
+      
+      <tr>
        <td colspan="4">
         <label for="{{f.residence.auto_id}}" style="float: left;">{{f.residence.label}}{% if f.residence.field.required %} <span class="text-error">*</span>{% endif %}</label>
         <a href="#" onclick="$('#{{f.residence.auto_id}}').val($('#{{f.registration.auto_id}}').val()); return false;" style="position: relative; top: 2px;"><i class="icon-repeat" title="скопировать из адреса проживания"></i></a>
@@ -117,6 +153,15 @@
        </td>
        <td colspan="2">&nbsp;</td>
       </tr>
+      
+      <tr>
+       <td colspan="4" class="text-error errorcell">
+        {% if f.residence.errors %} {{ f.residence.errors}} {% endif %}
+       </td>
+       <td colspan="2" class="text-error errorcell">
+       </td>
+      </tr>
+      
       <tr>
        <td colspan="2">
         <label for="{{f.seria_policy.auto_id}}">{{f.seria_policy.label}}{% if f.seria_policy.field.required %} <span class="text-error">*</span>{% endif %}</label>
@@ -129,6 +174,18 @@
        <td colspan="2">
         <br /><label for="{{f.code_insurance_company.auto_id}}">{{f.code_insurance_company.label}}{% if f.code_insurance_company.field.required %} <span class="text-error">*</span>{% endif %}</label>
         {% render_field f.code_insurance_company class+="input-block-level" %}
+       </td>
+      </tr>
+      
+      <tr>
+       <td colspan="2" class="text-error errorcell">
+        {% if f.seria_policy.errors %} {{ f.seria_policy.errors}} {% endif %}
+       </td>
+       <td colspan="2" class="text-error errorcell">
+        {% if f.number_policy.errors %} {{ f.number_policy.errors}} {% endif %}
+       </td>
+       <td colspan="2" class="text-error errorcell">
+        {% if f.code_insurance_company.errors %} {{ f.code_insurance_company.errors}} {% endif %}
        </td>
       </tr>
       
@@ -146,6 +203,19 @@
         {% render_field f.type_residence class+="input-block-level" %}
        </td>
       </tr>
+
+      <tr>
+       <td colspan="2" class="text-error errorcell">
+        {% if f.type.errors %} {{ f.type.errors}} {% endif %}
+       </td>
+       <td colspan="2" class="text-error errorcell">
+        {% if f.social_status.errors %} {{ f.social_status.errors}} {% endif %}
+       </td>
+       <td colspan="2" class="text-error errorcell">
+        {% if f.type_residence.errors %} {{ f.type_residence.errors}} {% endif %}
+       </td>
+      </tr>
+      
       <tr>
        <td colspan="2">
         <label for="{{f.gender.auto_id}}">{{f.gender.label}}{% if f.gender.field.required %} <span class="text-error">*</span>{% endif %}</label>
@@ -157,50 +227,71 @@
        </td>
        <td colspan="2"></td>
       </tr>
+
+      <tr>
+       <td colspan="2" class="text-error errorcell">
+        {% if f.gender.errors %} {{ f.gender.errors}} {% endif %}
+       </td>
+       <td colspan="2" class="text-error errorcell">
+        {% if f.special_cure.errors %} {{ f.special_cure.errors}} {% endif %}
+       </td>
+       <td colspan="2" class="text-error errorcell"></td>
+      </tr>
+
+      
       <tr>
        <td colspan="6">
         <label for="{{f.allocate_lpu.auto_id}}">{{f.allocate_lpu.label}}{% if f.allocate_lpu.field.required %} <span class="text-error">*</span>{% endif %}</label>
         {% render_field f.allocate_lpu class+="input-block-level" %}
        </td>
       </tr>
+
+      <tr>
+       <td colspan="6" class="text-error errorcell">
+        {% if f.allocate_lpu.errors %} {{ f.special_cure.errors}} {% endif %}
+       </td>
+      </tr>
+      
      </table>
    </fieldset>
    </div>
    
    <div class="well">
-   <fieldset>
    <legend>Диагноз</legend>
-    <div class="inner">
-     <table class="table table-bordered">
-      {% for d_form in diagnosis_formset.forms %}
-      <tr>
-       <td width="10%">{{ forloop.counter }}</td>
-       <td width="60%">{{ d_form.code }} {{ d_form.name }}             
-        <span>
+   <div class="inner">
+    <ul id="ul_diagnosis_formset">
+    {% for d_form in diagnosis_formset.forms %}
+        <ul id="diagnosis_form_{{ forloop.counter0 }}" class="diagnosis_form">
+          <li class="number_diagnosis">Диагноз #{{ forloop.counter }}</li>
+          <li class="diagnosis_content">
+            {{ d_form.code }} {{ d_form.name }}
+            <span>
               {% if d_form.name.value %}
                 {{ d_form.name.value }} {{ d_form.code.value }}
               {% else%}
               Нет
               {% endif %}
-        </span>
-       </td>
-       <td width="15%">
-        <a href="#">Изменить</a>
-       </td>
-       <td width="15%">
-        <a href='#' id="li_diagnosis-{{ forloop.counter0 }}-delete">Удалить</a>
-       </td>
-      </tr>
-      {% endfor %}
-     </table>
-    <div align="right">
-     <button class="btn">Добавить</button>
+            </span>
+            <input type="button" class="btn" value="Изменить" />
+          </li>
+          {% if d_form.id.value %}
+            <li class="diagnosis_delete_checkbox">{{ d_form.DELETE.label_tag }} {{ d_form.DELETE }} {{d_form.id }}</li>
+          {% else %}
+            <li class="delete" id="li_diagnosis-{{ forloop.counter0 }}-delete"><a href='#'>Удалить</a></li>
+          {% endif %}
+    </ul>
+    {% endfor %}
+    <li>
+    <div class="text-left" style="margin-bottom: 20px;">
+     <button class="btn" id="add">Добавить</button>
     </div>
-    
+    </li>
+    </ul>
+
     <label for="{{f.diagnosis_comment.auto_id}}">{{f.diagnosis_comment.label}}{% if f.diagnosis_comment.field.required %} <span class="text-error">*</span>{% endif %}</label>
     {% render_field f.diagnosis_comment class+="input-block-level" cols="" rows="" %}
-    
-    </div>
+    {% if f.diagnosis_comment.errors %} {{ f.diagnosis_comment.errors}} {% endif %}
+   </div>
    </fieldset>
    </div>
 
@@ -216,6 +307,14 @@
       <td>
        <label>???МО постановки на учет???</label>
        <select class="input-block-level"><option>-------------</option><option>--------------</option></select>
+      </td>
+     </tr>
+     <tr>
+      <td class="text-error errorcell">
+       {% if f.date_registration.errors %} {{ f.date_registration.errors}} {% endif %}
+      </td>
+      <td class="text-error errorcell">
+        <!-- здесь ошибки поля МО постановки на учет -->
       </td>
      </tr>
     </table>
@@ -246,6 +345,9 @@
      {% endif %} 
      <label for="{{visit_form.lpu.auto_id}}">{{visit_form.lpu.label}}{% if visit_form.lpu.field.required %} <span class="text-error">*</span>{% endif %}</label>
      {% render_field visit_form.lpu class+="input-block-level" %}
+     <div class="text-error">
+     {% if visit_form.lpu.errors %} {{ visit_form.lpu.errors }} {% endif %}
+     </div>
     </div>
     </fieldset>
    </div>
@@ -255,6 +357,7 @@
      <button class="btn btn-primary btn-large" type="submit">Сохранить</button>
      <button class="btn btn-primary dropdown-toggle btn-large" data-toggle="dropdown"><span class="caret"></span></button>
      <ul class="dropdown-menu text-left">
+      <!-- пока не работает -->
       <li><a href="#">Сохранить</a></li>
       <li><a href="#">Сохранить и добавить нового пацента</a></li>
       <li><a href="#">Сохранить и продолжить редактировать</a></li>
