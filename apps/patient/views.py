@@ -194,7 +194,7 @@ def search(request):
     if form.is_valid():
         full_name = form.cleaned_data.get('full_name')
         if full_name:
-            patients_qs = patients_qs.filter(all_full_names__contains=full_name)
+            patients_qs = patients_qs.filter(all_full_names__icontains=full_name)
         type_residence = form.cleaned_data.get('type_residence')
         if type_residence:
             patients_qs = patients_qs.filter(type_residence=type_residence)

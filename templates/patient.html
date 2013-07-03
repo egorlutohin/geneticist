@@ -87,7 +87,7 @@
       <tr>
        <td colspan="2" style="width: 33.3%">
         <label for="{{f.last_name.auto_id}}">{{patient_form.last_name.label}}{% if f.last_name.field.required %} <span class="text-error">*</span>{% endif %}</label> 
-        {% render_field f.last_name class+="input-block-level" accesskey="ф" %}
+        {% render_field f.last_name class+="input-block-level" accesskey="ф" autofocus="autofocus" %}
       </td>
        <td colspan="2" style="width: 33.3%">
         <label for="{{f.first_name.auto_id}}">{{f.first_name.label}}{% if f.first_name.field.required %} <span class="text-error">*</span>{% endif %}</label>
