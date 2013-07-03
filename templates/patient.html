@@ -87,14 +87,14 @@
       <tr>
        <td colspan="2" style="width: 33.3%">
         <label for="{{f.last_name.auto_id}}">{{patient_form.last_name.label}}{% if f.last_name.field.required %} <span class="text-error">*</span>{% endif %}</label> 
-        {% render_field f.last_name class+="input-block-level" %}
+        {% render_field f.last_name class+="input-block-level" accesskey="ф" %}
       </td>
        <td colspan="2" style="width: 33.3%">
         <label for="{{f.first_name.auto_id}}">{{f.first_name.label}}{% if f.first_name.field.required %} <span class="text-error">*</span>{% endif %}</label>
-        {% render_field f.first_name class+="input-block-level" %}
+        {% render_field f.first_name class+="input-block-level" accesskey="и" %}
        <td colspan="2">
         <label for="{{f.patronymic.auto_id}}">{{f.patronymic.label}}{% if f.patronymic.field.required %} <span class="text-error">*</span>{% endif %}</label>
-        {% render_field f.patronymic class+="input-block-level" %}
+        {% render_field f.patronymic class+="input-block-level" accesskey="о" %}
       </tr>
       <tr>
        <td colspan="2" class="text-error errorcell">
@@ -110,11 +110,11 @@
       <tr>
        <td colspan="2">
         <label for="{{f.birthday.auto_id}}">{{f.birthday.label}}{% if f.birthday.field.required %} <span class="text-error">*</span>{% endif %}</label>
-        {% render_field f.birthday class+="input-block-level" autocomplete="off" %}
+        {% render_field f.birthday class+="input-block-level" autocomplete="off" accesskey="р" %}
         </td>
        <td colspan="2">
         <label for="{{f.death.auto_id}}">{{f.death.label}}{% if f.death.field.required %} <span class="text-error">*</span>{% endif %}</label>
-        {% render_field f.death class+="input-block-level" autocomplete="off" %}
+        {% render_field f.death class+="input-block-level" autocomplete="off" accesskey="с" %}
        </td>
        <td colspan="2"></td>
       </tr>

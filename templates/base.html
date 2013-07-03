@@ -36,8 +36,8 @@
       </div>
     </div>
     <ul class="nav nav-tabs" style="padding: 0 30px">
-      <li{% block search_patient %}{% endblock %}><a href="{% url 'patient_search' %}">Поиск пациентов</a></li>
-      <li{% block add_patient %}{% endblock %}><a href="{% url 'patient_add' %}">Добавление пациента</a></li>
+      <li{% block search_patient %}{% endblock %}><a href="{% url 'patient_search' %}" accesskey="1">Поиск пациентов</a></li>
+      <li{% block add_patient %}{% endblock %}><a href="{% url 'patient_add' %}" accesskey="2">Добавление пациента</a></li>
       <li{% block edit_patient %} class="disabled"{% endblock %}><a href="." onfocus="blur()" onclick="return false;">Просмотр записи</a></li>
     </ul>
     <div id="content" style="padding: 0 20px;">
