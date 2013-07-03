@@ -41,6 +41,7 @@
    .diagnosis_form { margin-bottom: 20px;}
    .text-error ul {padding: 0; padding-left: 2px; margin: 0; font-size: small;}
    .text-error li {list-style: none; display: inline; padding: 0; margin: 0;}
+   legend a, legend a:hover {cursor: pointer; text-decoration: none; color: #bbb; padding-right: 10px; float: right;}
 </style>
 
 <script>
@@ -82,8 +83,8 @@
    {% with f=patient_form %}
    <div class="well">
    <fieldset>
-    <legend>Данные пациента</legend>
-     <table>
+    <legend>Данные пациента <a onclick="$('#patient_data_table').slideToggle(); $(this).text($(this).text() == '▼' ?'◀': '▼');">▼</a></legend>
+     <table id="patient_data_table">
       <tr>
        <td colspan="2" style="width: 33.3%">
         <label for="{{f.last_name.auto_id}}">{{patient_form.last_name.label}}{% if f.last_name.field.required %} <span class="text-error">*</span>{% endif %}</label> 
@@ -257,8 +258,8 @@
    </div>
    
    <div class="well">
-   <legend>Диагноз</legend>
-   <div class="inner">
+   <legend>Диагноз <a onclick="$('#diagnosis_data').slideToggle(); $(this).text($(this).text() == '▼' ?'◀': '▼');">▼</a></legend>
+   <div class="inner" id="diagnosis_data">
     <ul id="ul_diagnosis_formset">
     {% for d_form in diagnosis_formset.forms %}
         <ul id="diagnosis_form_{{ forloop.counter0 }}" class="diagnosis_form">
@@ -297,8 +298,8 @@
 
    <div class="well">
    <fieldset>
-    <legend>Постановка на учет</legend>
-    <table>
+    <legend>Постановка на учет <a onclick="$('#control_data_table').slideToggle(); $(this).text($(this).text() == '▼' ?'◀': '▼');">▼</a></legend>
+    <table id="control_data_table">
      <tr>
       <td style="width: 35%">
        <label for="{{f.date_registration.auto_id}}">{{f.date_registration.label}}{% if f.date_registration.field.required %} <span class="text-error">*</span>{% endif %}</label>
@@ -333,8 +334,8 @@
    
    <div class="well">
     <fieldset>
-    <legend>Посещения</legend>
-    <div class="inner">
+    <legend>Посещения <a onclick="$('#visit_data').slideToggle(); $(this).text($(this).text() == '▼' ?'◀': '▼');">▼</a></legend>
+    <div class="inner" id="visit_data">
      {% if visits_qs %}
      <ul>
      {% for visit in visits_qs %}
