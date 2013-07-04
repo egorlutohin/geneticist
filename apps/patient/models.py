@@ -183,7 +183,7 @@ class Visit(BaseModel):
     )
     code = models.CharField(u'Код МО', max_length=7)
     name = models.TextField(u'Наименование МО')
-    lpu = models.ForeignKey(Organization, verbose_name=u'МО посещения')
+    lpu = models.ForeignKey(Organization, verbose_name=u'Мед. Орг. посещения')
     date_created = models.DateTimeField(
         default=datetime.now,
         verbose_name=u'Дата внесения в регистр/Дата посещения'
