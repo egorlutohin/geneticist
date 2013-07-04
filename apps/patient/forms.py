@@ -74,9 +74,13 @@ class PatientForm(forms.ModelForm):
 
 
 class VisitForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(VisitForm, self).__init__(*args, **kwargs)
+        self.fields['date_created'].widget = CalendarWidget()
+
     class Meta:
         model = Visit
-        exclude = ('is_active', 'patient', 'user_created', 'date_created',
+        exclude = ('is_active', 'patient', 'user_created',
                    'name', 'code', 'is_add',)
 
 
@@ -88,7 +92,7 @@ class DiagnosisForm(forms.ModelForm):
 
     class Meta:
         model = Diagnosis
-        exclude = ('is_active', 'patient', 'user_changed', 'date_changed',)
+        exclude = ('is_active', 'patient', 'user_changed',)
 
 
 DiagnosisFormset = formset_factory(DiagnosisForm, extra=1, max_num=100)
