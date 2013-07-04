@@ -15,6 +15,7 @@ class Organization(models.Model):
     class Meta:
         verbose_name = u'Название организации'
         verbose_name_plural = u'Названия организаций'
+        ordering = ['name']
 
     def save(self, *args, **kwargs):
         from patient.models import Patient, Visit

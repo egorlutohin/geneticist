@@ -4,19 +4,81 @@
 
 {% block other_static %}
     {{ form.media }}
+    <!--script src="{{ STATIC_URL }}/bootstrap/js/bootstrap.js"></script-->
+    <link href="{{ STATIC_URL }}bootstrap-datepicker/css/datepicker.css" rel="stylesheet" />
+    <script src="{{ STATIC_URL }}/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    
+    <script>
+        {% load in_group %}
+        $(function(){
+            $('{{form|date_fields_id}}').datepicker().on('changeDate', function(e){$(this).focus();})
+            $('{{form|no_date_fields_id}}').on('focus', function(e){$('{{form|date_fields_id}}').datepicker('hide')})
+        });
+        
+        $(function() { $('form').keyTips(); });
+    </script>
+    <style type="text/css">
+        #search_form td {padding: 5px 10px;}
+        #search_form {float: left; padding: 15px; width: 600px;}
+    </style>
+
+    
 {% endblock %}
 
-{% block search_patient %}Режим поиска пациентов{% endblock %}
+{% block search_patient %} class="active"{% endblock %}
 
 {% block content %}
-<form action=".">
-<ul class="search_form">
-{{ form.as_ul }}
-</ul>
-<input type="submit" value="Найти">
-</form>
-<h2>{{ header }}</h2>
-<table class="list_patient">
+{% load widget_tweaks %}
+ <form action="." id="search_form" class="well">
+  <table>
+   <tr>
+    <td colspan="6">
+     {{form.full_name.label_tag}} {% render_field form.full_name class+="input-block-level" accesskey="ф" autofocus="autofocus" %}
+    </td>
+   </tr>
+   <tr>
+    <td colspan="2" style="width: 33.3%">
+       {{form.birthday.label_tag}}{% render_field form.birthday autocomplete="off" class+="input-block-level" accesskey="р" %}
+    </td>
+    <td colspan="2" style="width: 33.3%">
+       {{form.death.label_tag}}{% render_field form.death autocomplete="off" class+="input-block-level" accesskey="с" %}
+    </td>
+    <td colspan="2">
+    {{form.diagnosis.label_tag}}{% render_field form.diagnosis class+="input-block-level" accesskey="м" %}
+    </td>
+   </tr>
+   <tr>
+    <td colspan="2">
+     {{form.type_residence.label_tag}}{% render_field form.type_residence class+="input-block-level" accesskey="п" %}
+    </td>
+    <td colspan="2">
+     {{form.special_cure.label_tag}}{% render_field form.special_cure class+="input-block-level" accesskey="л" %}
+    </td>
+    <td colspan="2">
+     {{form.social_status.label_tag}}{% render_field form.social_status class+="input-block-level" accesskey="т" %}
+    </td>
+   </tr>
+   <tr>
+    <td colspan="6">
+     {{form.lpu_added.label_tag}}{% render_field form.lpu_added class+="input-block-level" accesskey="в" %}
+    </td>
+   </tr>
+   <tr>
+    <td colspan="6" align="right">
+     <button type="submit" class="btn btn-primary">Найти</button>
+    </td>
+   </tr>
+  </table>
+ </form><br style="clear: both" />
+
+{% if have_search_result %}
+<hr />
+<h2>Результат поиска</h2>
+<h4>{{ header }} <small>(количество пациентов: {{ count }})</small></h4>
+
+<p></p>
+<table class="table table-striped table-bordered">
+    <thead>
     <tr>
         <th width="20%">ФИО</th>
         <th>Дата рождения</th>
@@ -24,6 +86,8 @@
         <th width="40%">ЛПУ прикрепления</th>
         <th>Пол</th>
     </tr>
+    </thead>
+    <tbody>
     {% for patient in patients %}
     <tr>
         <td><a href="{% url 'patient_edit' patient.pk %}" target="_blank">{{ patient.all_full_names|linebreaksbr }}</a></td>
@@ -33,6 +97,8 @@
         <td><a href="{% url 'patient_edit' patient.pk %}" target="_blank">{{ patient.get_gender_display }}</a></td>
     </tr>
     {% endfor %}
+    </tbody>
 </table>
-<p>Количество пациентов: {{ count }}</p>
+{% endif %}
+
 {% endblock %}

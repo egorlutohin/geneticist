@@ -185,10 +185,18 @@ def search(request):
     form = SearchForm(request.GET)
     special_cure_text = ''
     header = u'Все'
+    
+    if len(request.GET) == 0:
+        # Если поиск не запускали, то и не надо показывать всех пациентов
+        return render_to_response('search.html',
+                              {'form': form, 'have_search_result': False},
+                              context_instance=RequestContext(request))
+
+    
     if form.is_valid():
         full_name = form.cleaned_data.get('full_name')
         if full_name:
-            patients_qs = patients_qs.filter(all_full_names__contains=full_name)
+            patients_qs = patients_qs.filter(all_full_names__icontains=full_name)
         type_residence = form.cleaned_data.get('type_residence')
         if type_residence:
             patients_qs = patients_qs.filter(type_residence=type_residence)
@@ -220,7 +228,8 @@ def search(request):
                 'count': patients_qs.count(),
                 'special_cure_text': special_cure_text,
                 'form': form,
-                'header': header}
+                'header': header,
+                'have_search_result': True}
     return render_to_response('search.html',
                               response,
                               context_instance=RequestContext(request))

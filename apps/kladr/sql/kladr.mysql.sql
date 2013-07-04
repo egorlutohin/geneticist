@@ -1,8 +1,7 @@
-
-drop table kladr_socr;
-drop table kladr_kladr;
-drop table kladr_street;
-drop table kladr_doma;
+-- drop table if exists kladr_socr;
+-- drop table if exists kladr_kladr;
+-- drop table if exists kladr_street;
+-- drop table if exists kladr_doma;
 
 create table kladr_socr
 (
@@ -10,7 +9,7 @@ create table kladr_socr
 	name  varchar(29) not null,			-- SOCRNAME
 	level varchar(5)  not null,			-- LEVEL
 	tcode varchar(3)  not null			-- KOD_T_ST
-);
+) engine=MyISAM;
 
 create table kladr_kladr
 (
@@ -20,7 +19,7 @@ create table kladr_kladr
 	socr  varchar(10) not null,			    -- SOCR
 	stat  varchar(1)  not null,			    -- STATUS
 	indx  varchar(6)  not null		        -- INDEX (postal index)
-);
+) engine=MyISAM;
 
 create table kladr_street
 (
@@ -29,7 +28,7 @@ create table kladr_street
 	name  varchar(40) not null,			    -- NAME
 	socr  varchar(10) not null,			    -- SOCR
 	indx  varchar(6)  not null		        -- INDEX (postal index)
-);
+) engine=MyISAM;
 
 create table kladr_doma
 (
@@ -38,7 +37,7 @@ create table kladr_doma
 	name  varchar(40) not null,			    -- NAME
 	korp  varchar(10) not null,			    -- KORP
 	indx  varchar(6)  not null		        -- INDEX (postal index)
-);
+) engine=MyISAM;
 
 
 create index kladr_level_idx on kladr_kladr( level );

@@ -5,14 +5,20 @@
     <title>Генетический реестр пациентов НСО - {% block title %}{% endblock %}</title>
     <!-- Bootstrap -->
     <link href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ STATIC_URL }}other/css.css" rel="stylesheet">
-    <script type="text/javascript" src="/static/admin/js/jquery.js"></script>
+    <!--link href="{{ STATIC_URL }}other/css.css" rel="stylesheet"-->
+    <!--script type="text/javascript" src="/static/admin/js/jquery.js"></script-->
     <script type="text/javascript">
       window.__admin_media_prefix__ = "{{ STATIC_URL }}admin/";
     </script>
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
-    <script src="{{ STATIC_URL }}admin/js/jquery.init.js"></script>
+    <!--script src="http://code.jquery.com/jquery-latest.js"></script-->
+    <script src="{{ STATIC_URL }}jquery/jquery.js"></script>
+    <!--script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script-->
+    <!--script src="{{ STATIC_URL }}admin/js/jquery.init.js"></script-->
+    <style>
+     .nav-tabs .disabled a, .nav-tabs .disabled a:hover, .nav-tabs .disabled a:focus {border: none;}
+     .alert {width: 580px;}
+     .alert p {margin-top: 10px; margin-bottom: 10px;}
+    </style>
     {% block extrajs %} {% endblock %} {% block other_static %}{% endblock %}
   </head>
   <body>
@@ -29,19 +35,22 @@
         </div>
       </div>
     </div>
-    <ul class="menu">
-      <li>{% block search_patient %}<a href="{% url 'patient_search' %}">Режим поиска пациентов</a>{% endblock %}</li>
-      <li>{% block add_patient %}<a href="{% url 'patient_add' %}">Режим добавления пациента</a>{% endblock %}</li>
-      {% if user|in_group:"lead_geneticist" %}<li><a href="{% url 'admin:patient_patient_changelist' %}" target="_blank">Режим удаления пациентов</a></li>{% endif %}
-      {% if user|in_group:"mkb,lead_geneticist" %}<li><a href="{% url 'admin:index' %}"target="_blank">Режим редактирования справочников</a></li>{% endif %}
+    <ul class="nav nav-tabs" style="padding: 0 30px">
+      <li{% block search_patient %}{% endblock %}><a href="{% url 'patient_search' %}" accesskey="1">Поиск пациентов</a></li>
+      <li{% block add_patient %}{% endblock %}><a href="{% url 'patient_add' %}" accesskey="2">Добавление пациента</a></li>
+      <li{% block edit_patient %} class="disabled"{% endblock %}><a href="." onfocus="blur()" onclick="return false;">Просмотр записи</a></li>
     </ul>
+    <div id="content" style="padding: 0 20px;">
     {% if messages %}
-    <ul class="messages">
+    <div class="alert alert-success">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
       {% for message in messages %}
-      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
       {% endfor %}
-    </ul>
+    </div>
     {% endif %}
+
     {% block content %}{% endblock %}    
+    </div>
   </body>
 </html>

@@ -28,6 +28,10 @@ DATABASES = {
     }
 }
 
+DATABASE_OPTIONS = {
+   "init_command": "SET storage_engine=INNODB",
+}
+
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []
@@ -126,6 +130,7 @@ INSTALLED_APPS = (
     'mkb',
     'patient',
     'organization',
+    'widget_tweaks',
 )
 
 KLADR_ROOT = rel('kladr')
