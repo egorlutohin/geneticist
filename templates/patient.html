@@ -29,7 +29,7 @@
    #content fieldset table {width: 100%}
    #content fieldset td, div.inner {padding: 15px 10px; padding-bottom: 0;}
    #content fieldset td.errorcell {padding-top: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 0;}
-   #content fieldset td input, #content fieldset td textarea, #content fieldset td select  {margin-bottom: 0; padding-bottom: 0;}
+   #content fieldset td input, #content fieldset td textarea, #content fieldset td select  {margin-bottom: 0; }
    #content legend {margin: 0 5px; padding: 0;}
    #content div.well, div.outer {padding: 15px; width: 600px;}
    #content div.submit {width: 630px;}
@@ -41,7 +41,9 @@
    .diagnosis_form { margin-bottom: 20px;}
    .text-error ul {padding: 0; padding-left: 2px; margin: 0; font-size: small;}
    .text-error li {list-style: none; display: inline; padding: 0; margin: 0;}
-   legend a, legend a:hover {cursor: pointer; text-decoration: none; color: #bbb; padding-right: 10px; float: right;}
+   legend a, legend a:hover {cursor: pointer; text-decoration: none; color: #bbb; padding-right: 2px; float: right;}
+   #non-field-errors {paddin: 0; margin-bottom: 20px;}
+
 </style>
 
 <script>
@@ -71,11 +73,12 @@
 <form action='.' method="post">
 {% if diagnosis_formset.errors or patient_form.errors or visit_form.errors %}
   <h3 class="text-error">Пожалуйста, исправьте ошибки</h3>
+  <div id="non-field-errors" class="text-error">
+  {{ patient_form.non_field_errors }}
+  </div>
 {% endif %}
 {% csrf_token %}
 {{ diagnosis_formset.management_form }}
-{{ patient_form.non_field_errors }}
-
 {% load in_group %}
 
 <!-- Egor -->
@@ -84,7 +87,8 @@
    <div class="well">
    <fieldset>
     <legend>Данные пациента <a onclick="$('#patient_data_table').slideToggle(); $(this).text($(this).text() == '▼' ?'◀': '▼');">▼</a></legend>
-     <table id="patient_data_table">
+     <div id="patient_data_table">
+     <table>
       <tr>
        <td colspan="2" style="width: 33.3%">
         <label for="{{f.last_name.auto_id}}">{{patient_form.last_name.label}}{% if f.last_name.field.required %} <span class="text-error">*</span>{% endif %}</label> 
@@ -254,10 +258,12 @@
       </tr>
       
      </table>
+     </div>
    </fieldset>
    </div>
    
    <div class="well">
+   <fieldset>
    <legend>Диагноз <a onclick="$('#diagnosis_data').slideToggle(); $(this).text($(this).text() == '▼' ?'◀': '▼');">▼</a></legend>
    <div class="inner" id="diagnosis_data">
     <ul id="ul_diagnosis_formset">
@@ -299,7 +305,8 @@
    <div class="well">
    <fieldset>
     <legend>Постановка на учет <a onclick="$('#control_data_table').slideToggle(); $(this).text($(this).text() == '▼' ?'◀': '▼');">▼</a></legend>
-    <table id="control_data_table">
+    <div id="control_data_table">
+    <table>
      <tr>
       <td style="width: 35%">
        <label for="{{f.date_registration.auto_id}}">{{f.date_registration.label}}{% if f.date_registration.field.required %} <span class="text-error">*</span>{% endif %}</label>
@@ -319,13 +326,15 @@
       </td>
      </tr>
     </table>
+    </div>
    </fieldset>
    </div>
 
    <div class="well">
    <fieldset>
-    <div class="inner">
-    <label for="{{f.comment.auto_id}}">{{f.comment.label}}{% if f.comment.field.required %} <span class="text-error">*</span>{% endif %}</label>
+    <legend>Комментарий <a onclick="$('#comment_data').slideToggle(); $(this).text($(this).text() == '▼' ?'◀': '▼');">▼</a></legend>
+    <div class="inner" id="comment_data">
+    <!--label for="{{f.comment.auto_id}}">{{f.comment.label}}{% if f.comment.field.required %} <span class="text-error">*</span>{% endif %}</label-->
     {% render_field f.comment class+="input-block-level" rows="" cols="" %}
     </div>
    </fieldset>
