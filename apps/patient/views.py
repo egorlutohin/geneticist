@@ -1,5 +1,6 @@
 #coding: utf8
 from datetime import datetime, timedelta
+from itertools import chain
 
 from django.db.models import Q
 from django.core.urlresolvers import reverse
@@ -18,6 +19,7 @@ from models import Patient, Diagnosis, Visit
 DIAGNOSIS_PREFIX = 'diagnosis'
 VISIT_PREFIX = 'visit'
 NIGHT_TIME = timedelta(hours=12)
+TIME_HISTORY_IGNORE = timedelta(seconds=2)
 
 
 def save_formset(formset, patient):
@@ -112,7 +114,8 @@ def edit(request, patient_id): # TODO: нужно доделать + обсуд�
     response = {'patient_form': patient_form,
                 'diagnosis_formset': diagnosis_formset,
                 'visit_form': visit_form,
-                'visits_qs': patient.visit_set.all()}
+                'visits_qs': patient.visit_set.all(),
+                'patient': patient}
     return render_to_response('patient_edit.html',
                               response,
                               context_instance=RequestContext(request))
@@ -219,5 +222,43 @@ def search(request):
                 'form': form,
                 'header': header}
     return render_to_response('search.html',
+                              response,
+                              context_instance=RequestContext(request))
+
+
+def update_history(history, h_date, username):
+    history.append(((h_date, h_date + TIME_HISTORY_IGNORE), username))
+    return history
+
+
+@login_required
+def history(request, patient_id):
+    """ Список кто изменял в информацию о пациенте """
+    patient = get_object_or_404(Patient, pk=patient_id)
+    histories_qs = patient.history.filter(history_type='~') \
+                                  .values_list('history_date',
+                                               'history_user__username')
+    histories = [((d, d + TIME_HISTORY_IGNORE), u) for d, u in histories_qs]
+    
+    visits = patient.visit_set.all()
+    diagnosis = patient.diagnosis_set.all()
+    for element in chain(visits, diagnosis):
+        element_h_qs = element.history.values_list('history_date',
+                                                  'history_user__username')
+        for element_date, username in element_h_qs:
+            for p_date, p_user in histories:
+                if p_date[0] <= element_date <= p_date[1] and \
+                   p_user == username:
+                    continue
+                else:
+                    histories = update_history(histories,
+                                               element_date,
+                                               username)
+                    break
+
+
+    response = {'histories': histories,
+                'patient': patient}
+    return render_to_response('patient_history.html',
                               response,
                               context_instance=RequestContext(request))
