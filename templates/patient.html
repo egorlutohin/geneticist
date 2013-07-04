@@ -98,7 +98,8 @@
   <li id="li_gender">{% if patient_form.gender.errors %} {{ patient_form.gender.errors}} {% endif %}
       {{ patient_form.gender.label_tag }}* {{ patient_form.gender }}</li>
   <li id="li_date_registration">{% if patient_form.date_registration.errors %} {{ patient_form.date_registration.errors}} {% endif %}
-      {{ patient_form.date_registration.label_tag }} {{ patient_form.date_registration }}</li>
+      {{ patient_form.date_registration.label_tag }} {{ patient_form.date_registration }}<br />
+      <small class="help_text">{{ patient_form.date_registration.help_text }}</small></li>
   <li id="li_comment">{% if patient_form.comment.errors %} {{ patient_form.comment.errors}} {% endif %}
       {{ patient_form.comment.label_tag }} {{ patient_form.comment }}</li>
   <li id="visits_list">

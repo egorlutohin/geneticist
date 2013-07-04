@@ -135,8 +135,10 @@ class Patient(BaseModel):
     gender = models.IntegerField(verbose_name=u'Пол', choices=GENDER_CHOICES)
     comment = models.TextField(verbose_name=u'Комментарий',
                                blank=True, null=True)
+    _DATE_REGISTRATION_HELP = u'При невыясненной дате день 01, месяц 01'
     date_registration = models.DateField(default=date.today,
-                                         verbose_name=u'Дата постановки на учет')
+                                         verbose_name=u'Дата постановки на учет',
+                                         help_text=_DATE_REGISTRATION_HELP)
     date_created = models.DateTimeField(default=datetime.now,
                                         verbose_name=u'Дата заполнения анкеты',
                                         editable=False)

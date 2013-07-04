@@ -43,6 +43,13 @@ ul.messages>li{
     background-color: #cfcfcf;
 }
 
+.help_text {
+    color: #666;
+    display: block;
+    margin-top: -10px;
+    margin-bottom: 5px;
+}
+
 #id_full_name {
     width: 500px;
 }
