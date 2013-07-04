@@ -19,7 +19,7 @@ from models import Patient, Diagnosis, Visit
 DIAGNOSIS_PREFIX = 'diagnosis'
 VISIT_PREFIX = 'visit'
 NIGHT_TIME = timedelta(hours=12)
-TIME_HISTORY_IGNORE = timedelta(seconds=2)
+TIME_HISTORY_IGNORE = timedelta(seconds=3)
 
 
 def save_formset(formset, patient):
@@ -86,7 +86,6 @@ def edit(request, patient_id): # TODO: нужно доделать + обсуд�
         if not diagnosis_formset.is_valid():
             avalible_error = True
         if not avalible_error:
-            patient.save()
             save_formset(diagnosis_formset, patient)
             patient.diagnosis_text = get_diagnosis_text(patient)
             patient.diagnosis_text_code = get_diagnosis_code(patient)
@@ -151,9 +150,9 @@ def add(request):
             visit.patient = patient
             visit.is_add = True
             visit.save()
-            patient.diagnosis_text = get_diagnosis_text(patient)
-            patient.diagnosis_text_code = get_diagnosis_code(patient)
-            patient.save()
+            Patient.objects.filter(pk=patient.pk)
+                           .update(diagnosis_text = get_diagnosis_text(patient),
+                                   diagnosis_text_code = get_diagnosis_code(patient))
             messages.add_message(request, messages.INFO, u'Пациент внесен в регистр')
             url = reverse('patient_edit', kwargs={'patient_id': patient.pk})
             return redirect(url)
@@ -255,17 +254,17 @@ def history(request, patient_id):
         element_h_qs = element.history.values_list('history_date',
                                                   'history_user__username')
         for element_date, username in element_h_qs:
+            is_double_hist = False # Для каждого диагноза и визита пишется своя история.
             for p_date, p_user in histories:
                 if p_date[0] <= element_date <= p_date[1] and \
                    p_user == username:
-                    continue
-                else:
-                    histories = update_history(histories,
-                                               element_date,
-                                               username)
-                    break
+                    is_double_hist = True
+            if not is_double_hist:
+                histories = update_history(histories,
+                                           element_date,
+                                           username)
 
-
+    histories.sort(lambda x, y: cmp(x[0][0], y[0][0]))
     response = {'histories': histories,
                 'patient': patient}
     return render_to_response('patient_history.html',
