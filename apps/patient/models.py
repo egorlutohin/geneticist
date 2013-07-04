@@ -71,7 +71,7 @@ class Patient(BaseModel):
     TYPE_RESIDENCES = ((1, u'Житель г. Новосибирска',),
                        (2, u'Житель НСО',),
                        (3, u'Житель Инобластной',),)
-    TYPE_CHOICES = ((1, u'Пробант',),
+    TYPE_CHOICES = ((1, u'Пробанд',),
                     (2, u'Плод'),)
     GENDER_CHOICES = ((1, u'М',),
                       (2, u'Ж',),
