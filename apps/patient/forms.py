@@ -78,6 +78,12 @@ class VisitForm(forms.ModelForm):
 
     class Meta:
         model = Visit
+        exclude = ('is_active', 'patient', 'user_created', 'lpu',
+                   'name', 'code', 'is_add',)
+
+
+class VisitiFirstForm(VisitForm):
+    class Meta(VisitForm.Meta):
         exclude = ('is_active', 'patient', 'user_created',
                    'name', 'code', 'is_add',)
 

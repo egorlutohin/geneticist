@@ -18,6 +18,7 @@ from models import Patient, Diagnosis, Visit
 
 DIAGNOSIS_PREFIX = 'diagnosis'
 VISIT_PREFIX = 'visit'
+VISIT_FIRST_PREFIX = 'visit-first'
 NIGHT_TIME = timedelta(hours=12)
 TIME_HISTORY_IGNORE = timedelta(seconds=3)
 
