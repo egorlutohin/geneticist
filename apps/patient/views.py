@@ -150,7 +150,7 @@ def add(request):
             visit.patient = patient
             visit.is_add = True
             visit.save()
-            Patient.objects.filter(pk=patient.pk)
+            Patient.objects.filter(pk=patient.pk) \
                            .update(diagnosis_text = get_diagnosis_text(patient),
                                    diagnosis_text_code = get_diagnosis_code(patient))
             messages.add_message(request, messages.INFO, u'Пациент внесен в регистр')
