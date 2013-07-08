@@ -40,7 +40,7 @@ def in_group(user, groups):
 def date_fields_id(form):
     l = []
     for field in form:
-        if isinstance(field.field, forms.DateField):
+        if isinstance(field.field, (forms.DateField, forms.DateTimeField)):
             l.append('#' + field.auto_id)
     
     return ', '.join(l)
@@ -49,7 +49,7 @@ def date_fields_id(form):
 def no_date_fields_id(form):
     l = []
     for field in form:
-        if not isinstance(field.field, forms.DateField):
+        if not isinstance(field.field, (forms.DateField, forms.DateTimeField)):
             l.append('#' + field.auto_id)
             
     return ', '.join(l)

@@ -46,8 +46,10 @@
 <script>
     $(function(){
         {% load in_group %}
-        $('{{patient_form|date_fields_id}}').datepicker().on('changeDate', function(e){$(this).focus();})
-        $('{{patient_form|no_date_fields_id}}').on('focus', function(e){$('{{patient_form|date_fields_id}}').datepicker('hide')})
+        var with_dates = '{{patient_form|date_fields_id}}, {{ visit_form|date_fields_id }}, {{ visit_first_form|date_fields_id }}'
+        var without_dates = '{{patient_form|no_date_fields_id}}, {{ visit_form|no_date_fields_id }}, {{ visit_first_form|no_date_fields_id }}'
+        $(with_dates).datepicker().on('changeDate', function(e){$(this).focus();})
+        $(without_dates).on('focus', function(e){$(with_dates).datepicker('hide')})
     });
 </script>
 {% if patient_form.media %}

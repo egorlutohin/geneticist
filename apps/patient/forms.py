@@ -76,6 +76,10 @@ class VisitForm(forms.ModelForm):
     is_visit = forms.BooleanField(required=False,
                                   label=u'Зарегистрировать посещение')
 
+    def __init__(self, *args, **kwargs):
+        super(VisitForm, self).__init__(*args, **kwargs)
+        self.fields['date_created'].widget = forms.widgets.DateInput()
+
     class Meta:
         model = Visit
         exclude = ('is_active', 'patient', 'user_created', 'mo',
@@ -83,6 +87,10 @@ class VisitForm(forms.ModelForm):
 
 
 class VisitFirstForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(VisitFirstForm, self).__init__(*args, **kwargs)
+        self.fields['date_created'].widget = forms.widgets.DateInput()
+
     class Meta(VisitForm.Meta):
         exclude = ('is_active', 'patient', 'user_created',
                    'name', 'code', 'is_add',)
