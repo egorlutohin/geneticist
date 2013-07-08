@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django import template
 from django.utils.encoding import force_unicode
 
@@ -6,6 +6,9 @@ from django import forms
 
 
 register=template.Library()
+
+
+User = get_user_model()
 
 
 @register.filter
