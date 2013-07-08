@@ -21,9 +21,9 @@ class Organization(models.Model):
         from patient.models import Patient, Visit
 
         if self.pk is not None:
-            Patient.objects.filter(allocate_lpu=self) \
-                           .update(code_allocate_lpu=self.code,
-                                   name_allocate_lpu=self.full_name)
-            Visit.objects.filter(lpu=self) \
+            Patient.objects.filter(allocate_mo=self) \
+                           .update(code_allocate_mo=self.code,
+                                   name_allocate_mo=self.full_name)
+            Visit.objects.filter(mo=self) \
                          .update(code=self.code, name=self.full_name)
         super(Organization, self).save(*args, **kwargs)

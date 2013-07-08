@@ -60,7 +60,7 @@
    </tr>
    <tr>
     <td colspan="6">
-     {{form.lpu_added.label_tag}}{% render_field form.lpu_added class+="input-block-level" accesskey="в" %}
+     {{form.mo_added.label_tag}}{% render_field form.mo_added class+="input-block-level" accesskey="в" %}
     </td>
    </tr>
    <tr>
@@ -93,7 +93,7 @@
         <td><a href="{% url 'patient_edit' patient.pk %}" target="_blank">{{ patient.all_full_names|linebreaksbr }}</a></td>
         <td><a href="{% url 'patient_edit' patient.pk %}" target="_blank">{{ patient.birthday|date }}</a></td>
         <td><a href="{% url 'patient_edit' patient.pk %}" target="_blank">{{ patient.diagnosis_text_code|linebreaksbr}}</a></td>
-        <td><a href="{% url 'patient_edit' patient.pk %}" target="_blank">{{ patient.name_allocate_lpu|default:"&nbsp;" }}</a></td>
+        <td><a href="{% url 'patient_edit' patient.pk %}" target="_blank">{{ patient.name_allocate_mo|default:"&nbsp;" }}</a></td>
         <td><a href="{% url 'patient_edit' patient.pk %}" target="_blank">{{ patient.get_gender_display }}</a></td>
     </tr>
     {% endfor %}

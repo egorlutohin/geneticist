@@ -69,10 +69,21 @@
 {% block content_header %} {% endblock %}
 <input type="hidden" id="e5" style="width:300px"/>
 <form action='.' method="post">
-{% if diagnosis_formset.errors or patient_form.errors or visit_form.errors %}
+{% if diagnosis_formset.errors or patient_form.errors or visit_form.errors or visit_first_form.non_field_error or error_texts %}
   <h3 class="text-error">Пожалуйста, исправьте ошибки</h3>
   <div id="non-field-errors" class="text-error">
   {{ patient_form.non_field_errors }}
+  {{ visit_form.non_field_errors }}
+  {{ visit_first_form.non_field_errors}}
+  {{ diagnosis_formset.non_field_errors }}
+  {% if error_texts %}
+  <ul class="errorlist">
+    {% for err in error_texts %}
+    <li>{{ err }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {#  #}
   </div>
 {% endif %}
 {% csrf_token %}
@@ -244,14 +255,14 @@
       
       <tr>
        <td colspan="6">
-        <label for="{{f.allocate_lpu.auto_id}}">{{f.allocate_lpu.label}}{% if f.allocate_lpu.field.required %} <span class="text-error">*</span>{% endif %}</label>
-        {% render_field f.allocate_lpu class+="input-block-level" %}
+        <label for="{{f.allocate_mo.auto_id}}">{{f.allocate_mo.label}}{% if f.allocate_mo.field.required %} <span class="text-error">*</span>{% endif %}</label>
+        {% render_field f.allocate_mo class+="input-block-level" %}
        </td>
       </tr>
 
       <tr>
        <td colspan="6" class="text-error errorcell">
-        {% if f.allocate_lpu.errors %} {{ f.special_cure.errors}} {% endif %}
+        {% if f.allocate_mo.errors %} {{ f.special_cure.errors}} {% endif %}
        </td>
       </tr>
       
@@ -300,6 +311,8 @@
    </fieldset>
    </div>
 
+   {% if visit_first_form %}
+   {% with f_v=visit_first_form %}
    <div class="well">
    <fieldset>
     <legend>Постановка на учет <a onclick="$('#control_data_table').slideToggle(); $(this).text($(this).text() == '▼' ?'◀': '▼');">▼</a></legend>
@@ -307,26 +320,28 @@
     <table>
      <tr>
       <td style="width: 35%">
-       <label for="{{f.date_registration.auto_id}}">{{f.date_registration.label}}{% if f.date_registration.field.required %} <span class="text-error">*</span>{% endif %}</label>
-       {% render_field f.date_registration class+="input-block-level" %}
+       <label for="{{f_v.date_created.auto_id}}">Дата постановки на учет{% if f_v.date_created.field.required %} <span class="text-error">*</span>{% endif %}</label>
+       {% render_field f_v.date_created class+="input-block-level" %}
       </td>
       <td>
-       <label>???МО постановки на учет???</label>
-       <select class="input-block-level"><option>-------------</option><option>--------------</option></select>
+       <label>Мед. Орг. постановки на учет{% if f_v.date_created.field.required %}<span class="text-error">*</span>{% endif %}</label>
+       {% render_field f_v.mo class="input-block-level" %}
       </td>
      </tr>
      <tr>
       <td class="text-error errorcell">
-       {% if f.date_registration.errors %} {{ f.date_registration.errors}} {% endif %}
+       {% if f_v.date_created.errors %} {{ f_v.date_created.errors}} {% endif %}
       </td>
       <td class="text-error errorcell">
-        <!-- здесь ошибки поля МО постановки на учет -->
+       {% if f_v.mo.errors %} {{ f_v.mo.errors}} {% endif %}
       </td>
      </tr>
     </table>
     </div>
    </fieldset>
    </div>
+   {% endwith %}
+   {% endif %}
 
    <div class="well">
    <fieldset>
@@ -346,15 +361,17 @@
      {% if visits_qs %}
      <ul>
      {% for visit in visits_qs %}
-      <li>{{ visit }}</li>
+      <li>{{ visit }} {% if visit.is_add %} Регистрация{% endif %}</li>
      {% endfor %}
      </ul> 
      <br /><br />
      {% endif %} 
-     <label for="{{visit_form.lpu.auto_id}}">{{visit_form.lpu.label}}{% if visit_form.lpu.field.required %} <span class="text-error">*</span>{% endif %}</label>
-     {% render_field visit_form.lpu class+="input-block-level" %}
+     <label for="{{visit_form.is_visit.auto_id}}">{{visit_form.is_visit.label}}</label>
+     {% render_field visit_form.is_visit class+="input-block-level" %}
+     <label for="{{visit_form.mo.auto_id}}">{{visit_form.mo.label}}{% if visit_form.mo.field.required %} <span class="text-error">*</span>{% endif %}</label>
+     {% render_field visit_form.date_created class+="input-block-level" %}
      <div class="text-error">
-     {% if visit_form.lpu.errors %} {{ visit_form.lpu.errors }} {% endif %}
+     {% if visit_form.date_created.errors %} {{ visit_form.date_created.errors }} {% endif %}
      </div>
     </div>
     </fieldset>
