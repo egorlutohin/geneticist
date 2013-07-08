@@ -6,5 +6,5 @@ db.sql
 db.sql-journal
 *.swp
 migrations/
-kladr/
+/kladr/
 !apps/kladr

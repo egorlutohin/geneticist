@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>КЛАДР!</title>
+  <link href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+   body {padding: 50px;}
+   fieldset {width: 400px;}
+   select, input {width: 350px;}
+   i {position: relative; top: -2px;}
+   div span {display: none;}
+  </style>
+ </head>
+ <body>
+  <form>
+   <fieldset>
+    <legend>Адрес проживания</legend>
+    
+    <div>
+     <label>Регион</label>
+     <select>
+      <option>---</option>
+     </select>
+     <span><i class="icon-refresh"></i></span>
+    </div>
+    
+   </fieldset>
+  </form>
+ </body>
+</html>
