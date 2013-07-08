@@ -23,3 +23,4 @@ class CustomUser(AbstractUser):
     class Meta:
         verbose_name = u'Профиль сотрудника'
         verbose_name_plural = u'Профили сотрудников'
+        db_table = 'auth_user'
