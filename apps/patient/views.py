@@ -5,11 +5,11 @@ from itertools import chain
 from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response, redirect
 
 from common_helpers import nested_commit_on_success
+from user_profile.decorators import login_required
 
 from forms import PatientForm, VisitForm, DiagnosisForm, SearchForm
 from forms import DiagnosisFormset, DiagnosisModelFormset
