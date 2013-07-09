@@ -365,7 +365,7 @@
      {% if visits_qs %}
      <ul>
      {% for visit in visits_qs %}
-      <li>{{ visit }} {% if visit.is_add %} Регистрация{% endif %}</li>
+      <li>{{ visit }} {% if visit.is_add %} <em><small>(постановка на учет)</small></em>{% endif %}</li>
      {% endfor %}
      </ul> 
      <br /><br />
