@@ -125,12 +125,13 @@ INSTALLED_APPS = (
     #'django_auth_ldap',
     'mptt',
     'south',
+    'widget_tweaks',
 
     'kladr',
     'mkb',
     'patient',
     'organization',
-    'widget_tweaks',
+    'user_profile',
 )
 
 KLADR_ROOT = rel('kladr')
@@ -142,6 +143,7 @@ LOGIN_REDIRECT_URL='/'
 LOGIN_URL = '/login/'
 LOGOUT_URL = '/logout/'
 
+AUTH_USER_MODEL = 'user_profile.CustomUser'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

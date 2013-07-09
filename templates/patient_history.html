@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %} список лиц, изменивших данных о пациенте {{ patient.full_name }}.{% endblock %}
+
+{% block content_header %}<i class="content_header">Список лиц, изменивших данные о пациенте {{ patient.full_name }}</i>{% endblock %}
+
+{% block content %}
+<table class="list_patient" style="width:500px">
+    <tr>
+        <th width="200">Дата</th>
+        <th>Логин</th>
+    </tr>
+{% for d_range, username in histories %}
+  <tr>
+      <td>{{ d_range.0|date:"d.m.Y H:i:s" }}</td>
+      <td>{{ username }}</td>
+  </tr>
+{% endfor %}
+</table>
+{% endblock %}

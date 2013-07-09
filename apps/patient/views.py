@@ -1,23 +1,26 @@
 #coding: utf8
 from datetime import datetime, timedelta
+from itertools import chain
 
 from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response, redirect
 
 from common_helpers import nested_commit_on_success
+from user_profile.decorators import login_required
 
 from forms import PatientForm, VisitForm, DiagnosisForm, SearchForm
-from forms import DiagnosisFormset, DiagnosisModelFormset
+from forms import DiagnosisFormset, DiagnosisModelFormset, VisitFirstForm
 from models import Patient, Diagnosis, Visit
 
 
 DIAGNOSIS_PREFIX = 'diagnosis'
 VISIT_PREFIX = 'visit'
+VISIT_FIRST_PREFIX = 'visit-first'
 NIGHT_TIME = timedelta(hours=12)
+TIME_HISTORY_IGNORE = timedelta(seconds=3)
 
 
 def save_formset(formset, patient):
@@ -84,7 +87,6 @@ def edit(request, patient_id): # TODO: нужно доделать + обсуд�
         if not diagnosis_formset.is_valid():
             avalible_error = True
         if not avalible_error:
-            patient.save()
             save_formset(diagnosis_formset, patient)
             patient.diagnosis_text = get_diagnosis_text(patient)
             patient.diagnosis_text_code = get_diagnosis_code(patient)
@@ -92,8 +94,9 @@ def edit(request, patient_id): # TODO: нужно доделать + обсуд�
             messages.add_message(request,
                                  messages.INFO,
                                  u'Информация о пациенте изменена')
-            if is_need_save_visit:
+            if visit_form.cleaned_data.get('is_visit', False):
                 visit = visit_form.save(commit=False)
+                visit.mo = request.user.mo
                 visit.patient = patient
                 visit.save()
                 visit_form = VisitForm(prefix=VISIT_PREFIX)
@@ -132,26 +135,36 @@ def add(request):
         else:
             patient = None
             avalible_error = True
+        visit_first_form = VisitFirstForm(request.POST,
+                                          prefix=VISIT_FIRST_PREFIX)
+        if not visit_first_form.is_valid():
+            avalible_error = True
         visit_form = VisitForm(request.POST, prefix=VISIT_PREFIX)
-        if not visit_form.is_valid():
+        if not visit_form.is_valid() and not avalible_error:
             avalible_error = True
         diagnosis_formset = DiagnosisFormset(request.POST,
                                              prefix=DIAGNOSIS_PREFIX)
         if not diagnosis_formset.is_valid():
             avalible_error = True
-        elif len(diagnosis_formset.forms) < 1:
+        avalible_data = [v for f in diagnosis_formset.forms for v in f.cleaned_data]
+        if  len(avalible_data) < 1:
             avalible_error = True
             error_texts.append(u'Нужно записать хотя бы 1 диагноз')
         if not avalible_error:
             patient.save()
             save_formset(diagnosis_formset, patient)
-            visit = visit_form.save(commit=False)
-            visit.patient = patient
-            visit.is_add = True
-            visit.save()
-            patient.diagnosis_text = get_diagnosis_text(patient)
-            patient.diagnosis_text_code = get_diagnosis_code(patient)
-            patient.save()
+            visit_first = visit_first_form.save(commit=False)
+            visit_first.patient = patient
+            visit_first.is_add = True
+            visit_first.save()
+            if visit_form.cleaned_data.get('is_visit', False):
+                visit = visit_form.save(commit=False)
+                visit.mo = request.user.mo
+                visit.patient = patient
+                visit.save()
+            Patient.objects.filter(pk=patient.pk) \
+                           .update(diagnosis_text = get_diagnosis_text(patient),
+                                   diagnosis_text_code = get_diagnosis_code(patient))
             messages.add_message(request, messages.INFO, u'Пациент внесен в регистр')
             url = reverse('patient_edit', kwargs={'patient_id': patient.pk})
             return redirect(url)
@@ -159,10 +172,12 @@ def add(request):
         patient_form = PatientForm()
         diagnosis_formset = DiagnosisFormset(prefix=DIAGNOSIS_PREFIX)
         visit_form = VisitForm(prefix=VISIT_PREFIX)
+        visit_first_form = VisitFirstForm(prefix=VISIT_FIRST_PREFIX)
 
     response = {'patient_form': patient_form,
                 'diagnosis_formset': diagnosis_formset,
                 'visit_form': visit_form,
+                'visit_first_form': visit_first_form,
                 'error_texts': error_texts}
     return render_to_response('patient_add.html',
                               response,
@@ -207,10 +222,10 @@ def search(request):
         death = form.cleaned_data.get('death')
         if death:
             patients_qs = patients_qs.filter(death=death)
-        lpu_added = form.cleaned_data.get('lpu_added')
-        if lpu_added:
+        mo_added = form.cleaned_data.get('mo_added')
+        if mo_added:
             patients_qs = patients_qs.filter(visit__is_add=True,
-                                             visit__lpu=lpu_added)
+                                             visit__mo=mo_added)
         special_cure = form.cleaned_data.get('special_cure')
         if special_cure:
             if special_cure in HEADER_SEARCH:
@@ -229,5 +244,43 @@ def search(request):
                 'header': header,
                 'have_search_result': True}
     return render_to_response('search.html',
+                              response,
+                              context_instance=RequestContext(request))
+
+
+def update_history(history, h_date, username):
+    history.append(((h_date, h_date + TIME_HISTORY_IGNORE), username))
+    return history
+
+
+@login_required
+def history(request, patient_id):
+    """ Список кто изменял в информацию о пациенте """
+    patient = get_object_or_404(Patient, pk=patient_id)
+    histories_qs = patient.history.filter(history_type='~') \
+                                  .values_list('history_date',
+                                               'history_user__username')
+    histories = [((d, d + TIME_HISTORY_IGNORE), u) for d, u in histories_qs]
+    
+    visits = patient.visit_set.all()
+    diagnosis = patient.diagnosis_set.all()
+    for element in chain(visits, diagnosis):
+        element_h_qs = element.history.values_list('history_date',
+                                                  'history_user__username')
+        for element_date, username in element_h_qs:
+            is_double_hist = False # Для каждого диагноза и визита пишется своя история.
+            for p_date, p_user in histories:
+                if p_date[0] <= element_date <= p_date[1] and \
+                   p_user == username:
+                    is_double_hist = True
+            if not is_double_hist:
+                histories = update_history(histories,
+                                           element_date,
+                                           username)
+
+    histories.sort(lambda x, y: cmp(x[0][0], y[0][0]))
+    response = {'histories': histories,
+                'patient': patient}
+    return render_to_response('patient_history.html',
                               response,
                               context_instance=RequestContext(request))

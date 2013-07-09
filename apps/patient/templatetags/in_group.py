@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django import template
 from django.utils.encoding import force_unicode
 
@@ -6,6 +6,9 @@ from django import forms
 
 
 register=template.Library()
+
+
+User = get_user_model()
 
 
 @register.filter
@@ -37,7 +40,7 @@ def in_group(user, groups):
 def date_fields_id(form):
     l = []
     for field in form:
-        if isinstance(field.field, forms.DateField):
+        if isinstance(field.field, (forms.DateField, forms.DateTimeField)):
             l.append('#' + field.auto_id)
     
     return ', '.join(l)
@@ -46,7 +49,7 @@ def date_fields_id(form):
 def no_date_fields_id(form):
     l = []
     for field in form:
-        if not isinstance(field.field, forms.DateField):
+        if not isinstance(field.field, (forms.DateField, forms.DateTimeField)):
             l.append('#' + field.auto_id)
             
     return ', '.join(l)

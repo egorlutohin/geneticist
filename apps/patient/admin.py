@@ -23,7 +23,7 @@ class DiagnosisInline(QsMixin, admin.StackedInline):
 
 class PatientAdmin(QsMixin, admin.ModelAdmin):
     list_display = list_display_links = ('full_name', 'birthday',
-                                         'diagnosis_text', 'allocate_lpu',
+                                         'diagnosis_text', 'allocate_mo',
                                          'get_gender_display',)
     search_fields = ['full_name']
     list_filter = ['special_cure']

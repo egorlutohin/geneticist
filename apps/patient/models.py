@@ -68,11 +68,12 @@ class Patient(BaseModel):
                      (NOT_NEED_CURE, u'Не нуждается'),
                      (GET_CURE, u'Получает',),
                      (RAISE_CURE, u'Снят',),)
-    TYPE_RESIDENCES = ((1, u'г. Новосибирск',),
-                       (2, u'Новосибирская область',),
-                       (3, u'Не Новосибирская область',),)
-    TYPE_CHOICES = ((1, u'Пробант',),
-                    (2, u'Плод'),)
+    TYPE_RESIDENCES = ((1, u'Житель г. Новосибирска',),
+                       (2, u'Житель НСО',),
+                       (3, u'Житель Инобластной',),)
+    TYPE_CHOICES = ((1, u'Пробанд',),
+                    (2, u'Плод'),
+                    (3, u'Член семьи',),)
     GENDER_CHOICES = ((1, u'М',),
                       (2, u'Ж',),
                       (3, u'Интерсекс',),
@@ -103,11 +104,11 @@ class Patient(BaseModel):
                                     blank=True, null=True)
     residence = models.TextField(verbose_name=u'Адрес проживания',
                                  blank=True, null=True)
-    code_allocate_lpu = models.CharField(u'Код МО прикрепления',
+    code_allocate_mo = models.CharField(u'Код МО прикрепления',
                                          max_length=20, blank=True, null=True)
-    name_allocate_lpu = models.TextField(u'Название МО прикрепления',
+    name_allocate_mo = models.TextField(u'Название МО прикрепления',
                                          max_length=100, blank=True, null=True)
-    allocate_lpu = models.ForeignKey(Organization, blank=True, null=True,
+    allocate_mo = models.ForeignKey(Organization, blank=True, null=True,
                                      verbose_name=u'ЛПУ прикрепления')
     _diagnosis_help = u'Вспомогательное поле, нужно для вывода диагноза в поиске'
     diagnosis_text = models.TextField(verbose_name=u'Диагноз по МКБ-10',
@@ -134,8 +135,10 @@ class Patient(BaseModel):
     gender = models.IntegerField(verbose_name=u'Пол', choices=GENDER_CHOICES)
     comment = models.TextField(verbose_name=u'Комментарий',
                                blank=True, null=True)
+    _DATE_REGISTRATION_HELP = u'При невыясненной дате день 01, месяц 01'
     date_registration = models.DateField(default=date.today,
-                                         verbose_name=u'Дата постановки на учет')
+                                         verbose_name=u'Дата постановки на учет',
+                                         help_text=_DATE_REGISTRATION_HELP)
     date_created = models.DateTimeField(default=datetime.now,
                                         verbose_name=u'Дата заполнения анкеты',
                                         editable=False)
@@ -160,11 +163,11 @@ class Patient(BaseModel):
             self.all_full_names = full_name + "\n" + self.all_full_names
         if not self.pk:
             self.all_full_names = full_name
-        if self.allocate_lpu:
-            self.code_allocate_lpu = self.allocate_lpu.code
-            self.name_allocate_lpu = self.allocate_lpu.full_name
+        if self.allocate_mo:
+            self.code_allocate_mo = self.allocate_mo.code
+            self.name_allocate_mo = self.allocate_mo.full_name
         else:
-            self.code_allocate_lpu = self.name_allocate_lpu = ''
+            self.code_allocate_mo = self.name_allocate_mo = ''
         super(Patient, self).save(*args, **kwargs)
 
     class Meta:
@@ -182,7 +185,7 @@ class Visit(BaseModel):
     )
     code = models.CharField(u'Код МО', max_length=7)
     name = models.TextField(u'Наименование МО')
-    lpu = models.ForeignKey(Organization, verbose_name=u'МО посещения')
+    mo = models.ForeignKey(Organization, verbose_name=u'Мед. Орг. посещения')
     date_created = models.DateTimeField(
         default=datetime.now,
         verbose_name=u'Дата внесения в регистр/Дата посещения'
@@ -195,8 +198,8 @@ class Visit(BaseModel):
         return "%s %s" % (self.name, self.date_created.strftime('%d.%m.%Y'))
 
     def save(self, *args, **kwargs):
-        self.code = self.lpu.code
-        self.name = self.lpu.name
+        self.code = self.mo.code
+        self.name = self.mo.name
         super(Visit, self).save(self, *args, **kwargs)
 
     class Meta:

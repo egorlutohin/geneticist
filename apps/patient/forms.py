@@ -11,13 +11,13 @@ from widgets import CalendarWidget
 
 class SearchForm(forms.Form):
     """ Форма поиска пациентов """
-    _LPU_QS = Visit.objects.filter(is_add=True).values_list('lpu')
+    _LPU_QS = Visit.objects.filter(is_add=True).values_list('mo')
     _LPU_ADDED_QS = Organization.objects.filter(pk__in=_LPU_QS)
     full_name = forms.CharField(required=False, label=u'ФИО')
     birthday = forms.DateField(required=False,label=u'Дата рождения')
     death = forms.DateField(required=False, label=u'Дата смерти')
     diagnosis = forms.CharField(required=False, label=u'Диагноз по МКБ')
-    lpu_added = forms.ModelChoiceField(required=False,
+    mo_added = forms.ModelChoiceField(required=False,
                                        label=u'МО внесения в регистр',
                                        queryset=_LPU_ADDED_QS)
     TYPE_RESIDENCES = (('', '-----',),) + Patient.TYPE_RESIDENCES
@@ -67,14 +67,32 @@ class PatientForm(forms.ModelForm):
         model = Patient
         exclude = ('is_active', 'user_changed', 'date_changed',
                    'diagnosis_text', 'diagnosis_text_code',
-                   'code_allocate_lpu', 'name_allocate_lpu',
-                   'full_name', 'prev_full_name', 'all_full_names',)
+                   'code_allocate_mo', 'name_allocate_mo',
+                   'full_name', 'prev_full_name', 'all_full_names',
+                   'date_registration',)
 
 
 class VisitForm(forms.ModelForm):
+    is_visit = forms.BooleanField(required=False,
+                                  label=u'Зарегистрировать посещение')
+
+    def __init__(self, *args, **kwargs):
+        super(VisitForm, self).__init__(*args, **kwargs)
+        self.fields['date_created'].widget = forms.widgets.DateInput()
+
     class Meta:
         model = Visit
-        exclude = ('is_active', 'patient', 'user_created', 'date_created',
+        exclude = ('is_active', 'patient', 'user_created', 'mo',
+                   'name', 'code', 'is_add',)
+
+
+class VisitFirstForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(VisitFirstForm, self).__init__(*args, **kwargs)
+        self.fields['date_created'].widget = forms.widgets.DateInput()
+
+    class Meta(VisitForm.Meta):
+        exclude = ('is_active', 'patient', 'user_created',
                    'name', 'code', 'is_add',)
 
 
@@ -86,7 +104,7 @@ class DiagnosisForm(forms.ModelForm):
 
     class Meta:
         model = Diagnosis
-        exclude = ('is_active', 'patient', 'user_changed', 'date_changed',)
+        exclude = ('is_active', 'patient', 'user_changed',)
 
 
 DiagnosisFormset = formset_factory(DiagnosisForm, extra=1, max_num=100)

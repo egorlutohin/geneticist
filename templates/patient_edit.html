@@ -2,6 +2,8 @@
 
 {% block title %}просмотр и изменение информации о пациенте{% endblock %}
 
-{% block edit_patient %} class="active"{% endblock %}
+{% block content_header %}<h1>Запись #{{patient.pk}}</h1>
+<a href="{% url 'patient_history' patient.pk %}">Список лиц, изменивших информацию о пациенте</a>
+{% endblock %}
 
-{% block content_header %}<h1>Запись #{{patient.pk}}</h1>{% endblock %}
+{% block edit_patient %} class="active"{% endblock %}
