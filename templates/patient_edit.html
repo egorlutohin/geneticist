@@ -2,8 +2,26 @@
 
 {% block title %}просмотр и изменение информации о пациенте{% endblock %}
 
-{% block content_header %}<h1>Запись #{{patient.pk}}</h1>
-<a href="{% url 'patient_history' patient.pk %}">Список лиц, изменивших информацию о пациенте</a>
+{% block content_header %}
+<h1>Запись #{{patient.pk}} 
+    <small><button data-toggle="modal" data-target="#history" data-keyboard="true" data-remote="{% url 'patient_history' patient.pk %}" class="btn btn-small btn-link">
+    <i class="icon-list"></i> История изменений</button></small>
+</h1>
+
+<div id="history" class="modal hide" role="dialog" data-keyboard="true" tabindex="-1">
+    <div class="modal-header">
+    <a href="#" class="close" data-dismiss="modal">&times;</a>
+    <h3>История изменений</h3>
+    </div>
+    <div class="modal-body" style="height: 350px;">
+    </div>
+    <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Закрыть</a>
+    </div>
+</div>
+<script>
+</script>
+
 {% endblock %}
 
 {% block edit_patient %} class="active"{% endblock %}
