@@ -251,8 +251,11 @@ def search(request):
                               context_instance=RequestContext(request))
 
 
-def update_history(history, h_date, username):
-    history.append(((h_date, h_date + TIME_HISTORY_IGNORE), username))
+def update_history(history, h_date, username, full_name, mo_name):
+    history.append(((h_date, h_date + TIME_HISTORY_IGNORE),
+                    username,
+                    full_name,
+                    mo_name))
     return history
 
 
@@ -262,24 +265,30 @@ def history(request, patient_id):
     patient = get_object_or_404(Patient, pk=patient_id)
     histories_qs = patient.history.filter(history_type='~') \
                                   .values_list('history_date',
-                                               'history_user__username')
-    histories = [((d, d + TIME_HISTORY_IGNORE), u) for d, u in histories_qs]
+                                               'history_user__username',
+                                               'history_user__full_name',
+                                               'history_user__mo_name')
+    histories = [((d, d + TIME_HISTORY_IGNORE), u, n, m) for d, u, n, m in histories_qs]
     
     visits = patient.visit_set.all()
     diagnosis = patient.diagnosis_set.all()
     for element in chain(visits, diagnosis):
         element_h_qs = element.history.values_list('history_date',
-                                                  'history_user__username')
-        for element_date, username in element_h_qs:
+                                                   'history_user__username',
+                                                   'history_user__full_name',
+                                                   'history_user__mo_name')
+        for element_date, username, full_name, mo_name in element_h_qs:
             is_double_hist = False # Для каждого диагноза и визита пишется своя история.
-            for p_date, p_user in histories:
+            for p_date, p_user, p_name, p_mo in histories:
                 if p_date[0] <= element_date <= p_date[1] and \
                    p_user == username:
                     is_double_hist = True
             if not is_double_hist:
                 histories = update_history(histories,
                                            element_date,
-                                           username)
+                                           username,
+                                           full_name,
+                                           mo_name)
 
     histories.sort(lambda x, y: cmp(x[0][0], y[0][0]))
     response = {'histories': histories,

@@ -11,6 +11,7 @@ class CustomUser(AbstractUser):
                            verbose_name=u'Мед. организация',
                            blank=True, null=True)
     mo_name = models.TextField(verbose_name=u'Название мед. организации')
+    full_name = models.TextField(verbose_name=u'Полное имя')
 
     def __unicode__(self):
         return super(CustomUser, self).__unicode__()
@@ -18,6 +19,8 @@ class CustomUser(AbstractUser):
     def save(self, *args, **kwargs):
         if self.mo:
             self.mo_name = self.mo.name
+        name_params = (self.last_name, self.first_name, self.patronymic,)
+        self.full_name = ' '.join(name_params)
         super(CustomUser, self).save(*args, **kwargs)
 
     class Meta:
