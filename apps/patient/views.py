@@ -57,7 +57,7 @@ def clear_ids(request):
 
 @login_required
 @nested_commit_on_success
-def edit(request, patient_id): # TODO: нужно доделать + обсудить когда посещение обязательно
+def edit(request, patient_id):
     """ Просмотр и изменение информации о пациенте """
     patient = get_object_or_404(Patient, pk=patient_id)
     diagnosis_qs = patient.diagnosis_set.all()
@@ -96,10 +96,11 @@ def edit(request, patient_id): # TODO: нужно доделать + обсуд�
                                  u'Информация о пациенте изменена')
             if visit_form.cleaned_data.get('is_visit', False):
                 visit = visit_form.save(commit=False)
-                visit.mo = request.user.mo
+                #visit.mo = request.user.mo
                 visit.patient = patient
                 visit.save()
-                visit_form = VisitForm(prefix=VISIT_PREFIX)
+                visit_form = VisitForm(prefix=VISIT_PREFIX,
+                                       initial={'mo': request.user.mo.pk})
             # если все сохранилось, то правильно выводим где флажки "удалить", а где текст
             diagnosis_formset = DiagnosisModelFormset(
                 prefix=DIAGNOSIS_PREFIX,
@@ -110,7 +111,8 @@ def edit(request, patient_id): # TODO: нужно доделать + обсуд�
         patient_form = PatientForm(instance=patient)
         diagnosis_formset = DiagnosisModelFormset(prefix=DIAGNOSIS_PREFIX,
                                                   queryset=diagnosis_qs)
-        visit_form = VisitForm(prefix=VISIT_PREFIX)
+        visit_form = VisitForm(prefix=VISIT_PREFIX,
+                               initial={'mo': request.user.mo.pk})
 
     response = {'patient_form': patient_form,
                 'diagnosis_formset': diagnosis_formset,
@@ -159,7 +161,7 @@ def add(request):
             visit_first.save()
             if visit_form.cleaned_data.get('is_visit', False):
                 visit = visit_form.save(commit=False)
-                visit.mo = request.user.mo
+                #visit.mo = request.user.mo
                 visit.patient = patient
                 visit.save()
             Patient.objects.filter(pk=patient.pk) \
@@ -171,8 +173,9 @@ def add(request):
     else:
         patient_form = PatientForm()
         diagnosis_formset = DiagnosisFormset(prefix=DIAGNOSIS_PREFIX)
-        visit_form = VisitForm(prefix=VISIT_PREFIX)
-        visit_first_form = VisitFirstForm(prefix=VISIT_FIRST_PREFIX)
+        visit_form = VisitForm(prefix=VISIT_PREFIX, initial={'mo': request.user.mo.pk})
+        visit_first_form = VisitFirstForm(prefix=VISIT_FIRST_PREFIX,
+                                           initial={'mo': request.user.mo.pk})
 
     response = {'patient_form': patient_form,
                 'diagnosis_formset': diagnosis_formset,

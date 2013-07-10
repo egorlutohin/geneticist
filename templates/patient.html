@@ -363,20 +363,39 @@
     <legend>Посещения <a onclick="$('#visit_data').slideToggle(); $(this).text($(this).text() == '▼' ?'◀': '▼');">▼</a></legend>
     <div class="inner" id="visit_data">
      {% if visits_qs %}
-     <ul>
-     {% for visit in visits_qs %}
-      <li>{{ visit }} {% if visit.is_add %} <em><small>(постановка на учет)</small></em>{% endif %}</li>
-     {% endfor %}
-     </ul> 
-     <br /><br />
+      <ul>
+      {% for visit in visits_qs %}
+       <li>{{ visit }} {% if visit.is_add %} <em><small>(постановка на учет)</small></em>{% endif %}</li>
+      {% endfor %}
+      </ul> 
+      <br /><br />
      {% endif %} 
-     <label for="{{visit_form.is_visit.auto_id}}">{{visit_form.is_visit.label}}</label>
-     {% render_field visit_form.is_visit class+="input-block-level" %}
-     <label for="{{visit_form.mo.auto_id}}">{{visit_form.mo.label}}{% if visit_form.mo.field.required %} <span class="text-error">*</span>{% endif %}</label>
-     {% render_field visit_form.date_created class+="input-block-level" %}
-     <div class="text-error">
-     {% if visit_form.date_created.errors %} {{ visit_form.date_created.errors }} {% endif %}
-     </div>
+    <div id="control_data_table">
+    <table>
+     <tr>
+      <td style="width: 15%">
+       <label for="{{visit_form.is_visit.auto_id}}">{{visit_form.is_visit.label}}</label>
+       {% render_field visit_form.is_visit class+="input-block-level" %}
+      </td>
+      <td style="width: 35%">
+       <label for="{{ visit_form.date_created.auto_id }}">Дата посещения</label>
+       {% render_field visit_form.date_created class+="input-block-level" %}
+      </td>
+      <td>
+       <label for="{{visit_form.mo.auto_id}}">{{visit_form.mo.label}}</label>
+       {% render_field visit_form.mo class="input-block-level" %}
+      </td>
+     </tr>
+     <tr>
+      <td class="text-error errorcell">&nbsp;</td>
+      <td class="text-error errorcell">
+       {% if visit_form.date_created.errors %} {{ visit_form.date_created.errors}} {% endif %}
+      </td>
+      <td class="text-error errorcell">
+       {% if visit_form.mo.errors %} {{ visit_form.mo.errors}} {% endif %}
+      </td>
+     </tr>
+    </table>
     </div>
     </fieldset>
    </div>
