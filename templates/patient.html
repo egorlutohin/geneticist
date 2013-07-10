@@ -17,7 +17,7 @@
 <script src="/static/bootstrap/js/bootstrap.min.js"></script>
 
 <link href="{{ STATIC_URL }}bootstrap-datepicker/css/datepicker.css" rel="stylesheet" />
-<script src="{{ STATIC_URL }}/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+<script src="{{ STATIC_URL }}bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 
 
 
@@ -29,7 +29,9 @@
    #content fieldset td input, #content fieldset td textarea, #content fieldset td select  {margin-bottom: 0; }
    #content legend {margin: 0 5px; padding: 0;}
    #content div.well, div.outer {padding: 15px; width: 600px;}
-   #content div.submit {width: 630px;}
+   #content h1, #content h2 {width: 630px; position: relative;}
+   #content h1 small {position: absolute; right: 0; bottom: 0px;}
+      #content div.submit {width: 630px;}
    #content i {margin-left: 5px;}
    .diagnosis_delete_checkbox label {display: inline;}
    .diagnosis_delete_checkbox input {display: inline; margin-top: 0}
@@ -363,7 +365,7 @@
      {% if visits_qs %}
      <ul>
      {% for visit in visits_qs %}
-      <li>{{ visit }} {% if visit.is_add %} Регистрация{% endif %}</li>
+      <li>{{ visit }} {% if visit.is_add %} <em><small>(постановка на учет)</small></em>{% endif %}</li>
      {% endfor %}
      </ul> 
      <br /><br />

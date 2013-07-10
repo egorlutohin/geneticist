@@ -28,8 +28,8 @@
           <a class="brand" href="/">Генетический реестр пациентов НСО</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
-              Дорбо пожаловать, <strong>{{user.first_name}}</strong>.
-              <a href="{% url 'logout'%}" class="navbar-link">Выйти</a>
+              {{user.mo.short_name}}, {{user.last_name}} {{user.first_name}} {{user.patronymic}}.
+              <strong><a href="{% url 'logout'%}" class="navbar-link">Выйти</a></strong>
             </p>
           </div>
         </div>
