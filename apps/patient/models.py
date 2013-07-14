@@ -180,7 +180,6 @@ class Patient(BaseModel):
         verbose_name = u'Пациент'
         verbose_name_plural = u'Пациенты'
         ordering = ['first_name', 'last_name', 'patronymic', 'birthday']
-        unique_together = ('last_name', 'first_name', 'patronymic', 'birthday', 'type')
 
 
 class Visit(BaseModel):

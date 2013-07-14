@@ -156,13 +156,17 @@ def add(request):
             error_texts.append(u'Нужно записать хотя бы 1 диагноз')
         if not avalible_error:
             try:
-                patient.save()
-            except django.db.IntegrityError:
                 p = patient
-                pk = Patient.objects.get(last_name = p.last_name, first_name = p.first_name, patronymic = p.patronymic, type = p.type).pk
-                e = u'Данный тип пациента с таким ФИО и датой рождения <a href="%s" target="_blank">уже есть в реестре</a>' % reverse('patient_edit', kwargs={'patient_id': pk})
+                ps = Patient.objects.filter(last_name = p.last_name, first_name = p.first_name, patronymic = p.patronymic, birthday=p.birthday, type = p.type)
+                
+                if len(ps) > 0:
+                    raise
+                    
+            except:
+                e = u'Данный тип пациента с таким ФИО и датой рождения <a href="%s" target="_blank">уже есть в реестре</a>' % reverse('patient_edit', kwargs={'patient_id': ps[0].pk})
                 error_texts.append(e)
             else:
+                patient.save()
                 save_formset(diagnosis_formset, patient)
                 visit_first = visit_first_form.save(commit=False)
                 visit_first.patient = patient
