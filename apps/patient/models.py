@@ -71,13 +71,19 @@ class Patient(BaseModel):
     TYPE_RESIDENCES = ((1, u'Житель г. Новосибирска',),
                        (2, u'Житель НСО',),
                        (3, u'Житель Инобластной',),)
-    TYPE_CHOICES = ((1, u'Пробанд',),
-                    (2, u'Плод'),
-                    (3, u'Член семьи',),)
+                       
+    PROBAND = 1
+    FETUS = 2
+    FAMILY_MEMBER = 3
+    TYPE_CHOICES = ((PROBAND, u'Пробанд',),
+                    (FETUS, u'Плод'),
+                    (FAMILY_MEMBER, u'Член семьи',),)
+                    
     GENDER_CHOICES = ((1, u'М',),
                       (2, u'Ж',),
                       (3, u'Интерсекс',),
                       (4, u'Неизвестно',),)
+                      
     first_name = models.CharField(u'Имя', max_length=100)
     last_name = models.CharField(u'Фамилия', max_length=100)
     patronymic = models.CharField(u'Отчество', max_length=100)
