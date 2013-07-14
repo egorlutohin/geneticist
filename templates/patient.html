@@ -14,7 +14,7 @@
 
 <script src="{{ STATIC_URL }}other/mkb_init.js" type="text/javascript"></script>
 <script src="{{ STATIC_URL }}other/kladr.js" type="text/javascript"></script>
-<script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
 
 <link href="{{ STATIC_URL }}bootstrap-datepicker/css/datepicker.css" rel="stylesheet" />
 <script src="{{ STATIC_URL }}bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
@@ -72,7 +72,7 @@
 </div>
 {% block content_header %} {% endblock %}
 <input type="hidden" id="e5" style="width:300px"/>
-<form action='.' method="post">
+<form action='.' method="post" id="patient_form">
 {% if diagnosis_formset.errors or patient_form.errors or visit_form.errors or visit_first_form.non_field_error or error_texts %}
   <h3 class="text-error">Пожалуйста, исправьте ошибки</h3>
   <div id="non-field-errors" class="text-error">
@@ -83,7 +83,7 @@
   {% if error_texts %}
   <ul class="errorlist">
     {% for err in error_texts %}
-    <li>{{ err }}</li>
+    <li>{{ err|safe }}</li>
     {% endfor %}
   </ul>
   {% endif %}
@@ -93,8 +93,6 @@
 {% csrf_token %}
 {{ diagnosis_formset.management_form }}
 {% load in_group %}
-
-<!-- Egor -->
 {% load widget_tweaks %}
    {% with f=patient_form %}
    <div class="well">
@@ -405,14 +403,13 @@
      <button class="btn btn-primary btn-large" type="submit">Сохранить</button>
      <button class="btn btn-primary dropdown-toggle btn-large" data-toggle="dropdown"><span class="caret"></span></button>
      <ul class="dropdown-menu text-left">
-      <!-- пока не работает -->
-      <li><a href="#">Сохранить</a></li>
-      <li><a href="#">Сохранить и добавить нового пацента</a></li>
-      <li><a href="#">Сохранить и продолжить редактировать</a></li>
+      <li><a href="#" onclick="$('#patinet_form').submit(); return false;">Сохранить</a></li>
+      <li><a href="#" onclick="$('#__redirect_to').val('add'); $('#patient_form').submit(); return false;">Сохранить и добавить нового пацента</a></li>
+      <li><a href="#" onclick="$('#__redirect_to').val('edit'); $('#patient_form').submit(); return false;">Сохранить и продолжить редактировать</a></li>
      </ul>
     </div>
    </div>
-<!-- /Egor -->
 <br /><br /><br /><br />
+<input type="hidden" id="__redirect_to" name="__redirect_to" value="" />
 </form>
 {% endblock %}
