@@ -361,7 +361,7 @@
    <div class="well">
     <fieldset>
     <legend>Посещения <a onclick="$('#visit_data').slideToggle(); $(this).text($(this).text() == '▼' ?'◀': '▼');">▼</a></legend>
-    <div class="inner" id="visit_data">
+    <div id="visit_data">
      {% if visits_qs %}
       <ul>
       {% for visit in visits_qs %}
@@ -373,10 +373,6 @@
     <div id="control_data_table">
     <table>
      <tr>
-      <td style="width: 15%">
-       <label for="{{visit_form.is_visit.auto_id}}">{{visit_form.is_visit.label}}</label>
-       {% render_field visit_form.is_visit class+="input-block-level" %}
-      </td>
       <td style="width: 35%">
        <label for="{{ visit_form.date_created.auto_id }}">Дата посещения</label>
        {% render_field visit_form.date_created class+="input-block-level" %}
@@ -387,12 +383,16 @@
       </td>
      </tr>
      <tr>
-      <td class="text-error errorcell">&nbsp;</td>
       <td class="text-error errorcell">
        {% if visit_form.date_created.errors %} {{ visit_form.date_created.errors}} {% endif %}
       </td>
       <td class="text-error errorcell">
        {% if visit_form.mo.errors %} {{ visit_form.mo.errors}} {% endif %}
+      </td>
+     </tr>
+     <tr>
+      <td colspan="2">
+       <label for="{{visit_form.is_visit.auto_id}}">{% render_field visit_form.is_visit style="margin: 0; position: relative; top: -1px;" %} {{visit_form.is_visit.label}}</label>
       </td>
      </tr>
     </table>
