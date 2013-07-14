@@ -1,2 +1,2 @@
-from .base import *
-from .local_settings import *
+from base import *
+from local_settings import *
