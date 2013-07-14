@@ -117,7 +117,7 @@ class Patient(BaseModel):
     diagnosis_text_code = models.TextField(verbose_name=u'Диагноз по МКБ-10',
                                            editable=False, blank=True, null=True,
                                            help_text=_diagnosis_help)
-    diagnosis_comment = models.TextField(verbose_name=u'Комментарий к диагнозу',
+    diagnosis_comment = models.TextField(verbose_name=u'Комментарий к диагнозам',
                                          blank=True, null=True)
     social_status = models.IntegerField(verbose_name=u'Социальный статус',
                                         blank=True, null=True, db_index=True,
@@ -185,7 +185,7 @@ class Visit(BaseModel):
     )
     code = models.CharField(u'Код МО', max_length=7)
     name = models.TextField(u'Наименование МО')
-    mo = models.ForeignKey(Organization, verbose_name=u'Мед. Орг. посещения')
+    mo = models.ForeignKey(Organization, verbose_name=u'Мед. орг. посещения')
     date_created = models.DateTimeField(
         default=datetime.now,
         verbose_name=u'Дата внесения в регистр/Дата посещения'
