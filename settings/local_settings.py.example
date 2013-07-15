@@ -1,5 +1,10 @@
 import sys
 
+DEBUG = False
+
+ALLOWED_HOSTS=['localhost', 'www.localhost']
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.

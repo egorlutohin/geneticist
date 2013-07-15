@@ -71,13 +71,19 @@ class Patient(BaseModel):
     TYPE_RESIDENCES = ((1, u'Житель г. Новосибирска',),
                        (2, u'Житель НСО',),
                        (3, u'Житель Инобластной',),)
-    TYPE_CHOICES = ((1, u'Пробанд',),
-                    (2, u'Плод'),
-                    (3, u'Член семьи',),)
+                       
+    PROBAND = 1
+    FETUS = 2
+    FAMILY_MEMBER = 3
+    TYPE_CHOICES = ((PROBAND, u'Пробанд',),
+                    (FETUS, u'Плод'),
+                    (FAMILY_MEMBER, u'Член семьи',),)
+                    
     GENDER_CHOICES = ((1, u'М',),
                       (2, u'Ж',),
                       (3, u'Интерсекс',),
                       (4, u'Неизвестно',),)
+                      
     first_name = models.CharField(u'Имя', max_length=100)
     last_name = models.CharField(u'Фамилия', max_length=100)
     patronymic = models.CharField(u'Отчество', max_length=100)
@@ -117,7 +123,7 @@ class Patient(BaseModel):
     diagnosis_text_code = models.TextField(verbose_name=u'Диагноз по МКБ-10',
                                            editable=False, blank=True, null=True,
                                            help_text=_diagnosis_help)
-    diagnosis_comment = models.TextField(verbose_name=u'Комментарий к диагнозу',
+    diagnosis_comment = models.TextField(verbose_name=u'Комментарий к диагнозам',
                                          blank=True, null=True)
     social_status = models.IntegerField(verbose_name=u'Социальный статус',
                                         blank=True, null=True, db_index=True,
@@ -185,7 +191,7 @@ class Visit(BaseModel):
     )
     code = models.CharField(u'Код МО', max_length=7)
     name = models.TextField(u'Наименование МО')
-    mo = models.ForeignKey(Organization, verbose_name=u'Мед. Орг. посещения')
+    mo = models.ForeignKey(Organization, verbose_name=u'Мед. орг. посещения')
     date_created = models.DateTimeField(
         default=datetime.now,
         verbose_name=u'Дата внесения в регистр/Дата посещения'

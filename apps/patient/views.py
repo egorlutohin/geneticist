@@ -2,6 +2,8 @@
 from datetime import datetime, timedelta
 from itertools import chain
 
+import django
+
 from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.contrib import messages
@@ -153,23 +155,42 @@ def add(request):
             avalible_error = True
             error_texts.append(u'Нужно записать хотя бы 1 диагноз')
         if not avalible_error:
-            patient.save()
-            save_formset(diagnosis_formset, patient)
-            visit_first = visit_first_form.save(commit=False)
-            visit_first.patient = patient
-            visit_first.is_add = True
-            visit_first.save()
-            if visit_form.cleaned_data.get('is_visit', False):
-                visit = visit_form.save(commit=False)
-                #visit.mo = request.user.mo
-                visit.patient = patient
-                visit.save()
-            Patient.objects.filter(pk=patient.pk) \
+            try:
+                p = patient
+                ps = Patient.objects.filter(last_name = p.last_name, first_name = p.first_name, patronymic = p.patronymic, birthday=p.birthday, type = p.type)
+                
+                if len(ps) > 0:
+                    raise
+                    
+            except:
+                e = u'Данный тип пациента с таким ФИО и датой рождения <a href="%s" target="_blank">уже есть в реестре</a>' % reverse('patient_edit', kwargs={'patient_id': ps[0].pk})
+                error_texts.append(e)
+            else:
+                patient.save()
+                save_formset(diagnosis_formset, patient)
+                visit_first = visit_first_form.save(commit=False)
+                visit_first.patient = patient
+                visit_first.is_add = True
+                visit_first.save()
+                if visit_form.cleaned_data.get('is_visit', False):
+                    visit = visit_form.save(commit=False)
+                    #visit.mo = request.user.mo
+                    visit.patient = patient
+                    visit.save()
+                Patient.objects.filter(pk=patient.pk) \
                            .update(diagnosis_text = get_diagnosis_text(patient),
                                    diagnosis_text_code = get_diagnosis_code(patient))
-            messages.add_message(request, messages.INFO, u'Пациент внесен в регистр')
-            url = reverse('patient_edit', kwargs={'patient_id': patient.pk})
-            return redirect(url)
+                messages.add_message(request, messages.INFO, u'Пациент "%s" внесен в реестр' % patient.get_full_name())
+            
+                redirect_to = request.POST.get('__redirect_to')
+                if redirect_to == 'edit':
+                    url = reverse('patient_edit', kwargs={'patient_id': patient.pk})
+                elif redirect_to == 'add':
+                    url = reverse('patient_add')
+                else:
+                    url = reverse('patient_search')
+                
+                return redirect(url)
     else:
         patient_form = PatientForm()
         diagnosis_formset = DiagnosisFormset(prefix=DIAGNOSIS_PREFIX)
