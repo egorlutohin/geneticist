@@ -1,0 +1,45 @@
+﻿# Краткая инструкция по установке
+
+1. apt-get install python python-pip python-virtualenv python-ldap nginx uwsgi uwsgi-plugin-python mysql-server python-mysqldb git
+2. mkdir /web; cd /web
+3. virtualenv geneticist
+4. cd genegicist
+5. git clone git@github.com:dicos/geneticist.git
+6. cd geneticist
+7. source ../bin/activate
+8. pip install -r requirements.pip
+9. cp settings/local_settings.py.sample settings/local_settings.py
+10. изменить настройки подключения к базе данных mysql в файле settings/local_settings.py:
+  * параметры бызы данных в словаре DATABASES/default
+    * name - имя базы данных
+    * user - пользователь базы данных
+    * password - пароль для базы данных
+  * параметры приложения
+    * SERVER_URL
+    * ALLOWED_HOSTS    
+  * параметры active directory для аутентификации в Active Directory (если не нужна, можно оставить закомментированными)
+    * AD_DNS_NAME - DNS имя домена, или FQDN сервера AD, или ip-адрес сервера AD
+    * AD_NT4_DOMAIN - имя домена AD
+11. при помощи phpmyadmin создать базу данных.
+12. В панели phpmyadmin выполнить все инструкции, которые описаны в файле apps/kladr/sql/kladr.mysql.sql
+13. python manage.py syncdb:
+	Cоздаем таблицы в базе данных
+	На вопрос "You just installed Django's auth system, which means you don't have any superusers defined.Would you like to create one now? (yes/no): "
+ответить "no"
+14. python manage.py collectstatic:
+/manage.py collectstatic
+На вопрос 
+"You have requested to collect static files at the destination
+location as specified in your settings.
+This will overwrite existing files!
+Are you sure you want to do this?
+Type 'yes' to continue, or 'no' to cancel: " 
+ответить "yes"
+15. python manage.py insert_mkb
+16. python manage.py insert_organization
+17. python manage.py import_kladr # очень долго будет выполняться
+18. python manage.py runserver 0.0.0.0:8000
+http://server:8000/
+Елсли работает, то можно настраивать демно uwsgi и сервер nginx
+
+Общая инструкция по разворачиванию django - https://docs.djangoproject.com/en/1.5/howto/deployment/.
