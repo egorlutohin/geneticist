@@ -46,9 +46,14 @@
   <body>
 
     <div class="container">
-    <form  class="form-signin" method="post" action="{% url 'django.contrib.auth.views.login' %}">{% csrf_token %}
+    <form  class="form-signin" method="post" action="{% url 'auth.views.login' %}">{% csrf_token %}
     {% if form.errors %}
-	<p class="error">Такого пользователя не существует, или неправильный пароль. Либо у вас нет доступа к данному разделу.</p>
+        <p class="error">Такого пользователя не существует, или неправильный пароль.</p>
+    {% endif %}
+    {% if error %}
+        <p class="error">
+          {{error}}
+        </p>
     {% endif %}
         <h3 class="form-signin-heading">Генетический реестр пациентов НСО</h2>
         <input type="text" name="{{ form.username.html_name }}" class="input-block-level" placeholder="{{ form.username.label }}"{% if form.username.value %} value="{{form.username.value}}"{% endif %}>

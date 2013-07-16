@@ -24,6 +24,11 @@ CACHES = {
         'LOCATION': '127.0.0.1:11211'
     }
 }
+
+# Add this stuff if you want to use ldap auth
+#AD_DNS_NAME = 'example.com'
+#AD_NT4_DOMAIN = 'EXAMPLE' # This is the NT4/Samba domain name
+
 if 'test' in sys.argv:
     DATABASES = {
         'default': {

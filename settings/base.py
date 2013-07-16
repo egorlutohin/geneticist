@@ -170,3 +170,7 @@ LOGGING = {
         },
     }
 }
+
+AD_LDAP_PORT = 389
+LDAP = False
+
