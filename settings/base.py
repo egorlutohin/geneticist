@@ -172,5 +172,7 @@ LOGGING = {
 }
 
 AD_LDAP_PORT = 389
-LDAP = False
 
+#AD_DNS_NAME = '192.168.128.12'
+#AD_NT4_DOMAIN = 'NSO.LOC' # This is the NT4/Samba domain name
+#AD_SEARCH_DN = 'OU=023,OU=OIOGV,OU=ANO,DC=NSO,DC=LOC'

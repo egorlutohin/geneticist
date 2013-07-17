@@ -28,6 +28,8 @@ CACHES = {
 # Add this stuff if you want to use ldap auth
 #AD_DNS_NAME = 'example.com'
 #AD_NT4_DOMAIN = 'EXAMPLE' # This is the NT4/Samba domain name
+#AD_SEARCH_DN = 'CN=Users,dc=example,dc=com'
+#AD_LDAP_PORT = 389
 
 if 'test' in sys.argv:
     DATABASES = {

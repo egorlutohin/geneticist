@@ -25,15 +25,15 @@ def login(request, template_name='registration/login.html',
     
     error_text = ""
     
-    redirect_to = request.REQUEST.get(redirect_field_name, '')
+    redirect_to = request.REQUEST.get(redirect_field_name, '/')
 
     if request.method == "POST":
         form = authentication_form(data=request.POST)
         if form.is_valid():
 
             # Ensure the user-originating redirection url is safe.
-            if not is_safe_url(url=redirect_to, host=request.get_host()):
-                redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
+            #~ if not is_safe_url(url=redirect_to, host=request.get_host()):
+                #~ redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
                 
             user = form.get_user()
             
