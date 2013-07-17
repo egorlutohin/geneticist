@@ -56,7 +56,7 @@
         </p>
     {% endif %}
         <h3 class="form-signin-heading">Генетический реестр пациентов НСО</h2>
-        <input type="text" name="{{ form.username.html_name }}" class="input-block-level" placeholder="{{ form.username.label }}"{% if form.username.value %} value="{{form.username.value}}"{% endif %}>
+        <input type="text" name="{{ form.username.html_name }}" class="input-block-level" placeholder="{{ form.username.label }}"{% if form.username.value %} value="{{form.username.value}}"{% endif %} autofocus="autofocus">
         <input type="password" name="{{form.password.html_name}}" class="input-block-level" placeholder="{{ form.password.label }}">
 	<input type="hidden" name="next" value="{{ next }}" />
         <button class="btn btn-large btn-primary" type="submit">Войти</button>
