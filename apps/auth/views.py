@@ -29,7 +29,12 @@ def login(request, template_name='registration/login.html',
 
     if request.method == "POST":
         form = authentication_form(data=request.POST)
-        if form.is_valid():
+        try:
+            form_valid = form.is_valid()
+        except Exception, e:
+            error_text = unicode(e)
+            form_valid = False
+        if form_valid:
 
             # Ensure the user-originating redirection url is safe.
             #~ if not is_safe_url(url=redirect_to, host=request.get_host()):

@@ -1,3 +1,4 @@
+# encoding: utf8
 """
 Code adopted from http://djangosnippets.org/snippets/501/
 """
@@ -16,7 +17,8 @@ class ActiveDirectoryBackend:
   def authenticate(self,username=None,password=None):
       
     lc = ldap.initialize(settings.AD_LDAP_URL)
-    if not self.is_valid(lc ,username,password):
+    lc.set_option(ldap.OPT_NETWORK_TIMEOUT, 10.0)
+    if not self.is_valid(lc, username, password):
       return None
       
     result = lc.search_s(settings.AD_SEARCH_DN, ldap.SCOPE_SUBTREE, 'sAMAccountName=%s' % username, ['memberOf', 'givenName', 'sn', 'displayName'])
@@ -79,18 +81,20 @@ class ActiveDirectoryBackend:
 
   def get_user(self,user_id):
     try:
-      return User.objects.get(pk=user_id)
+        return User.objects.get(pk=user_id)
     except User.DoesNotExist:
-      return None
+        return None
 
   def is_valid (self, l, username=None,password=None):
     ## Disallowing null or blank string as password
     ## as per comment: http://www.djangosnippets.org/snippets/501/#c868
     if password == None or password == '':
-      return False
+        return False
     binddn = "%s@%s" % (username,settings.AD_NT4_DOMAIN)
     try:
-      l.simple_bind_s(binddn,password)
-      return True
+        l.simple_bind_s(binddn,password)
+        return True
+    except ldap.SERVER_DOWN:
+        raise Exception(u'Сервер авторизации не доступен')
     except ldap.LDAPError:
-      return False
+        return False
