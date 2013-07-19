@@ -3,4 +3,8 @@ from django.contrib import admin
 
 from models import Organization
 
-admin.site.register(Organization, admin.ModelAdmin)
+class OrganizationAdmin(admin.ModelAdmin):
+    list_display = ('name', 'ldap_name')
+    search_fields = ('name',)
+
+admin.site.register(Organization, OrganizationAdmin)
