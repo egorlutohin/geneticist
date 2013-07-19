@@ -57,9 +57,9 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = False
 
-MEDIA_ROOT, MEDIA_URL = rel('media'), '/media/'
+MEDIA_ROOT, MEDIA_URL = rel('public_html/media'), '/media/'
 
-STATIC_ROOT, STATIC_URL = '', '/static/'
+STATIC_ROOT, STATIC_URL = rel('public_html/static'), '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
