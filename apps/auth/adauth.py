@@ -95,6 +95,6 @@ class ActiveDirectoryBackend:
         l.simple_bind_s(binddn,password)
         return True
     except ldap.SERVER_DOWN:
-        raise Exception(u'Сервер авторизации не доступен')
+        raise Exception(u'Сервер авторизации недоступен')
     except ldap.LDAPError:
         return False
