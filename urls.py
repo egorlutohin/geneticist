@@ -22,6 +22,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^%s$' % settings.LOGIN_URL[1:], 'auth.views.login', name='login'),
     url(r'^%s$' % settings.LOGOUT_URL[1:], 'django.contrib.auth.views.logout', {'template_name': 'registration/logout.html'}, name='logout',),
+    url(r'^misc/mo_list/$', 'organization.views.mo_list'), # temporary
 )
 
 
