@@ -180,15 +180,15 @@
       
       <tr>
        <td colspan="2">
-        <label for="{{f.seria_policy.auto_id}}">{{f.seria_policy.label}}{% if f.seria_policy.field.required %} <span class="text-error">*</span>{% endif %}</label>
+        <label for="{{f.seria_policy.auto_id}}">Серия страхового<br /> полиса{% if f.seria_policy.field.required %} <span class="text-error">*</span>{% endif %}</label>
         {% render_field f.seria_policy class+="input-block-level" %}
        </td>
        <td colspan="2">
-        <label for="{{f.number_policy.auto_id}}">{{f.number_policy.label}}{% if f.seria_policy.field.required %} <span class="text-error">*</span>{% endif %}</label>
+        <label for="{{f.number_policy.auto_id}}">Номер страхового<br />полиса{% if f.seria_policy.field.required %} <span class="text-error">*</span>{% endif %}</label>
         {% render_field f.number_policy class+="input-block-level" %}
        </td>
        <td colspan="2">
-        <br /><label for="{{f.code_insurance_company.auto_id}}">{{f.code_insurance_company.label}}{% if f.code_insurance_company.field.required %} <span class="text-error">*</span>{% endif %}</label>
+        <label for="{{f.code_insurance_company.auto_id}}">Код страховой<br />компании{% if f.code_insurance_company.field.required %} <span class="text-error">*</span>{% endif %}</label>
         {% render_field f.code_insurance_company class+="input-block-level" %}
        </td>
       </tr>
