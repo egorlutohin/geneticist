@@ -49,7 +49,8 @@ Type 'yes' to continue, or 'no' to cancel: "
 17. ./manage.py insert_organization
 18. ./manage.py import_kladr # очень долго будет выполняться
 19. ./manage.py runserver 0.0.0.0:8000
-Проверить в браузере http://server:8000/
-Елсли работает, то можно настраивать демно uwsgi и сервер nginx
-
-Общая инструкция по разворачиванию django - https://docs.djangoproject.com/en/1.5/howto/deployment/.
+20. cp settings/geneticist-uwsgi.ini.sample /etc/uwsgi/apps-available/geneticist.ini
+21. ln -s /etc/uwsgi/apps-available/geneticist.ini /etc/uwsgi/apps-enabled/
+22. cp settings/geneticist-nginx.sample /etc/nginx/sites-available/geneticist
+23. vi /etc/nginx/sites-available/geneticist - установить правильный параметр server_name
+24. ln -s /etc/nginx/sites-available/geneticist /etc/nginx/sites-enabled/
