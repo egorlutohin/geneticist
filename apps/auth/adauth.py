@@ -17,9 +17,8 @@ class ActiveDirectoryBackend:
   def authenticate(self,username=None,password=None):
       
     lc = ldap.initialize(settings.AD_LDAP_URL)
-    lc.set_option(ldap.OPT_NETWORK_TIMEOUT, 10.0)
     if not self.is_valid(lc, username, password):
-      return None
+        return None
       
     result = lc.search_s(settings.AD_SEARCH_DN, ldap.SCOPE_SUBTREE, 'sAMAccountName=%s' % username, ['memberOf', 'givenName', 'sn', 'displayName'])
     lc.unbind_s()
@@ -28,8 +27,6 @@ class ActiveDirectoryBackend:
         result = result[0][1]
     else:
         return None
-    
-    #~ import ptb; ptb.set_trace()
     
     first_name = result['givenName'][0]
     last_name = result['sn'][0]
@@ -95,6 +92,6 @@ class ActiveDirectoryBackend:
         l.simple_bind_s(binddn,password)
         return True
     except ldap.SERVER_DOWN:
-        raise Exception(u'Сервер авторизации недоступен')
+        return False
     except ldap.LDAPError:
         return False

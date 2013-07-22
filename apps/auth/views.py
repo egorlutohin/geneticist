@@ -1,4 +1,7 @@
 # encoding: utf8
+
+import ldap
+
 from django.http import HttpResponseRedirect
 
 from django.template.response import TemplateResponse
@@ -12,6 +15,8 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
 from django.contrib.auth.forms import AuthenticationForm
 
+from django.conf import settings
+
 @sensitive_post_parameters()
 @csrf_protect
 @never_cache
@@ -24,17 +29,29 @@ def login(request, template_name='registration/login.html',
     """
     
     error_text = ""
+    has_errors = False
+    
     
     redirect_to = request.REQUEST.get(redirect_field_name, '/')
 
     if request.method == "POST":
+        if settings.LDAP:
+            # try to reach server
+            lc = ldap.initialize(settings.AD_LDAP_URL)
+            lc.set_option(ldap.OPT_NETWORK_TIMEOUT, 5.0)
+            binddn = "%s@%s" % ("None", settings.AD_NT4_DOMAIN)
+            password = 'None'
+            try:
+                lc.simple_bind_s(binddn, password)
+            except ldap.SERVER_DOWN:
+                error_text = 'Сервер авторизации недоступен'
+                has_errors = True
+            except:
+                pass
+        
+        #~ import pdb; pdb.set_trace()
         form = authentication_form(data=request.POST)
-        try:
-            form_valid = form.is_valid()
-        except Exception, e:
-            error_text = unicode(e)
-            form_valid = False
-        if form_valid:
+        if not(has_errors) and form.is_valid():
 
             # Ensure the user-originating redirection url is safe.
             #~ if not is_safe_url(url=redirect_to, host=request.get_host()):
@@ -53,8 +70,10 @@ def login(request, template_name='registration/login.html',
                     request.session.delete_test_cookie()
 
                 return HttpResponseRedirect(redirect_to)
+        else:
+            form = authentication_form()
     else:
-        form = authentication_form(request)
+        form = authentication_form()
         user = request.user
         if user.is_authenticated() and not user.mo: # TODO: need refactoring!!
             error_text = 'Вы не можете войти, т.к. у Вас не установлена медицинская организация' 
