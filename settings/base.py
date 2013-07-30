@@ -46,8 +46,6 @@ TIME_ZONE = 'Asia/Novosibirsk'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'ru_RU'
 
-SITE_ID = 1
-
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
 USE_I18N = True
@@ -59,9 +57,9 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = False
 
-MEDIA_ROOT, MEDIA_URL = rel('media'), '/media/'
+MEDIA_ROOT, MEDIA_URL = rel('public_html/media'), '/media/'
 
-STATIC_ROOT, STATIC_URL = '', '/static/'
+STATIC_ROOT, STATIC_URL = rel('public_html/static'), '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -116,7 +114,6 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
@@ -173,3 +170,9 @@ LOGGING = {
         },
     }
 }
+
+AD_LDAP_PORT = 389
+
+#AD_DNS_NAME = '192.168.128.12'
+#AD_NT4_DOMAIN = 'NSO.LOC' # This is the NT4/Samba domain name
+#AD_SEARCH_DN = 'OU=023,OU=OIOGV,OU=ANO,DC=NSO,DC=LOC'

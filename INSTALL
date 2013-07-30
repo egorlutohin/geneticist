@@ -1,0 +1,56 @@
+﻿# Краткая инструкция по установке
+
+1. apt-get install python python-pip python-virtualenv python-ldap nginx uwsgi uwsgi-plugin-python mysql-server python-mysqldb git memcached python-memcache
+2. mkdir /web; cd /web
+3. wget https://github.com/egorlutohin/geneticist/archive/v1.0.tar.gz
+4. tar -xzvf v1.0.tar.gz; rm -rf v1.0.tar.gz; ln -s geneticist-1.0 geneticist; cd geneticist/settings
+5. cp create_database.mysql.sample create_database.mysql
+6. cp local_settings.py.example local_settings.py
+7.  В конфигурационном файле local_settings.py вписываем:
+  * параметры приложения
+    * ALLOWED_HOSTS  - список имен хостов с которых можно попадать
+      на это приложение
+  * параметры бызы данных в словаре DATABASES/default
+    * NAME - имя базы данных (по умолчанию "hotline")
+    * USER - пользователь базы данных (по умолчанию "hotline")
+    * PASSWORD - пароль для базы данных (установленный на 6 шаге)
+    * HOST - хост mysql
+  * параметры memcached в словаре CACHES/default
+    * LOCATION - хост и порт memcached
+  * параметры аутентификации в LDAP (если необходимо, раскомментировать)
+    * AD_DNS_NAME - hostname или ip-адрес сервера ldap (обязательный параметр)
+    * AD_NT4_DOMAIN - имя домена(обязательный параметр)
+    * AD_SEARCH_DN - ветка в которой необходимо искать пользователей (обязательный параметр)
+    * AD_LDAP_PORT - порт LDAP-сервера (если необходим, опционально)
+8. cd ..; virtualenv --system-site-packages .geneticist-packages
+9. source .geneticist-packages/bin/activate
+10. pip install -r requirements.pip
+11. ./checkmodules.py - проверить установку модулей, если после запуска на экране 
+    появятся ошибки, необходимо их исправить, если ничего непоявилось - значит все ОК
+12. ./manage.py syncdb
+Cоздаем таблицы в базе данных
+На вопрос "You just installed Django's auth system, which means you don't have any superusers defined.
+Would you like to create one now? (yes/no): " ответить "no"
+13. ./manage.py collectstatic
+На вопрос
+"You have requested to collect static files at the destination
+location as specified in your settings.
+
+This will overwrite existing files!
+Are you sure you want to do this?
+
+Type 'yes' to continue, or 'no' to cancel: "
+
+ответить "yes"
+14. cd kladr; wget http://www.gnivc.ru/html/gnivcsoft/KLADR/BASE.ARJ
+15. 14. apt-get install arj # если не установлен!
+15. arj x BASE.ARJ; cd ..
+16. ./manage.py insert_mkb
+17. ./manage.py insert_organization
+18. ./manage.py import_kladr # очень долго будет выполняться
+19. ./manage.py runserver 0.0.0.0:8000
+20. cp settings/geneticist-uwsgi.ini.sample /etc/uwsgi/apps-available/geneticist.ini
+21. ln -s /etc/uwsgi/apps-available/geneticist.ini /etc/uwsgi/apps-enabled/
+22. cp settings/geneticist-nginx.sample /etc/nginx/sites-available/geneticist
+23. vi /etc/nginx/sites-available/geneticist - установить правильный параметр server_name
+24. ln -s /etc/nginx/sites-available/geneticist /etc/nginx/sites-enabled/

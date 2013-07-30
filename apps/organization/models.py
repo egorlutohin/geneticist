@@ -7,7 +7,8 @@ class Organization(models.Model):
     code = models.CharField(u'Код МО', max_length=7, unique=True)
     short_name = models.CharField(u'Краткое название', max_length=300)
     full_name = models.TextField(verbose_name=u'Полное название')
-    name = models.TextField(verbose_name=u'Нормальное название')
+    name = models.TextField(verbose_name=u'Название в ИС')
+    ldap_name = models.CharField(u'Имя учреждения в AD', blank=True, max_length=200)
 
     def __unicode__(self):
         return self.name

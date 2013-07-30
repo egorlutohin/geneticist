@@ -35,12 +35,19 @@ class SearchForm(forms.Form):
 
 
 class PatientForm(forms.ModelForm):
-    #~ def __init__(self, *args, **kwargs):
-        #~ super(PatientForm, self).__init__(*args, **kwargs)
-        #~ for name, field in self.fields.iteritems():
-            #~ if isinstance(field, forms.DateField):
-                #~ self.fields[name].widget = CalendarWidget()
-
+    
+    def _clean_name(self, name):
+        return self.cleaned_data[name].strip().lower().capitalize()
+    
+    def clean_first_name(self):
+        return self._clean_name('first_name')
+        
+    def clean_last_name(self):
+        return self._clean_name('last_name')
+        
+    def clean_patronymic(self):
+        return self._clean_name('patronymic')
+        
     def clean(self):
         cd = self.cleaned_data
         if not (bool(cd.get('registration')) or bool(cd.get('residence'))):
@@ -61,6 +68,13 @@ class PatientForm(forms.ModelForm):
 
         if bool(cd.get('death')) and not bool(cd.get('birthday')):
             raise forms.ValidationError(u'Нужно указать дату рождения')
+            
+        if cd.get('type') in (Patient.PROBAND, Patient.FAMILY_MEMBER):
+            if not cd.get('birthday'):
+                raise forms.ValidationError('Укажите дату рождения для этого типа пациента')
+                
+        # TODO: показывать все ошибки за раз
+        
         return cd
 
     class Meta:
@@ -82,7 +96,7 @@ class VisitForm(forms.ModelForm):
 
     class Meta:
         model = Visit
-        exclude = ('is_active', 'patient', 'user_created', 'mo',
+        exclude = ('is_active', 'patient', 'user_created',# 'mo',
                    'name', 'code', 'is_add',)
 
 

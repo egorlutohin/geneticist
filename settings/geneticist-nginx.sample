@@ -1,0 +1,16 @@
+upstream geneticist_django {
+    server 127.0.0.1:8002;
+}
+
+server {
+    server_name localhost;
+
+    location /static {
+        alias /web/geneticist/public_html/static;
+    }
+
+    location / {
+        uwsgi_pass geneticist_django;
+        include /etc/nginx/uwsgi_params;
+    }
+}

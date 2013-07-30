@@ -16,10 +16,12 @@ class Command(BaseCommand):
         row_number = 0
         for row in reader:
             code = row[0]
-            full_name = row[1]
-            short_name = row[2]
-            name = row[3]
+            ldap_name = row[1]
+            full_name = row[2]
+            short_name = row[3]
+            name = row[4]
             Organization.objects.create(code=code,
                                         name=name,
                                         full_name=full_name,
-                                        short_name=short_name)
+                                        short_name=short_name,
+                                        ldap_name=ldap_name)
