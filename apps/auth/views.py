@@ -48,6 +48,8 @@ def login(request, template_name='registration/login.html',
                 has_errors = True
             except:
                 pass
+            finally:
+                lc.unbind_s()
         
         #~ import pdb; pdb.set_trace()
         form = authentication_form(data=request.POST)

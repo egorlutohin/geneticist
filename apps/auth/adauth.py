@@ -17,6 +17,7 @@ class ActiveDirectoryBackend:
   def authenticate(self,username=None,password=None):
       
     lc = ldap.initialize(settings.AD_LDAP_URL)
+    lc.set_option(ldap.OPT_REFERRALS,0)
     if not self.is_valid(lc, username, password):
         return None
       
