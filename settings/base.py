@@ -10,10 +10,6 @@ sys.path.append(rel('apps/'))
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-ADMINS = (
-    ('Kosolapov Dmitry', 'self@dicos.ru'),
-)
-
 MANAGERS = ADMINS
 
 DATABASES = {
