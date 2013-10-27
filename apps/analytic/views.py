@@ -43,16 +43,18 @@ def life(request):
         # ищем в истории место пребывания
         if type_residence:
             if start == end:
-                qs = qs.filter(type=type_patient)
+                qs = qs.filter(type_residence=type_residence)
             else:
                 pks = Patient.history.exclude(type=Patient.FAMILY_MEMBER) \
                                      .filter(type_residence=type_residence,
                                              history_date__lt=end) \
-                                     .values('pk') \
-                                     .annotate(Count('pk')) \
-                                     .values_list('pk')
+                                     .values('id') \
+                                     .annotate(Count('id')) \
+                                     .values_list('id', flat=True)
                 pks = tuple(pks)
                 qs = qs.filter(pk__in=pks)
+                res_info = dict(Patient.TYPE_RESIDENCES)
+                data['type_residence'] = res_info.get(int(type_residence), '')
 
         marriageble_birthday = start - MARRIAGEABLE_AGE
         childrens = qs.filter(birthday__gt=marriageble_birthday,
@@ -65,7 +67,9 @@ def life(request):
         data.update({'children': childrens.count(),
                      'marriageable': marriageable.count(),
                      'fetus': fetus.count(),
-                     'is_have_result': True})
+                     'is_have_result': True,
+                     'period_start': start,
+                     'period_end': end})
     else:
         data.update({'children': '-',
                      'marriageable': '-',

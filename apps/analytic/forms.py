@@ -16,7 +16,7 @@ class PeriodForm(forms.Form):
         cd = self.cleaned_data
         period_start = cd.get('period_start')
         period_end = cd.get('period_end')
-        if not None in (peirod_start, period_end,):
+        if not None in (period_start, period_end,):
             if period_start > period_end:
                 text = u'''Дата начала периода должна быть меньше или равной
                            дате окончания периода'''

@@ -1,4 +1,24 @@
-<h1>Отчет количества живых пациентов по возрастам с 20.10.2011 по 20.10.2012 (Новосибирск)</h1>
+{% extends 'patient.html' %}
+
+
+{% block content %}
+<h1>Отчет количества живых пациентов по возрастам
+{% if is_have_result %} с {{ period_start|date:"d.m.Y" }} по
+{{ period_end|date:"d.m.Y" }}.</h1>
+<p>
+{% if type_residence %}(Вид проживания: {{ type_residence }}){% endif %}
+</p>
+{% endif %}
+
+<form action="." method="get">
+<table>
+{{ period_form.as_table }}
+<tr>
+    <td colspan="2"><input type="submit" value="Найти" /></td>
+</tr>
+
+</table>
+</form>
 
 <table>
     <tr>
@@ -12,3 +32,4 @@
         <td>{{ fetus }}</td>
     </tr>
 </table>
+{% endblock %}

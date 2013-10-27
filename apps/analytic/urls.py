@@ -7,5 +7,5 @@ import views
 
 
 urlpatterns = patterns('',
-    url(r'^life.html$', views.life, name='analytic_life'),
+    url(r'^life/$', views.life, name='analytic_life'),
 )
