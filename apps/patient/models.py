@@ -137,7 +137,8 @@ class Patient(BaseModel):
                                          default=TYPE_RESIDENCES[0][0],
                                          db_index=True)
     type = models.IntegerField(verbose_name=u'Тип пациента',
-                               choices=TYPE_CHOICES)
+                               choices=TYPE_CHOICES,
+                               db_index=True)
     gender = models.IntegerField(verbose_name=u'Пол', choices=GENDER_CHOICES)
     comment = models.TextField(verbose_name=u'Комментарий',
                                blank=True, null=True)
