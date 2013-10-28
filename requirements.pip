@@ -8,5 +8,5 @@ django-auth-ldap==1.1.5
 django-mptt==0.5.5
 python-ldap==2.4.13
 python-memcached==1.53
-
+python-dateutil==2.1
 django-widget-tweaks==1.3

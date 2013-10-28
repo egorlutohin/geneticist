@@ -1,25 +1,72 @@
 {% extends 'patient.html' %}
 
+{% block title %}Отчет количества живых пациентов по возрастам{% endblock %}
 
+{% block other_static %}
+    {{ form.media }}
+    <link href="{{ STATIC_URL }}bootstrap-datepicker/css/datepicker.css" rel="stylesheet" />
+    <script src="{{ STATIC_URL }}/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    
+    <script>
+        {% load in_group %}
+        $(function(){
+            $('{{period_form|date_fields_id}}').datepicker().on('changeDate', function(e){$(this).focus();})
+            $('{{period_form|no_date_fields_id}}').on('focus', function(e){$('{{form|date_fields_id}}').datepicker('hide')})
+        });
+        
+        $(function() { $('form').keyTips(); });
+    </script>
+    <style type="text/css">
+        .well td {padding: 5px 10px;}
+        .well {float: left; padding: 15px; width: 600px;}
+    </style>
+
+{% endblock %}
+
+{% load widget_tweaks %}
 {% block content %}
-<h1>Отчет количества живых пациентов по возрастам
+<h4>Отчет количества живых пациентов по возрастам
 {% if is_have_result %} с {{ period_start|date:"d.m.Y" }} по
-{{ period_end|date:"d.m.Y" }}.</h1>
-<p>
-{% if type_residence %}(Вид проживания: {{ type_residence }}){% endif %}
-</p>
+{{ period_end|date:"d.m.Y" }}.{% endif %}</h4>
+{% if type_residence %}
+<p> (Вид проживания: {{ type_residence }})</p>
 {% endif %}
 
-<form action="." method="get">
+{% if period_form.errors %}
+  <h3 class="text-error">Пожалуйста, исправьте ошибки</h3>
+  <div id="non-field-errors" class="text-error">
+  {{ period_form.non_field_errors }}
+  </div>
+{% endif %}
+<form action="." method="get" class="well">
+<fieldset>
 <table>
-{{ period_form.as_table }}
-<tr>
-    <td colspan="2"><input type="submit" value="Найти" /></td>
+{% with f=period_form %}<tr>
+    <td style="width: 33.3%">
+       {{ f.period_start.label_tag }}{% render_field f.period_start autocomplete="off" class+="input-block-level" accesskey="р" %}
+    </td>
+    <td style="width: 33.3%">
+       {{ f.period_end.label_tag }}{% render_field f.period_end autocomplete="off" class+="input-block-level" accesskey="с" %}
+    </td>
+    <td >
+    {{ f.type_residence.label_tag }}{% render_field f.type_residence class+="input-block-level" %}
+    </td>
 </tr>
-
+<tr>
+    <td class="text-error errorcell">{% if f.period_start.errors %} {{ f.period_start.errors}} {% endif %}</td>
+    <td class="text-error errorcell">{% if f.period_end.errors %} {{ f.period_end.errors}} {% endif %}</td>
+    <td class="text-error errorcell">{% if f.type_residence.errors %} {{ f.type_residence.errors}} {% endif %}</td>
+</tr>{% endwith %}
+<tr>
+    <td colspan="3" align="right">
+        <button type="submit" class="btn btn-primary">Составить отчет</button>
+    </td>
+</tr>
 </table>
-</form>
+</fieldset>
+</form><br style="clear: both" />
 
+{% if is_have_result %}
 <table>
     <tr>
         <th>Дети</th>
@@ -32,4 +79,5 @@
         <td>{{ fetus }}</td>
     </tr>
 </table>
+{% endif %}
 {% endblock %}

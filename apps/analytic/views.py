@@ -27,6 +27,7 @@ def life(request):
     data = {'period_form': period_form, 'is_have_result': False}
     if len(request.GET) == 0:
         # Если поиск не запускали, то и не надо показывать всех пациентов
+        data['period_form'] = PeriodForm
         return render_to_response('analytic/life.html', data,
                               context_instance=RequestContext(request))
 
@@ -75,12 +76,6 @@ def life(request):
                      'marriageable': '-',
                      'fetus': '-'})
 
-#    response = {'patients': patients_qs,
-#                'count': patients_qs.count(),
-#                'special_cure_text': special_cure_text,
-#                'form': form,
-#                'header': header,
-#                'have_search_result': True}
     return render_to_response('analytic/life.html',
                               data,
                               context_instance=RequestContext(request))
