@@ -17,6 +17,13 @@ MARRIAGEABLE_AGE = relativedelta(years=18)
 
 
 @login_required
+def main(request):
+    """ выводим список всех отчетов """
+    return render_to_response('analytic/main.html',
+                              context_instance=RequestContext(request))
+
+
+@login_required
 def life(request):
     """ Отчет количества живых пациентов по возрастам за период """
     period_form = PeriodForm(request.GET)

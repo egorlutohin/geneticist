@@ -1,0 +1,11 @@
+{% extends 'patient.html' %}
+
+{% block title %}Список отчетов{% endblock %}
+
+{% block analytic %} class="active"{% endblock %}
+
+{% block content %}
+<ul>
+    <li><a href="{% url "analytic_life" %}">Отчет по живым пациентам за период</a></li>
+</ul>
+{% endblock %}
