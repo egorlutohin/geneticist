@@ -69,7 +69,6 @@ def life(request):
         end = period_form.cleaned_data['period_end']
         type_residence = period_form.cleaned_data.get('type_residence')
         
-        birthday_range = (start, end)
         death_cnd = Q(death__gt=start) | Q(death__isnull=True)
         qs = Patient.objects.filter(death_cnd) \
                             .exclude(type=Patient.FAMILY_MEMBER)
@@ -131,10 +130,12 @@ def nosology(request):
         end = period_form.cleaned_data['period_end']
         type_residence = period_form.cleaned_data.get('type_residence')
         
-        birthday_range = (start, end)
+        date_range = (start, end + timedelta(days=1))
         death_cnd = Q(death__gt=start) | Q(death__isnull=True)
-        patient_qs = Patient.objects.filter(death_cnd) \
-                                    .exclude(type=Patient.FAMILY_MEMBER)
+        patient_qs = Patient.objects.filter(death_cnd,
+                                            type=Patient.PROBAND,
+                                            birthday__lt=date_range[1],
+                                            date_registration__range=date_range)
         # ищем в истории место пребывания
         if type_residence:
             if start == date.today():
@@ -145,17 +146,23 @@ def nosology(request):
                 res_info = dict(Patient.TYPE_RESIDENCES)
                 data['type_residence'] = res_info.get(int(type_residence), '')
 
+        diagnosis_qs = Diagnosis.objects.filter(patient=patient_qs) \
+                                        .select_related('patient')
         marriageble_birthday = start - MARRIAGEABLE_AGE
-        childrens = qs.filter(birthday__gt=marriageble_birthday,
-                              birthday__lte=end,
-                              type=Patient.FETUS)
-        marriageable = qs.filter(birthday__lte=marriageble_birthday,
-                                 type=Patient.FETUS)
-        fetus_cnd = Q(type=Patient.PROBAND) | Q(birthday__gte=F('date_created'))
-        fetus = qs.filter(fetus_cnd)
-        data.update({'children': childrens.count(),
-                     'marriageable': marriageable.count(),
-                     'fetus': fetus.count(),
+        info = {}
+        for diagnosis in diagnosis_qs:
+            code = diagnosis.code
+            if code not in info:
+                # название, код, кол-во детей, кол-во взрослых
+                info[code] = [diagnosis.name, diagnosis.code, 0, 0]
+            if diagnosis.patient.birthday < marriageble_birthday:
+                info[code][2] += 1
+            else:
+                info[code][3] += 1
+        info = info.values()
+        info.sort(lambda x, y: cmp(x[0], y[0]))
+        
+        data.update({'info': info,
                      'is_have_result': True,
                      'period_start': start,
                      'period_end': end})
