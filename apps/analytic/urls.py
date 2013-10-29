@@ -9,4 +9,5 @@ import views
 urlpatterns = patterns('',
     url(r'^$', views.main, name='analytic'),
     url(r'^life/$', views.life, name='analytic_life'),
+    url(r'^nosology/$', views.life, name='analytic_nosology'),
 )

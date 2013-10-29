@@ -224,6 +224,9 @@ class Diagnosis(BaseModel):
                             max_length=10, db_index=True)
     name = models.TextField(verbose_name=u'Название диагноза')
     user_changed = CurrentUserField()
+    date_created = models.DateTimeField(default=datetime.now,
+                                        verbose_name=u'Дата создания записи',
+                                        editable=False)
 
     history = FullHistoricalRecords()
 
