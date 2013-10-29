@@ -1,5 +1,5 @@
 #coding: utf8
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from itertools import chain
 
 from dateutil.relativedelta import relativedelta
@@ -21,6 +21,31 @@ def main(request):
     """ выводим список всех отчетов """
     return render_to_response('analytic/main.html',
                               context_instance=RequestContext(request))
+
+
+def get_type_residence_qs(type_residence, date_start, date_end):
+    """ Возвращает список id пациентов, у которые жили в type_residence """
+    type_residence = int(type_residence)
+    ids_hst = Patient.history.exclude(type=Patient.FAMILY_MEMBER) \
+                             .filter(history_date__lte=date_end,
+                                     type_residence=type_residence) \
+                             .values('id')
+    history_qs = Patient.history.filter(id__in=ids_hst) \
+                                .order_by('id', '-history_date') \
+                                .values_list('id',
+                                             'type_residence',
+                                             'history_date')
+    pks = []
+    exclude_pks = []
+    for pk, type_r, history_date in history_qs:
+        if pk in pks or pk in exclude_pks:
+            continue
+        if type_r == type_residence:
+            pks.append(pk)
+            continue
+        if history_date.date() < date_start:
+            exclude_pks.append(pk)
+    return pks
 
 
 @login_required
@@ -50,16 +75,10 @@ def life(request):
                             .exclude(type=Patient.FAMILY_MEMBER)
         # ищем в истории место пребывания
         if type_residence:
-            if start == end:
+            if start == date.today():
                 qs = qs.filter(type_residence=type_residence)
             else:
-                pks = Patient.history.exclude(type=Patient.FAMILY_MEMBER) \
-                                     .filter(type_residence=type_residence,
-                                             history_date__lt=end) \
-                                     .values('id') \
-                                     .annotate(Count('id')) \
-                                     .values_list('id', flat=True)
-                pks = tuple(pks)
+                pks = get_type_residence_qs(type_residence, start, end)
                 qs = qs.filter(pk__in=pks)
                 res_info = dict(Patient.TYPE_RESIDENCES)
                 data['type_residence'] = res_info.get(int(type_residence), '')
