@@ -166,11 +166,12 @@ def add(request):
                 e = u'Данный тип пациента с таким ФИО и датой рождения <a href="%s" target="_blank">уже есть в реестре</a>' % reverse('patient_edit', kwargs={'patient_id': ps[0].pk})
                 error_texts.append(e)
             else:
+                visit_first = visit_first_form.save(commit=False)
+                visit_first.is_add = True
+                patient.date_registration = visit_first.date_created
                 patient.save()
                 save_formset(diagnosis_formset, patient)
-                visit_first = visit_first_form.save(commit=False)
                 visit_first.patient = patient
-                visit_first.is_add = True
                 visit_first.save()
                 if visit_form.cleaned_data.get('is_visit', False):
                     visit = visit_form.save(commit=False)
