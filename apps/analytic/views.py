@@ -134,8 +134,7 @@ def nosology(request):
         death_cnd = Q(death__gt=start) | Q(death__isnull=True)
         patient_qs = Patient.objects.filter(death_cnd,
                                             type=Patient.PROBAND,
-                                            birthday__lt=date_range[1],
-                                            date_registration__range=date_range)
+                                            birthday__lt=date_range[1])
         # ищем в истории место пребывания
         if type_residence:
             if start == date.today():
@@ -146,7 +145,7 @@ def nosology(request):
                 res_info = dict(Patient.TYPE_RESIDENCES)
                 data['type_residence'] = res_info.get(int(type_residence), '')
 
-        diagnosis_qs = Diagnosis.objects.filter(patient=patient_qs) \
+        diagnosis_qs = Diagnosis.objects.filter(patient__in=patient_qs) \
                                         .select_related('patient')
         marriageble_birthday = start - MARRIAGEABLE_AGE
         info = {}
