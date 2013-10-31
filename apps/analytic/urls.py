@@ -10,4 +10,5 @@ urlpatterns = patterns('',
     url(r'^$', views.main, name='analytic'),
     url(r'^life/$', views.life, name='analytic_life'),
     url(r'^nosology/$', views.nosology, name='analytic_nosology'),
+    url(r'^new_diagnosis/$', views.new_diagnosis, name='analytic_new_diagnosis'),
 )

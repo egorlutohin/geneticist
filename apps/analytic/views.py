@@ -7,7 +7,7 @@ from django.db.models import Q, F, Count
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 
-from patient.models import Patient, Diagnosis
+from patient.models import Patient, Diagnosis, Visit
 from user_profile.decorators import login_required
 
 from forms import PeriodForm
@@ -171,5 +171,41 @@ def nosology(request):
                      'fetus': '-'})
 
     return render_to_response('analytic/nosology.html',
+                              data,
+                              context_instance=RequestContext(request))
+
+
+@login_required
+def new_diagnosis(request):
+    """ Отчет по количеству пациентов поставленных диагнозов МО за период """
+    period_form = PeriodForm(request.GET)
+    
+    special_cure_text = ''
+    header = u'Все'
+    
+    data = {'period_form': period_form, 'is_have_result': False}
+    if len(request.GET) == 0:
+        # Если поиск не запускали, то и не надо показывать всех пациентов
+        data['period_form'] = PeriodForm
+        return render_to_response('analytic/new_diagnosis.html', data,
+                              context_instance=RequestContext(request))
+
+    
+    if period_form.is_valid():
+        start = period_form.cleaned_data['period_start']
+        end = period_form.cleaned_data['period_end']
+        date_range = (start, end + timedelta(days=1))
+        qs = Diagnosis.objects.filter(date_created__range=date_range) \
+                              .values('user_changed__mo_name') \
+                              .annotate(count=Count('pk')) \
+                              .order_by('user_changed__mo_name')
+        data.update({'info': qs,
+                     'is_have_result': True,
+                     'period_start': start,
+                     'period_end': end})
+    else:
+        data.update({'info': []})
+
+    return render_to_response('analytic/new_diagnosis.html',
                               data,
                               context_instance=RequestContext(request))
