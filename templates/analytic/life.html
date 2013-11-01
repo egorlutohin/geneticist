@@ -10,7 +10,7 @@
 <p> (Вид проживания: {{ type_residence }})</p>
 {% endif %}
 
-{% include "analytic/form.html" %}
+{% include "analytic/form.html" with include_residence=True %}
 
 {% if is_have_result %}
 <table class="table table-striped table-bordered">

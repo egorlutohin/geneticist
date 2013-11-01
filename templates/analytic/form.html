@@ -15,17 +15,21 @@
     <td style="width: 33.3%">
        {{ f.period_end.label_tag }}{% render_field f.period_end autocomplete="off" class+="input-block-level" accesskey="с" %}
     </td>
+    {% if include_residence %}
     <td >
     {{ f.type_residence.label_tag }}{% render_field f.type_residence class+="input-block-level" %}
     </td>
+    {% endif %}
 </tr>
 <tr>
     <td class="text-error errorcell">{% if f.period_start.errors %} {{ f.period_start.errors}} {% endif %}</td>
     <td class="text-error errorcell">{% if f.period_end.errors %} {{ f.period_end.errors}} {% endif %}</td>
+    {% if include_residence %}
     <td class="text-error errorcell">{% if f.type_residence.errors %} {{ f.type_residence.errors}} {% endif %}</td>
+    {% endif %}
 </tr>{% endwith %}
 <tr>
-    <td colspan="3" align="right">
+    <td colspan="{% if include_residence %}3{% else %}2{% endif %}" align="right">
         <button type="submit" class="btn btn-primary">Составить отчет</button>
     </td>
 </tr>
