@@ -209,3 +209,39 @@ def new_diagnosis(request):
     return render_to_response('analytic/new_diagnosis.html',
                               data,
                               context_instance=RequestContext(request))
+
+
+@login_required
+def visit(request):
+    """ Отчет по количеству посещений МО за период """
+    period_form = PeriodForm(request.GET)
+    
+    special_cure_text = ''
+    header = u'Все'
+    
+    data = {'period_form': period_form, 'is_have_result': False}
+    if len(request.GET) == 0:
+        # Если поиск не запускали, то и не надо показывать всех пациентов
+        data['period_form'] = PeriodForm
+        return render_to_response('analytic/visit.html', data,
+                              context_instance=RequestContext(request))
+
+    
+    if period_form.is_valid():
+        start = period_form.cleaned_data['period_start']
+        end = period_form.cleaned_data['period_end']
+        date_range = (start, end + timedelta(days=1))
+        qs = Visit.objects.filter(date_created__range=date_range) \
+                          .values('name') \
+                          .annotate(count=Count('pk')) \
+                          .order_by('name')
+        data.update({'info': qs,
+                     'is_have_result': True,
+                     'period_start': start,
+                     'period_end': end})
+    else:
+        data.update({'info': []})
+
+    return render_to_response('analytic/visit.html',
+                              data,
+                              context_instance=RequestContext(request))

@@ -1,5 +1,7 @@
 {% extends 'analytic/base.html' %}
 
+{% block title %}Отчет количества живых пациентов по возрастам{% endblock %}
+
 {% block content %}
 <h4>Отчет количества живых пациентов по возрастам
 {% if is_have_result %} с {{ period_start|date:"d.m.Y" }} по

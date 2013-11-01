@@ -1,9 +1,9 @@
 {% extends 'analytic/base.html' %}
 
-{% block title %}Отчет по нозологиям{% endblock %}
+{% block title %}Отчет по количеству посещений МО{% endblock %}
 
 {% block content %}
-<h4>Отчет по нозологиям
+<h4>Отчет по количеству посещений МО
 {% if is_have_result %} с {{ period_start|date:"d.m.Y" }} по
 {{ period_end|date:"d.m.Y" }}.{% endif %}</h4>
 {% if type_residence %}
@@ -15,20 +15,15 @@
 {% if is_have_result %}
 <table class="table table-striped table-bordered">
     <tr>
-        <th>МКБ</th>
-        <th>Код</th>
-        <th>Взрослые</th>
-        <th>Дети</th>
+        <th>МО</th>
+        <th>Количество</th>
     </tr>
     {% for item in info %}
     <tr>
-        <td>{{ item.0 }}</td>
-        <td>{{ item.1 }}</td>
-        <td>{{ item.2 }}</td>
-        <td>{{ item.3 }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.count }}</td>
     </tr>
     {% endfor %}
 </table>
 {% endif %}
 {% endblock %}
-
