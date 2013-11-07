@@ -35,6 +35,9 @@ class SearchForm(forms.Form):
 
 
 class PatientForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(PatientForm, self).__init__(*args, **kwargs)
+        self.fields['social_status'].choices = Patient.SOCIAL_STATUSES
     
     def _clean_name(self, name):
         return self.cleaned_data[name].strip().lower().capitalize()
