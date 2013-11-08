@@ -1,6 +1,6 @@
 #coding: utf8
 import re
-from datetime import date
+from datetime import date, timedelta
 
 import pyExcelerator
 from django.core.management.base import BaseCommand, CommandError
@@ -17,7 +17,7 @@ def get_mkb(excel_page):
     NAME = 1
     info = {}
     expr = re.compile(r'[A-Z]\d+(\.\d+)*')
-    for num_row in range(3, 254):
+    for num_row in range(5, 253):
         name_index = (num_row, NAME)
         name = excel_page.get(name_index)
         if name is None:
@@ -27,7 +27,7 @@ def get_mkb(excel_page):
         if code is None:
             print u'exclude %s' % name
             continue
-        info[code] = name
+        info[name] = code
     return info
 
 
@@ -54,7 +54,7 @@ def get_type(type_patient):
     if not type_patient:
         return 1  # Новосибирск
     type_patient = type_patient.lower()
-    if u'новосибирск' in type_patien:
+    if u'новосибирск' in type_patient:
         return 1
     elif u'новосибирская область' in type_patient:
         return 2
@@ -71,29 +71,36 @@ def get_gender(gender):
     return 4  # не известно
 
 
+def get_date(xldate):
+    if xldate:
+        return date(1899, 12, 30) + timedelta(days=xldate)
+    return None
+
+
 def get_patient_info(excel_page, num_row, diagnosis_info):
     """ Создает информацию о пациенте без диагноза"""
-    social_st = excel_page.get((num_row, 21), '')
-    type_p = excel_page.get((num_row, 22), '')
-    gender = excel_page.get((nm_row, 23), '')
+    social_st = excel_page.get((num_row, 19), '')
+    type_p = excel_page.get((num_row, 18), '')
+    gender = excel_page.get((num_row, 21), '')
     #  информация о пациенте
+    date_reg_xl = get_date(excel_page.get((num_row, 24)))
     info_p = {'last_name': excel_page.get((num_row, 4), ''),
               'first_name': excel_page.get((num_row, 5), ''),
               'patronymic': excel_page.get((num_row, 6), ''),
-              'birthday': excel_page.get((num_row, 7)),
-              'death': excel_page.get((num_row, 8)),
+              'birthday': get_date(excel_page.get((num_row, 7))),
+              'death': get_date(excel_page.get((num_row, 8))),
               'seria_policy': excel_page.get((num_row, 15), ''),
               'number_policy': excel_page.get((num_row, 16), ''),
               'code_insurance_company': excel_page.get((num_row, 17), ''),
               'registration': excel_page.get((num_row, 14), ''),
-              'code_allocate_mo': excel_page.get((num_row, 24), ''),
-              'name_allocate_mo': excel_page.get((num_row, 25), ''),
+              'code_allocate_mo': excel_page.get((num_row, 22), ''),
+              'name_allocate_mo': excel_page.get((num_row, 23), ''),
               'social_status': get_social_status(social_st),
               'type': get_type(type_p),
               'gender': get_gender(gender),
               'diagnosis_text': diagnosis_info.get('name', ''),
               'diagnosis_text_code': diagnosis_info.get('code', ''),
-              'date_registration': excel_page.get((num_row, 27), date.today())}
+              'date_registration': date_reg_xl or date.today()}
     return info_p
 
 
@@ -102,11 +109,11 @@ def get_diagnosis_info(excel_page, num_row, mkb):
     name = excel_page.get((num_row, 2))
     if name:
         code = mkb.get(name)
-        date_created = excel_page.get((num_row, 26), date.today())
+        date_reg_xl = get_date(excel_page.get((num_row, 24)))
         if code:
             return {'code': code,
                     'name': name,
-                    'date_created': date_created}
+                    'date_created': date_reg_xl or date.today()}
     return {}
 
 
@@ -115,9 +122,9 @@ class Command(BaseCommand):
 
     @nested_commit_on_success
     def handle(self, *args, **options):
-        book = pyExcelerator.parse_xls("patients.xls")
-        patient_excel = book[0]
-        diagnosis_excel = book[1]
+        book = pyExcelerator.parse_xls("excel.xls")
+        patient_excel = book[0][1]
+        diagnosis_excel = book[1][1]
         mkb = get_mkb(diagnosis_excel)
         for num_row in range(2, 2238):
             d_info = get_diagnosis_info(patient_excel, num_row, mkb)
@@ -126,4 +133,3 @@ class Command(BaseCommand):
             if d_info:
                 d_info['patient'] = patient
                 Diagnosis.objects.create(**d_info)
-        import ipdb; ipdb.set_trace()

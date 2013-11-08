@@ -175,8 +175,6 @@ class Patient(BaseModel):
         if self.allocate_mo:
             self.code_allocate_mo = self.allocate_mo.code
             self.name_allocate_mo = self.allocate_mo.full_name
-        else:
-            self.code_allocate_mo = self.name_allocate_mo = ''
         super(Patient, self).save(*args, **kwargs)
 
     class Meta:
