@@ -1,0 +1,64 @@
+{% extends 'analytic/base.html' %}
+
+{% block title %}Отчет заболеваний МКБ за период{% endblock %}
+
+{% block content %}
+<h4>Отчет заболеваний МКБ за период</h4>
+
+{% load widget_tweaks %}
+{% if form.errors %}
+  <h3 class="text-error">Пожалуйста, исправьте ошибки</h3>
+  <div id="non-field-errors" class="text-error">
+  {{ form.non_field_errors }}
+  </div>
+{% endif %}
+ <form action="." id="search_form" class="well">
+  <fieldset><table width="600">
+   <tr>
+    <td colspan="6">
+     {{form.full_name.label_tag}} {% render_field form.full_name class+="input-block-level" accesskey="ф" autofocus="autofocus" %}
+    </td>
+   </tr>
+   {% if form.full_name.errors %} 
+   <tr>
+    <td class="text-error errorcell" colspan="6">{{ form.full_name.errors}}</td>
+   </tr>
+   {% endif %}
+   <tr>
+    <td colspan="2">
+    {{form.diagnosis.label_tag}}{% render_field form.diagnosis class+="input-block-level" accesskey="м" %}
+    </td>
+    <td colspan="4" width="400">&nbsp;</td>
+   </tr>
+   {% if form.diagnosis.errors %}
+   <tr>
+    <td class="text-error errorcell" colspan="6">{{ form.diagnosis.errors}}</td>
+   </tr>
+   {% endif %}
+   <tr>
+    <td colspan="6" align="right">
+     <button type="submit" class="btn btn-primary">Найти</button>
+    </td>
+   </tr>
+  </table>
+ </fieldset></form><br style="clear: both" />
+
+{% if is_have_result %}
+<table class="table table-striped table-bordered">
+    <tr>
+        <th>ФИО</th>
+        <th>Код</th>
+        <th>Название</th>
+    </tr>
+    {% for item in info %}
+    <tr>
+        <td>{{ item.all_full_names }}</td>
+        <td>{{ item.diagnosis_text_code }}</td>
+        <td>{{ item.diagnosis_text }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endblock %}
+
+

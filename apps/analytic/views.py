@@ -10,7 +10,7 @@ from django.shortcuts import render_to_response
 from patient.models import Patient, Diagnosis, Visit
 from user_profile.decorators import login_required
 
-from forms import PeriodForm
+from forms import PeriodForm, MkbForm
 
 
 MARRIAGEABLE_AGE = relativedelta(years=18)
@@ -222,7 +222,7 @@ def visit(request):
     data = {'period_form': period_form, 'is_have_result': False}
     if len(request.GET) == 0:
         # Если поиск не запускали, то и не надо показывать всех пациентов
-        data['period_form'] = PeriodForm
+        data['period_form'] = PeriodForm()
         return render_to_response('analytic/visit.html', data,
                               context_instance=RequestContext(request))
 
@@ -243,5 +243,33 @@ def visit(request):
         data.update({'info': []})
 
     return render_to_response('analytic/visit.html',
+                              data,
+                              context_instance=RequestContext(request))
+
+
+@login_required
+def mkb(request):
+    """ Отчет заболеваний МКБ за период """
+    form = MkbForm(request.GET)
+    
+    data = {'form': form, 'is_have_result': False}
+    if len(request.GET) == 0:
+        # Если поиск не запускали, то и не надо показывать всех пациентов
+        data['form'] = MkbForm()
+        return render_to_response('analytic/mkb.html', data,
+                              context_instance=RequestContext(request))
+
+    
+    if form.is_valid():
+        full_name = form.cleaned_data['full_name']
+        diagnosis = form.cleaned_data['diagnosis']
+        qs = Patient.objects.filter(all_full_names__icontains=full_name,
+                                    diagnosis__code__icontains=diagnosis)[:1]
+        data.update({'info': qs,
+                     'is_have_result': True})
+    else:
+        data.update({'info': []})
+
+    return render_to_response('analytic/mkb.html',
                               data,
                               context_instance=RequestContext(request))
