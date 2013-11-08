@@ -85,6 +85,9 @@ class Patient(BaseModel):
                       (2, u'Ж',),
                       (3, u'Интерсекс',),
                       (4, u'Неизвестно',),)
+
+    ADDED_BY_CHOICES = ((1, u'Через веб интерфейс'),
+                        (2, u'Экспорт из базы данных прошлых лет'))
                       
     first_name = models.CharField(u'Имя', max_length=100)
     last_name = models.CharField(u'Фамилия', max_length=100)
@@ -151,6 +154,9 @@ class Patient(BaseModel):
     date_created = models.DateTimeField(default=datetime.now,
                                         verbose_name=u'Дата заполнения анкеты',
                                         editable=False)
+    added_by = models.IntegerField(verbose_name=u'Добавлено при помощи',
+                                   choices=ADDED_BY_CHOICES,
+                                   default=ADDED_BY_CHOICES[0][0])
     user_changed = CurrentUserField()
 
     history = FullHistoricalRecords()

@@ -100,6 +100,7 @@ def get_patient_info(excel_page, num_row, diagnosis_info):
               'gender': get_gender(gender),
               'diagnosis_text': diagnosis_info.get('name', ''),
               'diagnosis_text_code': diagnosis_info.get('code', ''),
+              'added_by': Patient.ADDED_BY_CHOICES[1][0],
               'date_registration': date_reg_xl or date.today()}
     return info_p
 
