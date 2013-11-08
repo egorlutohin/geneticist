@@ -186,7 +186,7 @@ class Patient(BaseModel):
     class Meta:
         verbose_name = u'Пациент'
         verbose_name_plural = u'Пациенты'
-        ordering = ['first_name', 'last_name', 'patronymic', 'birthday']
+        ordering = ['last_name', 'first_name', 'patronymic', 'birthday']
 
 
 class Visit(BaseModel):
