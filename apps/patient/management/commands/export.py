@@ -51,12 +51,18 @@ def get_social_status(status):
 def get_type(type_patient):
     """ Преобразует значение ячеек колонки ProbandПробанд экселя
         в поле тип пациента """
-    if not type_patient:
+    if u'Пробанд' in unicode(type_patient):
+        return Patient.PROBAND
+    return Patient.FETUS
+
+
+def get_type_residence(type_residence):
+    if not type_residence:
         return 1  # Новосибирск
-    type_patient = type_patient.lower()
+    type_patient = type_residence.lower()
     if u'новосибирск' in type_patient:
         return 1
-    elif u'новосибирская область' in type_patient:
+    elif u'новосибирская область' in type_residence:
         return 2
     return 3
 
@@ -79,23 +85,28 @@ def get_date(xldate):
 
 def get_patient_info(excel_page, num_row, diagnosis_info):
     """ Создает информацию о пациенте без диагноза"""
+    last_name = excel_page.get((num_row, 4), '')
+    if not last_name:
+        return {}
     social_st = excel_page.get((num_row, 19), '')
+    type_resid = excel_page.get((num_row, 20), '')
     type_p = excel_page.get((num_row, 18), '')
     gender = excel_page.get((num_row, 21), '')
     #  информация о пациенте
     date_reg_xl = get_date(excel_page.get((num_row, 24)))
-    info_p = {'last_name': excel_page.get((num_row, 4), ''),
+    info_p = {'last_name': last_name,
               'first_name': excel_page.get((num_row, 5), ''),
               'patronymic': excel_page.get((num_row, 6), ''),
               'birthday': get_date(excel_page.get((num_row, 7))),
               'death': get_date(excel_page.get((num_row, 8))),
               'seria_policy': excel_page.get((num_row, 15), ''),
               'number_policy': excel_page.get((num_row, 16), ''),
-              'code_insurance_company': excel_page.get((num_row, 17), ''),
+              'code_insurance_company': int(excel_page.get((num_row, 17), '')) or '',
               'registration': excel_page.get((num_row, 14), ''),
               'code_allocate_mo': excel_page.get((num_row, 22), ''),
               'name_allocate_mo': excel_page.get((num_row, 23), ''),
               'social_status': get_social_status(social_st),
+              'type_residence': get_type_residence(type_resid),
               'type': get_type(type_p),
               'gender': get_gender(gender),
               'diagnosis_text': diagnosis_info.get('name', ''),
@@ -130,6 +141,8 @@ class Command(BaseCommand):
         for num_row in range(2, 2238):
             d_info = get_diagnosis_info(patient_excel, num_row, mkb)
             p_info = get_patient_info(patient_excel, num_row, d_info)
+            if not p_info:
+                continue
             patient = Patient.objects.create(**p_info)
             if d_info:
                 d_info['patient'] = patient

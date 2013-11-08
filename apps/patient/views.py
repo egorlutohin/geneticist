@@ -64,7 +64,10 @@ def edit(request, patient_id):
     patient = get_object_or_404(Patient, pk=patient_id)
     diagnosis_qs = patient.diagnosis_set.all()
     avalible_error = False
-    period_visit = datetime.now() - patient.visit_set.latest().date_created
+    try:
+        period_visit = datetime.now() - patient.visit_set.latest().date_created
+    except Visit.DoesNotExist:
+        period_visit = datetime.now() - datetime(1970, 1, 1)
     is_need_save_visit = period_visit > timedelta(hours=12)
     if request.method == "POST":
         patient_form = PatientForm(request.POST,
