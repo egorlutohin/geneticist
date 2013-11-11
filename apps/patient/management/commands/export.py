@@ -143,7 +143,9 @@ class Command(BaseCommand):
             p_info = get_patient_info(patient_excel, num_row, d_info)
             if not p_info:
                 continue
-            patient = Patient.objects.create(**p_info)
+            patient = Patient(**p_info)
+            patient.save()
             if d_info:
                 d_info['patient'] = patient
-                Diagnosis.objects.create(**d_info)
+                diagnosis = Diagnosis(**d_info)
+                diagnosis.save()
