@@ -59,11 +59,11 @@ def get_type(type_patient):
 def get_type_residence(type_residence):
     if not type_residence:
         return 1  # Новосибирск
-    type_patient = type_residence.lower()
-    if u'новосибирск' in type_patient:
-        return 1
-    elif u'новосибирская область' in type_residence:
+    type_residence = type_residence.lower()
+    if u'новосибирская область' in type_residence:
         return 2
+    elif u'новосибирск' in type_residence:
+        return 1
     return 3
 
 
