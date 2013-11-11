@@ -265,6 +265,10 @@ def search(request):
                    Q(diagnosis__name__contains=diagnosis)
             with_diagnosis = patients_qs.filter(diagnosis__code__contains=diagnosis)
             patients_qs = patients_qs.filter(pk__in=with_diagnosis)
+
+    patients_qs = patients_qs.values('pk', 'all_full_names',
+                                     'birthday', 'diagnosis_text_code',
+                                     'name_allocate_mo', 'gender')
     response = {'patients': patients_qs,
                 'count': patients_qs.count(),
                 'special_cure_text': special_cure_text,
