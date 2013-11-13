@@ -10,7 +10,7 @@ from django.shortcuts import render_to_response
 from patient.models import Patient, Diagnosis, Visit
 from user_profile.decorators import login_required
 
-from forms import PeriodForm, MkbForm
+from forms import PeriodForm
 
 
 MARRIAGEABLE_AGE = relativedelta(years=18)
@@ -52,9 +52,6 @@ def get_type_residence_qs(type_residence, date_start, date_end):
 def life(request):
     """ Отчет количества живых пациентов по возрастам за период """
     period_form = PeriodForm(request.GET)
-    
-    special_cure_text = ''
-    header = u'Все'
     
     data = {'period_form': period_form, 'is_have_result': False}
     if len(request.GET) == 0:
@@ -113,9 +110,6 @@ def life(request):
 def nosology(request):
     """ Отчет по нозологиям за период """
     period_form = PeriodForm(request.GET)
-    
-    special_cure_text = ''
-    header = u'Все'
     
     data = {'period_form': period_form, 'is_have_result': False}
     if len(request.GET) == 0:
@@ -180,9 +174,6 @@ def new_diagnosis(request):
     """ Отчет по количеству пациентов поставленных диагнозов МО за период """
     period_form = PeriodForm(request.GET)
     
-    special_cure_text = ''
-    header = u'Все'
-    
     data = {'period_form': period_form, 'is_have_result': False}
     if len(request.GET) == 0:
         # Если поиск не запускали, то и не надо показывать всех пациентов
@@ -216,9 +207,6 @@ def visit(request):
     """ Отчет по количеству посещений МО за период """
     period_form = PeriodForm(request.GET)
     
-    special_cure_text = ''
-    header = u'Все'
-    
     data = {'period_form': period_form, 'is_have_result': False}
     if len(request.GET) == 0:
         # Если поиск не запускали, то и не надо показывать всех пациентов
@@ -250,21 +238,24 @@ def visit(request):
 @login_required
 def mkb(request):
     """ Отчет заболеваний МКБ за период """
-    form = MkbForm(request.GET)
+    period_form = PeriodForm(request.GET)
     
-    data = {'form': form, 'is_have_result': False}
+    data = {'period_form': period_form, 'is_have_result': False}
     if len(request.GET) == 0:
         # Если поиск не запускали, то и не надо показывать всех пациентов
-        data['form'] = MkbForm()
+        data['period_form'] = PeriodForm()
         return render_to_response('analytic/mkb.html', data,
                               context_instance=RequestContext(request))
 
     
-    if form.is_valid():
-        full_name = form.cleaned_data['full_name']
-        diagnosis = form.cleaned_data['diagnosis']
-        qs = Patient.objects.filter(all_full_names__icontains=full_name,
-                                    diagnosis__code__icontains=diagnosis)[:1]
+    if period_form.is_valid():
+        start = period_form.cleaned_data['period_start']
+        end = period_form.cleaned_data['period_end']
+        date_range = (start, end + timedelta(days=1))
+        qs = Diagnosis.objects.filter(date_created__range=date_range) \
+                              .values('patient__full_name', 'code', 'name') \
+                              .order_by('patient__full_name')
+        print qs
         data.update({'info': qs,
                      'is_have_result': True})
     else:
