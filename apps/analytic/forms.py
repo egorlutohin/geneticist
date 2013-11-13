@@ -5,8 +5,8 @@ from patient.models import Patient
 
 
 class PeriodForm(forms.Form):
-    period_start = forms.DateField(label=u'Период начала')
-    period_end = forms.DateField(label=u'Период окончания')
+    period_start = forms.DateField(label=u'Дата начала')
+    period_end = forms.DateField(label=u'Дата окончания')
     TYPE_RESIDENCES = (('', '-----',),) + Patient.TYPE_RESIDENCES
     type_residence = forms.ChoiceField(required=False,
                                        label=u'Место проживания',
