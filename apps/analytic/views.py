@@ -254,7 +254,7 @@ def mkb(request):
         date_range = (start, end + timedelta(days=1))
         qs = Diagnosis.objects.filter(date_created__range=date_range) \
                               .values('patient__full_name', 'code', 'name') \
-                              .order_by('patient__full_name')
+                              .order_by('code', 'name', 'patient__full_name')
         data.update({'info': qs,
                      'is_have_result': True})
     else:
