@@ -7,6 +7,10 @@ from django.core.management.base import BaseCommand, CommandError
 
 from common_helpers import nested_commit_on_success
 from patient.models import Visit, Patient, Diagnosis
+from user_profile.models import CustomUser
+
+
+USER_CHANGED = CustomUser.objects.filter(mo__code=540011)[0]
 
 
 def get_mkb(excel_page):
@@ -22,12 +26,13 @@ def get_mkb(excel_page):
         name = excel_page.get(name_index)
         if name is None:
             continue
+        name = name.replace("del(15)(q11-13)", '').strip()
         cell_index = (num_row, CODE,)
         code = excel_page.get(cell_index)
         if code is None:
             print u'exclude %s' % name
             continue
-        info[name] = code
+        info[name] = code.strip()
     return info
 
 
@@ -112,7 +117,8 @@ def get_patient_info(excel_page, num_row, diagnosis_info):
               'diagnosis_text': diagnosis_info.get('name', ''),
               'diagnosis_text_code': diagnosis_info.get('code', ''),
               'added_by': Patient.ADDED_BY_CHOICES[1][0],
-              'date_registration': date_reg_xl or date.today()}
+              'date_registration': date_reg_xl or date.today(),
+              'user_changed': USER_CHANGED}
     return info_p
 
 
@@ -120,12 +126,14 @@ def get_diagnosis_info(excel_page, num_row, mkb):
     """ Возвращает информацию о диагнозе """
     name = excel_page.get((num_row, 2))
     if name:
+        name = name.strip()
         code = mkb.get(name)
         date_reg_xl = get_date(excel_page.get((num_row, 24)))
         if code:
             return {'code': code,
                     'name': name,
-                    'date_created': date_reg_xl or date.today()}
+                    'date_created': date_reg_xl or date.today(),
+                    'user_changed': USER_CHANGED}
     return {}
 
 
@@ -145,7 +153,8 @@ class Command(BaseCommand):
                 continue
             patient = Patient(**p_info)
             patient.save()
-            if d_info:
-                d_info['patient'] = patient
-                diagnosis = Diagnosis(**d_info)
-                diagnosis.save()
+            if not d_info:
+                print patient_excel.get((num_row, 2))
+            d_info['patient'] = patient
+            diagnosis = Diagnosis(**d_info)
+            diagnosis.save()
