@@ -39,7 +39,7 @@
       <li{% block search_patient %}{% endblock %}><a href="{% url 'patient_search' %}" accesskey="1">Поиск пациентов</a></li>
       <li{% block add_patient %}{% endblock %}><a href="{% url 'patient_add' %}" accesskey="2">Добавление пациента</a></li>
       <li{% block edit_patient %} class="disabled"{% endblock %}><a href="." onfocus="blur()" onclick="return false;">Просмотр записи</a></li>
-      <li{% block analytic %}{% endblock %}><a href="{% url 'analytic' %}" accesskey="2">Отчеты</a></li>
+      {% if user|in_group:"report_viewer" %}<li{% block analytic %}{% endblock %}><a href="{% url 'analytic' %}" accesskey="2">Отчеты</a></li>{% endif %}
     </ul>
     <div id="content" style="padding: 0 20px;">
     {% if messages %}
