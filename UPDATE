@@ -7,5 +7,6 @@
 4. создать файлы миграции командой python manage.py schemamigration patient --auto
 5. применить миграции python manage.py migrate patient
 6. выполнить команду python manage.py update_date_registration
-7. убедиться, что файл базы данных прошлых лет находится в текущем каталоге, и этот файл называется excel.xls
-8. выполнить команду python manage.py export и убедиться, что выполнилось без ошибок
+7. установить программный пакет pyexcelerator командой pip install pyExcelerator==0.6.4.1
+8. убедиться, что файл базы данных прошлых лет находится в текущем каталоге, и этот файл называется excel.xls
+9. выполнить команду python manage.py export и убедиться, что выполнилось без ошибок
