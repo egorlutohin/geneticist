@@ -21,7 +21,7 @@ def get_mkb(excel_page):
     NAME = 1
     info = {}
     expr = re.compile(r'[A-Z]\d+(\.\d+)*')
-    for num_row in range(5, 253):
+    for num_row in range(5, 256):
         name_index = (num_row, NAME)
         name = excel_page.get(name_index)
         if name is None:
@@ -155,6 +155,7 @@ class Command(BaseCommand):
             patient.save()
             if not d_info:
                 print patient_excel.get((num_row, 2))
+                raise Exception(u'Нет информации по пациенту')
             d_info['patient'] = patient
             diagnosis = Diagnosis(**d_info)
             diagnosis.save()
