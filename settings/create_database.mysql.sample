@@ -1,0 +1,2 @@
+create database geneticist charset=utf8;
+grant all on geneticist.* to geneticist@localhost identified by 'geneticist';

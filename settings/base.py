@@ -57,9 +57,9 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = False
 
-MEDIA_ROOT, MEDIA_URL = rel('media'), '/media/'
+MEDIA_ROOT, MEDIA_URL = rel('public_html/media'), '/media/'
 
-STATIC_ROOT, STATIC_URL = '', '/static/'
+STATIC_ROOT, STATIC_URL = rel('public_html/static'), '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -170,3 +170,9 @@ LOGGING = {
         },
     }
 }
+
+AD_LDAP_PORT = 389
+
+#AD_DNS_NAME = '192.168.128.12'
+#AD_NT4_DOMAIN = 'NSO.LOC' # This is the NT4/Samba domain name
+#AD_SEARCH_DN = 'OU=023,OU=OIOGV,OU=ANO,DC=NSO,DC=LOC'
