@@ -10,6 +10,7 @@ sys.path.append(rel('apps/'))
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+ADMINS = []
 MANAGERS = ADMINS
 
 DATABASES = {
