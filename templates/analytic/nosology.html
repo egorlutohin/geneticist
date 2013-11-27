@@ -1,0 +1,34 @@
+{% extends 'analytic/base.html' %}
+
+{% block title %}Отчет по нозологиям{% endblock %}
+
+{% block content %}
+<h4>Отчет по нозологиям
+{% if is_have_result %} с {{ period_start|date:"d.m.Y" }} по
+{{ period_end|date:"d.m.Y" }}.{% endif %}</h4>
+{% if type_residence %}
+<p> (Вид проживания: {{ type_residence }})</p>
+{% endif %}
+
+{% include "analytic/form.html" with include_residence=True %}
+
+{% if is_have_result %}
+<table class="table table-striped table-bordered">
+    <tr>
+        <th>МКБ</th>
+        <th>Код</th>
+        <th>Взрослые</th>
+        <th>Дети</th>
+    </tr>
+    {% for item in info %}
+    <tr>
+        <td>{{ item.0 }}</td>
+        <td>{{ item.1 }}</td>
+        <td>{{ item.2 }}</td>
+        <td>{{ item.3 }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endblock %}
+

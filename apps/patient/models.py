@@ -57,8 +57,10 @@ class Patient(BaseModel):
         (10, u'Работающий',),
         (11, u'Неработающий',),
         (12, u'Пенсионер',),
-        (13, u'Военнослужащий',)
+        (13, u'Военнослужащий',),
+        #  14 -- не определено, зарезервировано
     )
+    _S_STATUS = SOCIAL_STATUSES + ((14, u'Не определено'),)
 
     NEED_CURE = 1
     NOT_NEED_CURE = 2
@@ -83,6 +85,9 @@ class Patient(BaseModel):
                       (2, u'Ж',),
                       (3, u'Интерсекс',),
                       (4, u'Неизвестно',),)
+
+    ADDED_BY_CHOICES = ((1, u'Через веб интерфейс'),
+                        (2, u'Экспорт из базы данных прошлых лет'))
                       
     first_name = models.CharField(u'Имя', max_length=100)
     last_name = models.CharField(u'Фамилия', max_length=100)
@@ -127,7 +132,7 @@ class Patient(BaseModel):
                                          blank=True, null=True)
     social_status = models.IntegerField(verbose_name=u'Социальный статус',
                                         blank=True, null=True, db_index=True,
-                                        choices=SOCIAL_STATUSES)
+                                        choices=_S_STATUS)
     special_cure = models.IntegerField(verbose_name=u'Специальное лечение',
                                        default=NOT_NEED_CURE,
                                        choices=SPECIAL_CURES,
@@ -137,7 +142,8 @@ class Patient(BaseModel):
                                          default=TYPE_RESIDENCES[0][0],
                                          db_index=True)
     type = models.IntegerField(verbose_name=u'Тип пациента',
-                               choices=TYPE_CHOICES)
+                               choices=TYPE_CHOICES,
+                               db_index=True)
     gender = models.IntegerField(verbose_name=u'Пол', choices=GENDER_CHOICES)
     comment = models.TextField(verbose_name=u'Комментарий',
                                blank=True, null=True)
@@ -148,6 +154,9 @@ class Patient(BaseModel):
     date_created = models.DateTimeField(default=datetime.now,
                                         verbose_name=u'Дата заполнения анкеты',
                                         editable=False)
+    added_by = models.IntegerField(verbose_name=u'Добавлено при помощи',
+                                   choices=ADDED_BY_CHOICES,
+                                   default=ADDED_BY_CHOICES[0][0])
     user_changed = CurrentUserField()
 
     history = FullHistoricalRecords()
@@ -172,14 +181,12 @@ class Patient(BaseModel):
         if self.allocate_mo:
             self.code_allocate_mo = self.allocate_mo.code
             self.name_allocate_mo = self.allocate_mo.full_name
-        else:
-            self.code_allocate_mo = self.name_allocate_mo = ''
         super(Patient, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = u'Пациент'
         verbose_name_plural = u'Пациенты'
-        ordering = ['first_name', 'last_name', 'patronymic', 'birthday']
+        ordering = ['last_name', 'first_name', 'patronymic', 'birthday']
 
 
 class Visit(BaseModel):
@@ -223,6 +230,9 @@ class Diagnosis(BaseModel):
                             max_length=10, db_index=True)
     name = models.TextField(verbose_name=u'Название диагноза')
     user_changed = CurrentUserField()
+    date_created = models.DateTimeField(default=datetime.now,
+                                        verbose_name=u'Дата создания записи',
+                                        editable=False)
 
     history = FullHistoricalRecords()
 

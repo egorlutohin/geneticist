@@ -1,12 +1,13 @@
-Django==1.5.1
+Django==1.5.5
 MySQL-python==1.2.4
 South==0.7.6
 dbf==0.95.003
 distribute==0.6.45
-#django-auth-ldap==1.1.4
+django-auth-ldap==1.1.5
 -e git://github.com/dicos/django-history.git@9d0900d14860b091e3c7f036fc4a790eb08f25ab#egg=django_history-dev
 django-mptt==0.5.5
-python-ldap==2.4.12
+python-ldap==2.4.13
 python-memcached==1.53
-
+python-dateutil==2.1
 django-widget-tweaks==1.3
+pyExcelerator==0.6.4.1

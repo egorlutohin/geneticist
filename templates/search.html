@@ -71,6 +71,7 @@
  </form><br style="clear: both" />
 
 {% if have_search_result %}
+{% load gender %}
 <hr />
 <h2>Результат поиска</h2>
 <h4>{{ header }} <small>(количество пациентов: {{ count }})</small></h4>
@@ -93,7 +94,7 @@
         <td><a href="{% url 'patient_edit' patient.pk %}" target="_blank">{{ patient.birthday|date }}</a></td>
         <td><a href="{% url 'patient_edit' patient.pk %}" target="_blank">{{ patient.diagnosis_text_code|linebreaksbr}}</a></td>
         <td><a href="{% url 'patient_edit' patient.pk %}" target="_blank">{{ patient.name_allocate_mo|default:"&nbsp;" }}</a></td>
-        <td><a href="{% url 'patient_edit' patient.pk %}" target="_blank">{{ patient.get_gender_display }}</a></td>
+        <td><a href="{% url 'patient_edit' patient.pk %}" target="_blank">{{ patient.gender|get_gender_display }}</a></td>
     </tr>
     {% endfor %}
     </tbody>

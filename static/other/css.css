@@ -1,93 +1,20 @@
-.red {
-    color: red;
-}
-h3.red, i.content_header {
-    display: block;
-    margin-left: 25px;
-}
-i.content_header {
-    margin: 25px;
-}
-.list_patient {
-    border-collapse: collapse;
-    width: 100%;
-}
-.list_patient td, .list_patient th {
-    border: 1px solid #000;
-    padding: 10px;
-}
-@media print {
-  a[href]:after {
-    content: "";
-  }
-  abbr[title]:after {
-    content: "";
-  }
-} 
-/* ul.menu {
-    display: block;
-    margin: 0 auto;
-    width: 1100px;
-} */
-ul {
-    list-style-type: none;
-}
-/* ul.menu>li {
-    display: inline-block;
-    padding: 0 30px;
-} */
-
-ul.messages>li{
-    display: block;
-    padding: 10px;
-    margin: 10px;
-    background-color: #cfcfcf;
-}
-
-.help_text {
-    color: #666;
-    display: block;
-    margin-top: -10px;
-    margin-bottom: 5px;
-}
-
-#id_full_name {
-    width: 500px;
-}
-.errorlist {
-    color: red;
-}
-
-#li_patronymic, #li_code_insurance_company,
-#li_residence, #li_gender {
-    clear: both;
-}
-
-#li_first_name, #li_last_name, #li_patronymic,
-#li_seria_policy, #li_number_policy, #li_code_insurance_company,
-#li_registration, #li_residence,
-#li_type, #li_gender {
-    display: inline-block;
-    width: 300px;
-} 
-
-.diagnosis_delete_checkbox * {
-    display: inline-block;
-    vertical-align: top;
-}
-
-.diagnosis_form {
-    margin: 10px 20px;;
-}
-
-#ul_diagnosis_formset {
-    margin: 0 0 20px 20px;
-}
-
-#id_diagnosis_comment, #id_comment {
-    width: 500px;
-}
-
-#visits_list {
-    margin-top: 20px;
-}
+#content fieldset {padding: 15px;}
+#content fieldset table {width: 100%}
+#content fieldset td, div.inner {padding: 15px 10px; padding-bottom: 0;}
+#content fieldset td.errorcell {padding-top: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 0;}
+#content fieldset td input, #content fieldset td textarea, #content fieldset td select  {margin-bottom: 0; }
+#content legend {margin: 0 5px; padding: 0;}
+#content div.well, div.outer {padding: 15px; width: 600px;}
+#content h1, #content h2 {width: 630px; position: relative;}
+#content h1 small {position: absolute; right: 0; bottom: 0px;}
+  #content div.submit {width: 630px;}
+#content i {margin-left: 5px;}
+.diagnosis_delete_checkbox label {display: inline;}
+.diagnosis_delete_checkbox input {display: inline; margin-top: 0}
+#ul_diagnosis_formset {padding: 0; margin: 0;}
+#ul_diagnosis_formset>li {list-style: none; padding: 0; margin: 0;}
+.diagnosis_form { margin-bottom: 20px;}
+.text-error ul {padding: 0; padding-left: 2px; margin: 0; font-size: small;}
+.text-error li {list-style: none; display: inline; padding: 0; margin: 0;}
+legend a, legend a:hover {cursor: pointer; text-decoration: none; color: #bbb; padding-right: 2px; float: right;}
+#non-field-errors {paddin: 0; margin-bottom: 20px;}

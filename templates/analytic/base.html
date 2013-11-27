@@ -1,0 +1,22 @@
+{% extends 'patient.html' %}
+
+{% block other_static %}
+    {{ form.media }}
+    <link href="{{ STATIC_URL }}bootstrap-datepicker/css/datepicker.css" rel="stylesheet" />
+    <script src="{{ STATIC_URL }}/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    
+    <script>
+        {% load in_group %}
+        $(function(){
+            $('{{period_form|date_fields_id}}').datepicker().on('changeDate', function(e){$(this).focus();})
+            $('{{period_form|no_date_fields_id}}').on('focus', function(e){$('{{form|date_fields_id}}').datepicker('hide')})
+        });
+        
+        $(function() { $('form').keyTips(); });
+    </script>
+    <style type="text/css">
+        .well td {padding: 5px 10px;}
+        .well {float: left; padding: 15px; width: 600px;}
+    </style>
+
+{% endblock %}

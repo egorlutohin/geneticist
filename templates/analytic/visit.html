@@ -1,0 +1,29 @@
+{% extends 'analytic/base.html' %}
+
+{% block title %}Отчет по количеству посещений МО{% endblock %}
+
+{% block content %}
+<h4>Отчет по количеству посещений МО
+{% if is_have_result %} с {{ period_start|date:"d.m.Y" }} по
+{{ period_end|date:"d.m.Y" }}.{% endif %}</h4>
+{% if type_residence %}
+<p> (Вид проживания: {{ type_residence }})</p>
+{% endif %}
+
+{% include "analytic/form.html" %}
+
+{% if is_have_result %}
+<table class="table table-striped table-bordered">
+    <tr>
+        <th>МО</th>
+        <th>Количество</th>
+    </tr>
+    {% for item in info %}
+    <tr>
+        <td>{{ item.name }}</td>
+        <td>{{ item.count }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endblock %}
