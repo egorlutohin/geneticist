@@ -86,7 +86,7 @@ class PatientForm(forms.ModelForm):
                    'diagnosis_text', 'diagnosis_text_code',
                    'code_allocate_mo', 'name_allocate_mo',
                    'full_name', 'prev_full_name', 'all_full_names',
-                   'date_registration',)
+                   'date_registration', 'added_by',)
 
 
 class VisitForm(forms.ModelForm):
