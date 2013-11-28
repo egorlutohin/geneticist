@@ -18,8 +18,8 @@
      Если после запуска на экране появятся ошибки, 
      необходимо их исправить, если ничего непоявилось - значит все ОК
      
-5. Оcтановить веб-сервер: 
-     service nginx stop
+5. Оcтановить сервер приложений: 
+     service uwsgi stop
 
 6. Сделать копию базы данных генетического реестра: 
      mysqldump -u root -p <db_name> > geneticist.dump.sql
@@ -37,12 +37,29 @@
      Скопировать файл excel.xls в корень проекта (/web/geneticist-1.2/).
      Выполнить команду ./manage.py export и убедиться, что выполнилось без ошибок
 
-11. Переставить символическую ссылку:
-     unlink geneticist
+11. Подготовить статику:
+     ./manage.py collectstatic
+     На вопрос
+     "You have requested to collect static files at the destination
+     location as specified in your settings.
+
+     This will overwrite existing files!
+     Are you sure you want to do this?
+
+     Type 'yes' to continue, or 'no' to cancel: "
+
+     ответить "yes"
+
+12. Переставить символическую ссылку:
+     cd ..; unlink geneticist
      ln -s geneticist-1.2 geneticist
 
-12. Запустить веб-сервер:
-     service nginx start
+13. Запустить сервер приложений:
+     service uwsgi start
+
+14. Убедиться что все нормально работает, удалить бэкапы:
+     cd geneticist
+     rm excel.xls geneticist.dump.sql
 
 --------------
 Назначении прав через AD:
