@@ -6,6 +6,7 @@ Code adopted from http://djangosnippets.org/snippets/501/
 import ldap
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.conf import settings
 
 from organization.models import Organization
@@ -20,6 +21,10 @@ class ActiveDirectoryBackend:
     lc.set_option(ldap.OPT_REFERRALS,0)
     if not self.is_valid(lc, username, password):
         return None
+        
+    #~ import pdb;
+    #~ pdb.set_trace();
+
       
     result = lc.search_s(settings.AD_SEARCH_DN, ldap.SCOPE_SUBTREE, 'sAMAccountName=%s' % username, ['memberOf', 'givenName', 'sn', 'displayName'])
     lc.unbind_s()
@@ -54,15 +59,24 @@ class ActiveDirectoryBackend:
         user = User()
         user.username = username
         
-    
-        
     if settings.LDAP_PERMISSION_GROUP['admin'] in memberOf:
         user.is_staff = True
         user.is_superuser = True
     elif settings.LDAP_PERMISSION_GROUP['user'] in memberOf:
-        pass
+        user.is_staff = False
+        user.is_superuser = False
     else:
         return None
+
+    if not(user.id):
+        user.save()
+    
+    if settings.LDAP_PERMISSION_GROUP['report_viewer'] in memberOf:
+        report_viewer_group, _ = Group.objects.get_or_create(name='report_viewer')
+        user.groups.clear()
+        user.groups.add(report_viewer_group)
+    else:
+        user.groups.clear()
         
     orgs = Organization.objects.filter(ldap_name__in=memberOf)
     if len(orgs) > 0:

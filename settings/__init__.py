@@ -14,6 +14,7 @@ else:
     AUTHENTICATION_BACKENDS = ('auth.adauth.ActiveDirectoryBackend',)
     LDAP_PERMISSION_GROUP = {
         'user': 'ГРП_Пользователь',
-        'admin': 'ГРП_Администратор'
+        'admin': 'ГРП_Администратор',
+        'report_viewer': 'ГРП_Просмотр_отчетов',
     }
 

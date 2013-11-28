@@ -1,12 +1,45 @@
-Инструкция по обновлению генетического реестра
+Инструкция по обновлению генетического реестра с версии 1.0 до 1.2
 
-Обновление генетического реестра нужно производить в несколько этапов:
-1. на сервере инициализировать миграции базы данных командой python manage.py schemamigration patient --initial
-2. применить миграции командой python manage.py migrate patient --fake
-3. обновить программный код из репозитория  https://github.com/dicos/geneticist/
-4. создать файлы миграции командой python manage.py schemamigration patient --auto
-5. применить миграции python manage.py migrate patient
-6. выполнить команду python manage.py update_date_registration
-7. установить программный пакет pyexcelerator командой pip install pyExcelerator==0.6.4.1
-8. убедиться, что файл базы данных прошлых лет находится в текущем каталоге, и этот файл называется excel.xls
-9. выполнить команду python manage.py export и убедиться, что выполнилось без ошибок
+1. Скачать и распаковать исходный код:
+     cd /web
+     wget https://github.com/egorlutohin/geneticist/archive/v1.2.tar.gz
+     tar -xzvf v1.2.tar.gz; rm -rf v1.2.tar.gz
+
+2. Скопировать конфигурацию из предыдущей установки:
+     cp geneticist/settings/local_settings.py geneticist-1.2/settings/
+
+3. Установить виртуальное окружение и необходимые для работы пакеты:
+     cd geneticist-1.2; virtualenv --system-site-packages .geneticist-packages
+     source .geneticist-packages/bin/activate
+     pip install -r requirements.pip
+
+4. Проверить установку модулей:
+     ./checkmodules.py
+     Если после запуска на экране появятся ошибки, 
+     необходимо их исправить, если ничего непоявилось - значит все ОК
+     
+5. Оcтановить веб-сервер: 
+     service nginx stop
+
+6. Сделать копию базы данных генетического реестра: 
+     mysqldump -u root -p <db_name> > geneticist.dump.sql
+
+7. Обновить схему базы данных генетического реестра:
+     mysql -u root -p <db_name> < update-1.0-1.2.sql
+     
+8. Выполнить datamigration:
+     ./manage.py update_date_registration
+     
+9. Установить программный пакет pyexcelerator:
+     pip install pyExcelerator==0.6.4.1
+     
+10. Загрузить данные прошлых лет из КДЦ:
+     Скопировать файл excel.xls в корень проекта (/web/geneticist-1.2/).
+     Выполнить команду ./manage.py export и убедиться, что выполнилось без ошибок
+
+--------------
+Назначении прав через AD:
+ * ГРП_Администратор - администратор реестра
+ * ГРП_Пользователь - пользователь реестра
+ * ГРП_Просмотр_отчетов - просмотр отчетов
+
